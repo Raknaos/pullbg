@@ -9,7 +9,7 @@ globalThis.localStorage = {
 };
 
 const mod = await import(pathToFileURL("C:/Users/bapti/Downloads/pelure/js/auth.js").href);
-const { consumeOne, canCut, quota, signup, currentUser } = mod;
+const { consumeOne, refundOne, canCut, quota, signup, currentUser } = mod;
 
 function assert(cond, msg) {
   if (!cond) throw new Error(msg);
@@ -17,6 +17,10 @@ function assert(cond, msg) {
 
 for (let i = 0; i < 10; i++) consumeOne();
 assert(quota().used === 10, "guest used 10");
+refundOne();
+assert(quota().used === 9, "failed cut refunds");
+consumeOne();
+assert(quota().used === 10, "guest used 10 after refund");
 assert(canCut().ok === false && canCut().gate === "account", "11th needs account");
 try { consumeOne(); throw new Error("should not consume"); } catch (e) {
   assert(e.gate === "account", "consume blocked as guest");

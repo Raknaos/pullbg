@@ -129,6 +129,24 @@ export function consumeOne() {
   return quota();
 }
 
+export function refundOne() {
+  const user = currentUser();
+  if (user && isSubscribed(user)) return quota();
+  const day = todayLocal();
+  if (user) {
+    const usage = loadUsage();
+    const used = usedToday(usage[user.email]);
+    if (!used) return quota();
+    usage[user.email] = { date: day, used: used - 1 };
+    localStorage.setItem(USAGE_KEY, JSON.stringify(usage));
+    return quota();
+  }
+  const used = usedToday(guestRec());
+  if (!used) return quota();
+  localStorage.setItem(GUEST_KEY, JSON.stringify({ date: day, used: used - 1 }));
+  return quota();
+}
+
 function transferGuestInto(email) {
   const used = usedToday(guestRec());
   if (!used) return;

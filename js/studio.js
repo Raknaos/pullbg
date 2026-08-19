@@ -1,5 +1,6 @@
 import {
   consumeOne,
+  refundOne,
   canCut,
   quota,
   quotaLabel,
@@ -226,6 +227,8 @@ async function processQueue() {
         batch.push(job);
       }
       await Promise.all(batch.map((job) => cutOne(job, false).catch((err) => {
+        refundOne();
+        refreshQuota();
         if (err && err.gate) {
           job.locked = true;
           job.status = "verrouillé";
@@ -258,10 +261,23 @@ async function processQueue() {
   }
 }
 
+function zipName(name, used) {
+  const base = name.replace(/\.[^.]+$/, "") || "image";
+  let file = `${base}.png`;
+  let n = 2;
+  while (used.has(file)) {
+    file = `${base}-${n}.png`;
+    n++;
+  }
+  used.add(file);
+  return file;
+}
+
 async function downloadZip() {
   const JSZip = (await import("https://esm.sh/jszip@3.10.1")).default;
   const zip = new JSZip();
-  for (const job of jobs) if (job.blob && !job.locked) zip.file(job.name.replace(/\.[^.]+$/, "") + ".png", job.blob);
+  const used = new Set();
+  for (const job of jobs) if (job.blob && !job.locked) zip.file(zipName(job.name, used), job.blob);
   const blob = await zip.generateAsync({ type: "blob" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
