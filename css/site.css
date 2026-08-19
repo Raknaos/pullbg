@@ -55,6 +55,8 @@ button, input { font: inherit; color: inherit; }
   display: grid; grid-template-columns: 0.92fr 1.08fr; gap: 56px;
   align-items: center; padding: 72px 0 40px;
 }
+.hero.solo { grid-template-columns: 1fr; min-height: 68vh; align-content: center; padding-top: 80px; }
+.hero.solo h1 { max-width: 10ch; }
 .kicker { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); margin: 0 0 16px; }
 .hero h1 {
   font-family: var(--serif); font-weight: 450; font-size: clamp(46px, 6.4vw, 76px);
@@ -184,6 +186,8 @@ button, input { font: inherit; color: inherit; }
 .stage .cmp { position: absolute; inset: 24px; }
 .stage .cmp img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .tools h4 { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); font-weight: 500; }
+.more { margin-top: 14px; color: var(--muted); font-size: 13px; }
+.more summary { cursor: pointer; margin-bottom: 10px; }
 .modes { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; }
 .modes button, .toggle {
   border: 1px solid var(--line); background: transparent; border-radius: 999px;

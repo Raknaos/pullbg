@@ -3,15 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PullBG — PNG transparent, tout de suite</title>
-  <meta name="description" content="Enlève le fond d’une image. PNG transparent, dans ton navigateur. 2,99 € / mois." />
-  <meta property="og:title" content="PullBG — Enlève le fond. Vends l’image." />
-  <meta property="og:description" content="Un dépôt. Un PNG propre. Tes fichiers restent sur ton ordinateur." />
-  <meta property="og:type" content="website" />
+  <title>PullBG</title>
+  <meta name="description" content="Enlève le fond. PNG transparent. Tes fichiers restent sur ton ordinateur." />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" />
   <link rel="stylesheet" href="./css/site.css" />
 </head>
 <body>
@@ -19,136 +16,22 @@
     <nav class="nav">
       <a class="brand" href="./index.html"><span class="mark">P</span>PullBG</a>
       <div class="nav-links">
-        <a href="./en.html">EN</a>
-        <a href="#prix">Prix</a>
         <a href="./app.html">Studio</a>
         <span data-auth></span>
-        <a class="btn btn-acc" href="./app.html">Commencer</a>
       </div>
     </nav>
-
-    <section class="hero">
+    <section class="hero solo">
       <div>
-        <p class="kicker">Détourage · 2,99 € / mois</p>
-        <h1>Enlève le fond. Vends l’image.</h1>
-        <p class="lead">Un dépôt. Un PNG propre. Tes fichiers ne quittent pas ton ordinateur.</p>
-        <div class="hero-cta">
-          <a class="btn btn-acc" href="./app.html">Découper maintenant</a>
-          <a class="btn btn-ghost" href="#prix">Voir les offres</a>
-        </div>
-        <p class="note">Sans compte pour les premières images du jour. Sans carte pour commencer.</p>
+        <h1>Enlève le fond.</h1>
+        <p class="lead">Dépose une image. Récupère un PNG. Rien ne quitte ta machine.</p>
+        <a class="btn btn-acc" href="./app.html">Découper</a>
       </div>
-      <div class="product">
-        <div class="product-bar">
-          <span class="dots"><i></i><i></i><i></i></span>
-          Avant → après · glisse
-        </div>
-        <div class="compare" id="demo" style="--pos:54%">
-          <img src="./assets/stamp-before.jpg" alt="Avant" />
-          <img class="after" src="./assets/stamp.png" alt="Après" />
-          <span class="bar"></span>
-          <input type="range" min="8" max="92" value="54" aria-label="Comparer avant / après" />
-        </div>
-      </div>
-    </section>
-
-    <section class="sell">
-      <div class="sell-line">
-        <strong>Privé.</strong>
-        <span>Le calcul se fait dans le navigateur. Pas d’upload, pas de cloud.</span>
-      </div>
-      <div class="sell-line">
-        <strong>Abordable.</strong>
-        <span>2,99 € / mois. 19,99 € / an. Pas 20 centimes l’image.</span>
-      </div>
-      <div class="sell-line">
-        <strong>Prêt à vendre.</strong>
-        <span>PNG transparent, file, ZIP. Pour fiches produit, posts, maquettes.</span>
-      </div>
-    </section>
-
-    <section class="cases">
-      <h2>Ce que tu récupères.</h2>
-      <p>Quatre sorties réelles. Le damier, c’est le vide — le fond n’est plus là.</p>
-      <div class="strip">
-        <figure class="tile"><div class="ph checker"><img src="./assets/stamp.png" alt="" /></div><figcaption>Timbre</figcaption></figure>
-        <figure class="tile"><div class="ph checker"><img src="./assets/word.png" alt="" /></div><figcaption>Fenêtre</figcaption></figure>
-        <figure class="tile"><div class="ph checker"><img src="./assets/cloud.png" alt="" /></div><figcaption>Patch</figcaption></figure>
-        <figure class="tile"><div class="ph checker"><img src="./assets/pencil.png" alt="" /></div><figcaption>Produit</figcaption></figure>
-      </div>
-    </section>
-
-    <section class="prices-hero" id="prix">
-      <p class="kicker">Offres</p>
-      <h1>Un prix, et tu continues.</h1>
-      <p class="lead" style="color:var(--muted);max-width:38ch">10 images par jour sans te connecter. Ensuite un compte, puis PullBG+ si tu enchaînes.</p>
-    </section>
-    <section class="prices">
-      <article class="card">
-        <h3>Mensuel</h3>
-        <div class="price">2,99 € <small>/ mois</small></div>
-        <ul>
-          <li>Illimité</li>
-          <li>Studio + ZIP</li>
-          <li>Annulable quand tu veux</li>
-        </ul>
-        <a class="btn btn-ghost" href="./login.html?next=pricing">Prendre 2,99 € / mois</a>
-      </article>
-      <article class="card hl">
-        <h3>Annuel — le plus pris</h3>
-        <div class="price">19,99 € <small>/ an</small><span class="was">29,99 €</span></div>
-        <ul>
-          <li>Illimité</li>
-          <li>1,67 € / mois</li>
-          <li>Un paiement, un an</li>
-        </ul>
-        <a class="btn btn-acc" href="./login.html?next=pricing">Prendre 19,99 € / an</a>
-      </article>
-    </section>
-
-    <section class="faq">
-      <h2>Avant de payer.</h2>
-      <details open>
-        <summary>Je dois créer un compte tout de suite ?</summary>
-        <p>Non. Tu commences dans le studio. Le compte arrive seulement quand le lot du jour est fini.</p>
-      </details>
-      <details>
-        <summary>Mes photos partent où ?</summary>
-        <p>Nulle part. Tout tourne dans ton navigateur. On n’héberge pas tes images.</p>
-      </details>
-      <details>
-        <summary>C’est quoi les 10 images / jour ?</summary>
-        <p>Un lot quotidien, avec un compteur. À minuit, ça recommence. PullBG+ retire la limite.</p>
-      </details>
-      <details>
-        <summary>Je peux arrêter ?</summary>
-        <p>Oui. Le mois se coupe. L’année, c’est un paiement unique.</p>
-      </details>
-    </section>
-
-    <section class="close">
-      <h2>Pose la première image.</h2>
-      <p>Deux secondes. Un PNG. Si ça te sert, tu restes à 2,99 €.</p>
-      <a class="btn btn-acc" href="./app.html">Ouvrir le studio</a>
     </section>
   </div>
-  <footer>
-    <div class="wrap foot">
-      <span>PullBG</span>
-      <a href="./app.html">Studio</a>
-      <a href="./pricing.html">Offres</a>
-      <span>2,99 € / mois · 19,99 € / an</span>
-      <a href="./mentions.html">Mentions</a>
-    </div>
-  </footer>
+  <footer><div class="wrap foot"><span>PullBG</span><a href="./mentions.html">Mentions</a></div></footer>
   <script type="module">
     import { paintNav } from "./js/auth.js";
     paintNav();
-    const root = document.getElementById("demo");
-    const input = root.querySelector("input");
-    const sync = () => { root.style.setProperty("--pos", input.value + "%"); };
-    input.addEventListener("input", sync);
-    sync();
   </script>
 </body>
 </html>

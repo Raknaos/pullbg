@@ -47,11 +47,11 @@ setInterval(refreshQuota, 30000);
 
 function openGate(kind) {
   if (kind === "account") {
-    gateText.textContent = "Crée un compte pour continuer. Ensuite tu verras les offres.";
+    gateText.textContent = "Crée un compte pour continuer.";
     gateCta.textContent = "Créer un compte";
     gateCta.href = "./login.html?next=pricing";
   } else {
-    gateText.textContent = `Lot du jour terminé. Nouveau lot dans ${formatCountdown(nextResetAt() - Date.now())}, ou PullBG+.`;
+    gateText.textContent = `Lot du jour terminé. Nouveau lot dans ${formatCountdown(nextResetAt() - Date.now())}.`;
     gateCta.textContent = "Voir les offres";
     gateCta.href = "./pricing.html";
   }
@@ -67,11 +67,11 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-document.getElementById("modes").addEventListener("click", (e) => {
+document.querySelector(".tools").addEventListener("click", (e) => {
   const btn = e.target.closest("button[data-mode]");
   if (!btn) return;
   mode = btn.dataset.mode;
-  for (const b of document.querySelectorAll("#modes button")) b.classList.toggle("on", b === btn);
+  for (const b of document.querySelectorAll("button[data-mode]")) b.classList.toggle("on", b === btn);
 });
 interiorBtn.addEventListener("click", () => {
   interior = !interior;

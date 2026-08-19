@@ -13,7 +13,6 @@
     <a class="brand" href="./index.html"><span class="mark">P</span>PullBG</a>
     <div class="nav-links">
       <span class="meter" id="quota"></span>
-      <a href="./pricing.html">Offres</a>
       <span data-auth></span>
     </div>
   </nav>
@@ -35,17 +34,21 @@
       </div>
     </main>
     <aside class="tools">
-      <h4>Pipeline</h4>
+      <h4>Mode</h4>
       <div class="modes" id="modes">
         <button data-mode="auto" class="on">Auto</button>
-        <button data-mode="ia">IA</button>
-        <button data-mode="noir">Noir</button>
-        <button data-mode="blanc">Blanc</button>
-        <button data-mode="timbre">Timbre</button>
-        <button data-mode="aucun">Aucun</button>
       </div>
-      <button class="toggle" id="interior">Percer l’intérieur</button>
-      <button class="toggle" id="qa">QA magenta</button>
+      <details class="more">
+        <summary>Options</summary>
+        <div class="modes" id="modes-more">
+          <button data-mode="ia">Général</button>
+          <button data-mode="noir">Fond noir</button>
+          <button data-mode="blanc">Fond blanc</button>
+          <button data-mode="timbre">Timbre</button>
+        </div>
+        <button class="toggle" id="interior">Percer l’intérieur</button>
+        <button class="toggle" id="qa">Contrôle fond</button>
+      </details>
       <div class="bar" style="margin-top:18px">
         <a class="btn btn-acc" id="dl" hidden download>Télécharger PNG</a>
         <button class="btn btn-ghost" id="zip" hidden>ZIP</button>

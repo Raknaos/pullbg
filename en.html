@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PullBG — transparent PNG, instantly</title>
-  <meta name="description" content="Remove the background. Download a PNG. Files stay on your computer. €2.99 / month." />
+  <title>PullBG</title>
+  <meta name="description" content="Remove the background. Download a PNG. Files stay on your computer." />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" />
   <link rel="stylesheet" href="./css/site.css" />
@@ -16,35 +16,15 @@
       <div class="nav-links">
         <a href="./index.html">FR</a>
         <a href="./app.html">Studio</a>
-        <a class="btn btn-acc" href="./app.html">Start</a>
       </div>
     </nav>
-    <section class="hero">
+    <section class="hero solo">
       <div>
-        <p class="kicker">Cutout · €2.99 / month</p>
-        <h1>Pull the background. Keep the subject.</h1>
-        <p class="lead">Drop a photo. Get a clean PNG. Nothing leaves your machine.</p>
-        <div class="hero-cta">
-          <a class="btn btn-acc" href="./app.html">Open the studio</a>
-          <a class="btn btn-ghost" href="./pricing.html">€2.99 / month</a>
-        </div>
-        <p class="note">No account for the first images of the day. No card to start.</p>
-      </div>
-      <div class="product">
-        <div class="product-bar"><span class="dots"><i></i><i></i><i></i></span>Before → after</div>
-        <div class="compare" id="demo" style="--pos:54%">
-          <img src="./assets/stamp-before.jpg" alt="Before" />
-          <img class="after" src="./assets/stamp.png" alt="After" />
-          <span class="bar"></span>
-          <input type="range" min="8" max="92" value="54" />
-        </div>
+        <h1>Pull the background off.</h1>
+        <p class="lead">Drop a photo. Get a PNG. Nothing leaves your machine.</p>
+        <a class="btn btn-acc" href="./app.html">Cut</a>
       </div>
     </section>
   </div>
-  <script>
-    const root = document.getElementById("demo");
-    const input = root.querySelector("input");
-    input.addEventListener("input", () => root.style.setProperty("--pos", input.value + "%"));
-  </script>
 </body>
 </html>
