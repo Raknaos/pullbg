@@ -168,4 +168,22 @@ function fourPaneWindow() {
   assert(a[4 * 140 + 4] < 16, "cream paper flood removes sheet");
 }
 
+{
+  const img = rgb(80, 80, 36, 36, 36);
+  fillRect(img, 12, 12, 68, 68, 240, 240, 240);
+  const guess = classifyImage(img);
+  assert(guess.interior, `JPEG-white pane classified as page (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "JPEG-white pane punched (not only lum>=248)");
+  assert(a[2 * 80 + 2] > 180, "JPEG-white page frame kept");
+}
+
+{
+  const img = rgb(80, 80, 70, 90, 60);
+  fillRect(img, 18, 18, 62, 62, 210, 210, 210);
+  const guess = classifyImage(img);
+  assert(!guess.interior, "mid-light patch is not a JPEG-white page");
+}
+
 console.log("engine window+stamp+eyes ok");

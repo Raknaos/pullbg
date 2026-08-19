@@ -36,3 +36,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-19: Qualité : plus de fillInteriorHoles (ça bouchait les yeux). Objets/produits → IA obligatoire comme v1. Geo seulement timbres/fenêtres/fond noir.
 - 2026-08-19: Fenêtres 4 carreaux : somme des intérieurs (plus le 1er volet trop petit). Punch dès 1,2 %. Timbres : flood couleur papier crème, revert si ça mange la pièce.
 - 2026-08-19: Fenêtres JPEG/gris : seuil vitre = cadre−6 borné 14–22 (plus seulement lum≤14). Test vitre 20. Cache-bust modules v=7.
+- 2026-08-19: Pages JPEG blanches : seuil = max(234, cadre+40) borné 248 (plus seulement lum≥248). Patch 210 non classé page. Cache-bust v=8.
