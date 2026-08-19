@@ -65,6 +65,10 @@ window.addEventListener("paste", (e) => {
   if (items && items.length) addFiles(items);
 });
 
+function forgetUrl(u) {
+  if (u && String(u).startsWith("blob:")) URL.revokeObjectURL(u);
+}
+
 function addFiles(list) {
   let added = 0;
   for (const file of list) {
@@ -102,6 +106,7 @@ function render() {
     if (job.result && !job.locked) has = true;
     const el = document.createElement("article");
     el.className = "job" + (job.locked ? " locked" : "");
+    el.dataset.id = job.id;
     const dl = job.result && !job.locked
       ? `<a class="btn btn-acc" download="${job.name.replace(/\.[^.]+$/, "")}.png" href="${job.result}">PNG</a>`
       : "";
@@ -124,50 +129,102 @@ function render() {
   clearBtn.hidden = jobs.length === 0;
 }
 
+function patchJob(job) {
+  const el = queueEl.querySelector(`[data-id="${job.id}"]`);
+  if (!el) {
+    render();
+    return;
+  }
+  const img = el.querySelector("img");
+  if (img) img.src = job.result || job.url;
+  const st = el.querySelector(".status");
+  if (st) {
+    st.textContent = job.status;
+    st.className = "status " + (job.status === "prêt" ? "ok" : job.status.startsWith("erreur") || job.locked ? "err" : "");
+  }
+  el.classList.toggle("locked", job.locked);
+  const actions = el.querySelector(".hero-cta");
+  if (actions && job.result && !job.locked && !actions.querySelector("[download]")) {
+    const a = document.createElement("a");
+    a.className = "btn btn-acc";
+    a.download = job.name.replace(/\.[^.]+$/, "") + ".png";
+    a.href = job.result;
+    a.textContent = "PNG";
+    actions.prepend(a);
+  }
+  zipBtn.hidden = !jobs.some((j) => j.result && !j.locked);
+}
+
 queueEl.addEventListener("click", (e) => {
   const id = e.target.dataset.del;
   if (!id) return;
+  const job = jobs.find((j) => j.id === id);
+  if (job) {
+    forgetUrl(job.url);
+    forgetUrl(job.result);
+  }
   jobs = jobs.filter((j) => j.id !== id);
   render();
 });
-clearBtn.addEventListener("click", () => { jobs = []; render(); });
+clearBtn.addEventListener("click", () => {
+  for (const job of jobs) {
+    forgetUrl(job.url);
+    forgetUrl(job.result);
+  }
+  jobs = [];
+  render();
+});
 zipBtn.addEventListener("click", downloadZip);
 
 async function show(job, image, locked) {
+  const prev = job.result;
   if (locked) {
     job.blob = null;
     job.result = URL.createObjectURL(await blobFromImageDataBlurred(image));
-    return;
+  } else {
+    job.blob = await blobFromImageData(image);
+    job.result = URL.createObjectURL(job.blob);
   }
-  job.blob = await blobFromImageData(image);
-  job.result = URL.createObjectURL(job.blob);
+  if (prev && prev !== job.result) forgetUrl(prev);
+}
+
+async function cutOne(job, locked) {
+  job.status = "découpe…";
+  patchJob(job);
+  const original = imageDataFromBitmap(await bitmapFromSource(job.file)).image;
+  job.draft = fastCut(original);
+  await show(job, job.draft.image, locked);
+  job.status = locked ? "aperçu flou" : (job.draft.needsRefine ? "affinage…" : "prêt");
+  job.locked = locked;
+  patchJob(job);
 }
 
 async function processQueue() {
   running = true;
   try {
-    for (const job of jobs) {
-      if (job.draft || job.locked || job.status.startsWith("erreur")) continue;
-      const gateState = canCut();
-      const locked = !gateState.ok;
-      try {
-        if (!locked) {
-          consumeOne();
-          refreshQuota();
-        }
-        job.status = "découpe…";
-        render();
-        const original = imageDataFromBitmap(await bitmapFromSource(job.file)).image;
-        job.draft = fastCut(original);
-        await show(job, job.draft.image, locked);
-        job.status = locked ? "aperçu flou" : (job.draft.needsRefine ? "affinage…" : "prêt");
-        job.locked = locked;
-        render();
-        if (locked) {
+    while (true) {
+      const pending = jobs.filter((j) => !j.draft && !j.locked && !j.status.startsWith("erreur"));
+      if (!pending.length) break;
+      const batch = [];
+      for (const job of pending) {
+        if (batch.length >= 3) break;
+        const gateState = canCut();
+        if (!gateState.ok) {
+          try {
+            await cutOne(job, true);
+          } catch (err) {
+            job.status = "erreur : " + (err.message || err);
+            job.locked = true;
+            patchJob(job);
+          }
           openGate(gateState.gate);
           return;
         }
-      } catch (err) {
+        consumeOne();
+        refreshQuota();
+        batch.push(job);
+      }
+      await Promise.all(batch.map((job) => cutOne(job, false).catch((err) => {
         if (err && err.gate) {
           job.locked = true;
           job.status = "verrouillé";
@@ -175,22 +232,22 @@ async function processQueue() {
           return;
         }
         job.status = "erreur : " + (err.message || err);
-        render();
-      }
+        patchJob(job);
+      })));
     }
     for (const job of jobs) {
       if (!job.draft || !job.draft.needsRefine || job.locked) continue;
       try {
         job.status = "affinage…";
-        render();
+        patchJob(job);
         const better = await refineCut(job.file, job.draft);
         job.draft = better;
         await show(job, better.image, false);
         job.status = "prêt";
-        render();
-      } catch (err) {
+        patchJob(job);
+      } catch {
         job.status = "prêt";
-        render();
+        patchJob(job);
       }
     }
   } finally {

@@ -1,6 +1,7 @@
 # PullBG — roadmap de construction
 
 Règle : une couche livrée et vérifiée avant la suivante. Pas de « plus tard on remplacera ».
+Si plus aucune tâche : en chercher d’autres (moteur, file, UX, tests) — jamais idle.
 Interdit : dire « 10 images gratuites ». Interdit : « l’IA seule rate / seul un modèle peut ».
 
 ## Phase 0 — Socle (fait)
