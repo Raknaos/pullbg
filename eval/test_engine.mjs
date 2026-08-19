@@ -186,4 +186,16 @@ function fourPaneWindow() {
   assert(!guess.interior, "mid-light patch is not a JPEG-white page");
 }
 
+{
+  const img = stampScan();
+  fillRect(img, 48, 48, 112, 112, 16, 16, 16);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `engraved stamp is not a window (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[80 * 160 + 80] > 180, "engraved center kept (not punched as a pane)");
+  assert(a[1 * 160 + 12] < 16, "engraved stamp still punches perforations");
+  assert(cut.pipeline === "timbre", "engraved stamp uses stamp pipeline");
+}
+
 console.log("engine window+stamp+eyes ok");

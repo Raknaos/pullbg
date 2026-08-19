@@ -7,14 +7,14 @@ import {
   paintNav,
   nextResetAt,
   formatCountdown,
-} from "./auth.js?v=9";
-import { warmup, fastCut, refineCut } from "../lib/engine.js?v=9";
+} from "./auth.js?v=10";
+import { warmup, fastCut, refineCut } from "../lib/engine.js?v=10";
 import {
   bitmapFromSource,
   imageDataFromBitmap,
   blobFromImageData,
   blobFromImageDataBlurred,
-} from "../lib/cutout.js?v=9";
+} from "../lib/cutout.js?v=10";
 
 paintNav();
 warmup();
@@ -211,6 +211,11 @@ clearBtn.addEventListener("click", () => {
 });
 zipBtn.addEventListener("click", downloadZip);
 
+function dropPixels(job) {
+  job.source = null;
+  if (job.draft) job.draft = { needsRefine: false, pipeline: job.draft.pipeline };
+}
+
 async function show(job, image, locked) {
   const prev = job.result;
   if (locked) {
@@ -233,6 +238,7 @@ async function cutOne(job, locked) {
   await show(job, job.draft.image, locked);
   job.status = locked ? "aperçu flou" : (job.draft.needsRefine ? "affinage…" : "prêt");
   job.locked = locked;
+  if (locked || !job.draft.needsRefine) dropPixels(job);
   patchJob(job);
 }
 
@@ -282,6 +288,7 @@ async function processQueue() {
         const better = await refineCut(job.file, job.draft, job.source);
         job.draft = better;
         await show(job, better.image, false);
+        dropPixels(job);
         job.status = "prêt";
         patchJob(job);
       } catch {
@@ -315,7 +322,9 @@ async function downloadZip() {
   for (const job of jobs) if (job.blob && !job.locked) zip.file(zipName(job.name, used), job.blob);
   const blob = await zip.generateAsync({ type: "blob" });
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
+  const url = URL.createObjectURL(blob);
+  a.href = url;
   a.download = "pullbg.zip";
   a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 20000);
 }
