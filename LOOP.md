@@ -31,3 +31,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 
 ## Journal
 - 2026-08-19: EXIF `from-image` + plafond 2200px. Affinage IA sur l’image déjà redressée (plus de mix tordu). FastCut 3 en parallèle.
+- 2026-08-19: Fenêtres — punch intérieur sans flood noir (cadre conservé). Timbres — flood papier clair, trous puis pièce entière, bande 5%. Test `eval/test_engine.mjs`.
