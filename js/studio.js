@@ -81,6 +81,10 @@ stage.addEventListener("drop", (e) => {
   stage.classList.remove("over");
   addFiles(e.dataTransfer.files);
 });
+window.addEventListener("paste", (e) => {
+  const items = e.clipboardData && e.clipboardData.files;
+  if (items && items.length) addFiles(items);
+});
 split.addEventListener("input", () => {
   cmp.style.setProperty("--pos", split.value + "%");
 });
