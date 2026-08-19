@@ -57,6 +57,14 @@ function openGate(kind) {
   gate.hidden = false;
 }
 document.getElementById("gate-close").addEventListener("click", () => { gate.hidden = true; });
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") gate.hidden = true;
+  if ((e.key === "Delete" || e.key === "Backspace") && selectedId && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+    jobs = jobs.filter((j) => j.id !== selectedId);
+    selectedId = jobs[0] ? jobs[0].id : null;
+    render();
+  }
+});
 
 document.getElementById("modes").addEventListener("click", (e) => {
   const btn = e.target.closest("button[data-mode]");
