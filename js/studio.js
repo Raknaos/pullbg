@@ -7,8 +7,13 @@ import {
   nextResetAt,
   formatCountdown,
 } from "./auth.js";
-import { smartCut, warmup } from "../lib/engine.js";
-import { blobFromImageData, blobFromImageDataBlurred } from "../lib/cutout.js";
+import { warmup, fastCut, refineCut } from "../lib/engine.js";
+import {
+  bitmapFromSource,
+  imageDataFromBitmap,
+  blobFromImageData,
+  blobFromImageDataBlurred,
+} from "../lib/cutout.js";
 
 paintNav();
 warmup();
@@ -73,6 +78,7 @@ function addFiles(list) {
       result: null,
       blob: null,
       locked: false,
+      draft: null,
     });
     added++;
   }
@@ -87,10 +93,9 @@ function esc(s) {
 }
 
 function render() {
-  const pending = jobs.filter((j) => !j.result && !j.status.startsWith("erreur")).length;
-  drop.querySelector(".note").textContent = pending
-    ? `${pending} en cours — tu peux en ajouter`
-    : "ou clique · Ctrl+V";
+  const pending = jobs.filter((j) => j.status === "en file" || j.status === "découpe…" || j.status === "affinage…").length;
+  const note = drop.querySelector(".note");
+  if (note) note.textContent = pending ? `${pending} en cours — tu peux en ajouter` : "ou clique · Ctrl+V";
   queueEl.innerHTML = "";
   let has = false;
   for (const job of jobs) {
@@ -128,51 +133,70 @@ queueEl.addEventListener("click", (e) => {
 clearBtn.addEventListener("click", () => { jobs = []; render(); });
 zipBtn.addEventListener("click", downloadZip);
 
+async function show(job, image, locked) {
+  if (locked) {
+    job.blob = null;
+    job.result = URL.createObjectURL(await blobFromImageDataBlurred(image));
+    return;
+  }
+  job.blob = await blobFromImageData(image);
+  job.result = URL.createObjectURL(job.blob);
+}
+
 async function processQueue() {
   running = true;
   try {
     for (const job of jobs) {
-      if (job.result || job.status.startsWith("erreur")) continue;
+      if (job.draft || job.locked || job.status.startsWith("erreur")) continue;
       const gateState = canCut();
-      if (!gateState.ok) {
-        job.locked = true;
-        job.status = "verrouillé";
-        render();
-        try {
-          const cut = await smartCut(job.file);
-          job.result = URL.createObjectURL(await blobFromImageDataBlurred(cut.image));
-          job.status = "aperçu flou";
-        } catch (err) {
-          job.status = "erreur : " + (err.message || err);
-        }
-        render();
-        openGate(gateState.gate);
-        break;
-      }
+      const locked = !gateState.ok;
       try {
-        consumeOne();
-        refreshQuota();
+        if (!locked) {
+          consumeOne();
+          refreshQuota();
+        }
         job.status = "découpe…";
         render();
-        const cut = await smartCut(job.file);
-        job.blob = await blobFromImageData(cut.image);
-        job.result = URL.createObjectURL(job.blob);
-        job.status = "prêt";
+        const original = imageDataFromBitmap(await bitmapFromSource(job.file)).image;
+        job.draft = fastCut(original);
+        await show(job, job.draft.image, locked);
+        job.status = locked ? "aperçu flou" : (job.draft.needsRefine ? "affinage…" : "prêt");
+        job.locked = locked;
+        render();
+        if (locked) {
+          openGate(gateState.gate);
+          return;
+        }
       } catch (err) {
         if (err && err.gate) {
           job.locked = true;
           job.status = "verrouillé";
           openGate(err.gate);
-        } else {
-          job.status = "erreur : " + (err.message || err);
+          return;
         }
+        job.status = "erreur : " + (err.message || err);
+        render();
       }
-      render();
+    }
+    for (const job of jobs) {
+      if (!job.draft || !job.draft.needsRefine || job.locked) continue;
+      try {
+        job.status = "affinage…";
+        render();
+        const better = await refineCut(job.file, job.draft);
+        job.draft = better;
+        await show(job, better.image, false);
+        job.status = "prêt";
+        render();
+      } catch (err) {
+        job.status = "prêt";
+        render();
+      }
     }
   } finally {
     running = false;
     refreshQuota();
-    if (jobs.some((j) => !j.result && !j.status.startsWith("erreur") && !j.locked)) processQueue();
+    if (jobs.some((j) => j.status === "en file")) processQueue();
   }
 }
 
