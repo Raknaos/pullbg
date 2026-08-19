@@ -191,7 +191,8 @@ async function show(job, image, locked) {
 async function cutOne(job, locked) {
   job.status = "découpe…";
   patchJob(job);
-  const original = imageDataFromBitmap(await bitmapFromSource(job.file)).image;
+  const original = imageDataFromBitmap(await bitmapFromSource(job.file), 2200).image;
+  job.source = original;
   job.draft = fastCut(original);
   await show(job, job.draft.image, locked);
   job.status = locked ? "aperçu flou" : (job.draft.needsRefine ? "affinage…" : "prêt");
@@ -240,7 +241,7 @@ async function processQueue() {
       try {
         job.status = "affinage…";
         patchJob(job);
-        const better = await refineCut(job.file, job.draft);
+        const better = await refineCut(job.file, job.draft, job.source);
         job.draft = better;
         await show(job, better.image, false);
         job.status = "prêt";

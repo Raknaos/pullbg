@@ -28,3 +28,6 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - Remettre des options / galerie / prix sur l’accueil
 - Dire « 10 images gratuites »
 - Reboot / toucher d’autres projets
+
+## Journal
+- 2026-08-19: EXIF `from-image` + plafond 2200px. Affinage IA sur l’image déjà redressée (plus de mix tordu). FastCut 3 en parallèle.
