@@ -34,3 +34,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-19: Fenêtres — punch intérieur sans flood noir (cadre conservé). Timbres — flood papier clair, trous puis pièce entière, bande 5%. Test `eval/test_engine.mjs`.
 - 2026-08-19: Quota rendu si découpe plante. ZIP sans collision de noms. Mix IA/geo même si tailles différentes. Cache bust v=5.
 - 2026-08-19: Qualité : plus de fillInteriorHoles (ça bouchait les yeux). Objets/produits → IA obligatoire comme v1. Geo seulement timbres/fenêtres/fond noir.
+- 2026-08-19: Fenêtres 4 carreaux : somme des intérieurs (plus le 1er volet trop petit). Punch dès 1,2 %. Timbres : flood couleur papier crème, revert si ça mange la pièce.

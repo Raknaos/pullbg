@@ -125,4 +125,36 @@ function stampScan() {
   assert(cut.needsRefine === true, "products always refine with IA");
 }
 
+function fourPaneWindow() {
+  const img = rgb(80, 80, 22, 22, 22);
+  fillRect(img, 6, 6, 36, 36, 6, 6, 6);
+  fillRect(img, 44, 6, 74, 36, 6, 6, 6);
+  fillRect(img, 6, 44, 36, 74, 6, 6, 6);
+  fillRect(img, 44, 44, 74, 74, 6, 6, 6);
+  return img;
+}
+
+{
+  const img = fourPaneWindow();
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `4-pane classified as window (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[20 * 80 + 20] < 16, "top-left pane punched");
+  assert(a[20 * 80 + 60] < 16, "top-right pane punched");
+  assert(a[60 * 80 + 20] < 16, "bottom-left pane punched");
+  assert(a[60 * 80 + 60] < 16, "bottom-right pane punched");
+  assert(a[2 * 80 + 2] > 180, "outer frame kept");
+  assert(a[40 * 80 + 40] > 180, "mullion kept");
+}
+
+{
+  const img = rgb(140, 140, 236, 214, 176);
+  fillRect(img, 28, 28, 112, 112, 40, 90, 160);
+  const cut = stampCut(img);
+  const a = alphaOf(cut);
+  assert(a[70 * 140 + 70] > 180, "cream-sheet stamp body kept");
+  assert(a[4 * 140 + 4] < 16, "cream paper flood removes sheet");
+}
+
 console.log("engine window+stamp+eyes ok");
