@@ -49,9 +49,8 @@ window.addEventListener("keydown", (e) => { if (e.key === "Escape") gate.hidden 
 
 drop.addEventListener("click", () => fileInput.click());
 fileInput.addEventListener("change", () => addFiles(fileInput.files));
-drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
-drop.addEventListener("dragleave", () => drop.classList.remove("over"));
-drop.addEventListener("drop", (e) => {
+document.body.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
+document.body.addEventListener("drop", (e) => {
   e.preventDefault();
   drop.classList.remove("over");
   addFiles(e.dataTransfer.files);
@@ -140,7 +139,7 @@ async function processQueue() {
         job.status = "verrouillé";
         render();
         try {
-          const cut = await smartCut(job.file, { mode: "auto", onStatus: (s) => { job.status = s; render(); } });
+          const cut = await smartCut(job.file);
           job.result = URL.createObjectURL(await blobFromImageDataBlurred(cut.image));
           job.status = "aperçu flou";
         } catch (err) {
@@ -155,7 +154,7 @@ async function processQueue() {
         refreshQuota();
         job.status = "découpe…";
         render();
-        const cut = await smartCut(job.file, { mode: "auto", onStatus: (s) => { job.status = s; render(); } });
+        const cut = await smartCut(job.file);
         job.blob = await blobFromImageData(cut.image);
         job.result = URL.createObjectURL(job.blob);
         job.status = "prêt";
