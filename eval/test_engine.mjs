@@ -198,4 +198,15 @@ function fourPaneWindow() {
   assert(cut.pipeline === "timbre", "engraved stamp uses stamp pipeline");
 }
 
+{
+  const img = rgb(220, 120, 236, 214, 176);
+  fillRect(img, 14, 16, 96, 104, 40, 90, 160);
+  fillRect(img, 124, 16, 206, 104, 160, 50, 40);
+  const cut = stampCut(img);
+  const a = alphaOf(cut);
+  assert(a[60 * 220 + 55] > 180, "left stamp on a sheet kept whole");
+  assert(a[60 * 220 + 165] > 180, "right stamp on a sheet kept whole");
+  assert(a[4 * 220 + 4] < 16, "cream album paper still flooded");
+}
+
 console.log("engine window+stamp+eyes ok");
