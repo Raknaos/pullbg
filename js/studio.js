@@ -25,6 +25,7 @@ const quotaSide = document.getElementById("quota-side");
 const zipBtn = document.getElementById("zip");
 const clearBtn = document.getElementById("clear");
 const interiorBtn = document.getElementById("interior");
+const qaBtn = document.getElementById("qa");
 const dl = document.getElementById("dl");
 const gate = document.getElementById("gate");
 const gateText = document.getElementById("gate-text");
@@ -75,6 +76,11 @@ document.getElementById("modes").addEventListener("click", (e) => {
 interiorBtn.addEventListener("click", () => {
   interior = !interior;
   interiorBtn.classList.toggle("on", interior);
+});
+qaBtn.addEventListener("click", () => {
+  const on = !stage.classList.contains("qa");
+  stage.classList.toggle("qa", on);
+  qaBtn.classList.toggle("on", on);
 });
 
 stage.addEventListener("click", (e) => {
