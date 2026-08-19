@@ -149,6 +149,17 @@ function fourPaneWindow() {
 }
 
 {
+  const img = rgb(80, 80, 32, 32, 32);
+  fillRect(img, 12, 12, 68, 68, 20, 20, 20);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `gray JPEG pane classified as window (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "gray pane punched (JPEG-black, not only lum<=14)");
+  assert(a[2 * 80 + 2] > 180, "gray-window frame kept");
+}
+
+{
   const img = rgb(140, 140, 236, 214, 176);
   fillRect(img, 28, 28, 112, 112, 40, 90, 160);
   const cut = stampCut(img);
