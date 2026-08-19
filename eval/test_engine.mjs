@@ -111,4 +111,18 @@ function stampScan() {
   assert(a[2 * 120 + 2] < 16, "light paper flood removes sheet");
 }
 
-console.log("engine window+stamp ok");
+{
+  const img = rgb(120, 120, 250, 250, 250);
+  fillRect(img, 20, 20, 100, 100, 210, 170, 140);
+  fillRect(img, 40, 48, 52, 60, 10, 10, 10);
+  fillRect(img, 68, 48, 80, 60, 10, 10, 10);
+  const guess = classifyImage(img);
+  assert(guess.mode === "ia", `face classified for IA (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[54 * 120 + 46] > 180, "left pupil kept (not filled as a hole)");
+  assert(a[54 * 120 + 74] > 180, "right pupil kept (not filled as a hole)");
+  assert(cut.needsRefine === true, "products always refine with IA");
+}
+
+console.log("engine window+stamp+eyes ok");
