@@ -4,11 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PullBG</title>
-  <meta http-equiv="refresh" content="0;url=./app.html" />
+  <meta name="description" content="Enlève le fond. PNG transparent, dans ton navigateur." />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="canonical" href="./app.html" />
-  <script>location.replace("./app.html");</script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" />
+  <link rel="stylesheet" href="./css/site.css?v=9" />
 </head>
 <body>
-  <a href="./app.html">Découper</a>
+  <div class="wrap">
+    <nav class="nav">
+      <a class="brand" href="./app.html"><span class="mark">P</span>PullBG</a>
+      <div class="nav-links">
+        <span data-auth></span>
+      </div>
+    </nav>
+    <section class="hero solo">
+      <p class="kicker">PullBG</p>
+      <h1>Enlève le fond.</h1>
+      <p class="lead">Dépose plusieurs images. Le PNG sort ici. Rien ne quitte ta machine.</p>
+      <div class="hero-cta">
+        <a class="btn btn-acc" href="./app.html">Ouvrir le studio</a>
+      </div>
+    </section>
+  </div>
+  <script type="module">
+    import { paintNav } from "./js/auth.js?v=9";
+    paintNav();
+  </script>
 </body>
 </html>

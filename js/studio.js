@@ -7,33 +7,43 @@ import {
   paintNav,
   nextResetAt,
   formatCountdown,
-} from "./auth.js?v=8";
-import { warmup, fastCut, refineCut } from "../lib/engine.js?v=8";
+} from "./auth.js?v=9";
+import { warmup, fastCut, refineCut } from "../lib/engine.js?v=9";
 import {
   bitmapFromSource,
   imageDataFromBitmap,
   blobFromImageData,
   blobFromImageDataBlurred,
-} from "../lib/cutout.js?v=8";
+} from "../lib/cutout.js?v=9";
 
 paintNav();
 warmup();
 
-const drop = document.getElementById("drop");
+const stage = document.getElementById("stage");
+const empty = document.getElementById("empty");
+const cmp = document.getElementById("cmp");
+const before = document.getElementById("before");
+const after = document.getElementById("after");
+const split = document.getElementById("split");
 const fileInput = document.getElementById("file");
 const queueEl = document.getElementById("queue");
 const quotaEl = document.getElementById("quota");
+const quotaSide = document.getElementById("quota-side");
 const zipBtn = document.getElementById("zip");
 const clearBtn = document.getElementById("clear");
+const dl = document.getElementById("dl");
 const gate = document.getElementById("gate");
 const gateText = document.getElementById("gate-text");
 const gateCta = document.getElementById("gate-cta");
 
 let jobs = [];
+let selectedId = null;
 let running = false;
 
 function refreshQuota() {
-  if (quotaEl) quotaEl.textContent = quotaLabel(quota());
+  const label = quotaLabel(quota());
+  if (quotaEl) quotaEl.textContent = label;
+  if (quotaSide) quotaSide.textContent = label;
 }
 refreshQuota();
 setInterval(refreshQuota, 30000);
@@ -53,18 +63,25 @@ function openGate(kind) {
 document.getElementById("gate-close").addEventListener("click", () => { gate.hidden = true; });
 window.addEventListener("keydown", (e) => { if (e.key === "Escape") gate.hidden = true; });
 
-drop.addEventListener("click", () => fileInput.click());
+stage.addEventListener("click", (e) => {
+  if (e.target.closest("#cmp")) return;
+  fileInput.click();
+});
 fileInput.addEventListener("change", () => addFiles(fileInput.files));
-document.body.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
+document.body.addEventListener("dragover", (e) => { e.preventDefault(); stage.classList.add("over"); });
 document.body.addEventListener("drop", (e) => {
   e.preventDefault();
-  drop.classList.remove("over");
+  stage.classList.remove("over");
   addFiles(e.dataTransfer.files);
 });
 window.addEventListener("paste", (e) => {
   const items = e.clipboardData && e.clipboardData.files;
   if (items && items.length) addFiles(items);
 });
+if (split) {
+  split.addEventListener("input", () => cmp.style.setProperty("--pos", split.value + "%"));
+  cmp.style.setProperty("--pos", "50%");
+}
 
 function forgetUrl(u) {
   if (u && String(u).startsWith("blob:")) URL.revokeObjectURL(u);
@@ -74,7 +91,7 @@ function addFiles(list) {
   let added = 0;
   for (const file of list) {
     if (!file.type.startsWith("image/")) continue;
-    jobs.push({
+    const job = {
       id: crypto.randomUUID(),
       file,
       name: file.name,
@@ -84,7 +101,9 @@ function addFiles(list) {
       blob: null,
       locked: false,
       draft: null,
-    });
+    };
+    jobs.push(job);
+    selectedId = job.id;
     added++;
   }
   if (!added) return;
@@ -97,20 +116,43 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 }
 
+function selected() {
+  return jobs.find((j) => j.id === selectedId) || jobs[jobs.length - 1] || null;
+}
+
+function showStage(job) {
+  if (!job) {
+    empty.hidden = false;
+    cmp.hidden = true;
+    stage.classList.add("empty");
+    dl.hidden = true;
+    return;
+  }
+  empty.hidden = true;
+  cmp.hidden = false;
+  stage.classList.remove("empty");
+  before.src = job.url;
+  after.src = job.result || job.url;
+  if (job.result && !job.locked) {
+    dl.hidden = false;
+    dl.href = job.result;
+    dl.download = job.name.replace(/\.[^.]+$/, "") + ".png";
+  } else {
+    dl.hidden = true;
+  }
+}
+
 function render() {
   const pending = jobs.filter((j) => j.status === "en file" || j.status === "découpe…" || j.status === "affinage…").length;
-  const note = drop.querySelector(".note");
-  if (note) note.textContent = pending ? `${pending} en cours — tu peux en ajouter` : "ou clique · Ctrl+V";
+  const note = empty && empty.querySelector(".note");
+  if (note) note.textContent = pending ? `${pending} en cours — tu peux en ajouter` : "clique · glisse · Ctrl+V";
   queueEl.innerHTML = "";
   let has = false;
   for (const job of jobs) {
     if (job.result && !job.locked) has = true;
     const el = document.createElement("article");
-    el.className = "job" + (job.locked ? " locked" : "");
+    el.className = "job" + (job.id === selectedId ? " on" : "") + (job.locked ? " locked" : "");
     el.dataset.id = job.id;
-    const dl = job.result && !job.locked
-      ? `<a class="btn btn-acc" download="${job.name.replace(/\.[^.]+$/, "")}.png" href="${job.result}">PNG</a>`
-      : "";
     el.innerHTML = `
       <div class="thumb checker">
         <img alt="" src="${job.result || job.url}" />
@@ -119,15 +161,13 @@ function render() {
       <div>
         <strong>${esc(job.name)}</strong>
         <div class="status ${job.status === "prêt" ? "ok" : job.status.startsWith("erreur") || job.locked ? "err" : ""}">${esc(job.status)}</div>
-      </div>
-      <div class="hero-cta">
-        ${dl}
-        <button class="btn btn-ghost" data-del="${job.id}">Retirer</button>
       </div>`;
+    el.addEventListener("click", () => { selectedId = job.id; render(); });
     queueEl.appendChild(el);
   }
   zipBtn.hidden = !has;
   clearBtn.hidden = jobs.length === 0;
+  showStage(selected());
 }
 
 function patchJob(job) {
@@ -144,16 +184,8 @@ function patchJob(job) {
     st.className = "status " + (job.status === "prêt" ? "ok" : job.status.startsWith("erreur") || job.locked ? "err" : "");
   }
   el.classList.toggle("locked", job.locked);
-  const actions = el.querySelector(".hero-cta");
-  if (actions && job.result && !job.locked && !actions.querySelector("[download]")) {
-    const a = document.createElement("a");
-    a.className = "btn btn-acc";
-    a.download = job.name.replace(/\.[^.]+$/, "") + ".png";
-    a.href = job.result;
-    a.textContent = "PNG";
-    actions.prepend(a);
-  }
   zipBtn.hidden = !jobs.some((j) => j.result && !j.locked);
+  if (job.id === selectedId) showStage(job);
 }
 
 queueEl.addEventListener("click", (e) => {
@@ -165,6 +197,7 @@ queueEl.addEventListener("click", (e) => {
     forgetUrl(job.result);
   }
   jobs = jobs.filter((j) => j.id !== id);
+  if (selectedId === id) selectedId = jobs[0] ? jobs[0].id : null;
   render();
 });
 clearBtn.addEventListener("click", () => {
@@ -173,6 +206,7 @@ clearBtn.addEventListener("click", () => {
     forgetUrl(job.result);
   }
   jobs = [];
+  selectedId = null;
   render();
 });
 zipBtn.addEventListener("click", downloadZip);
@@ -190,6 +224,7 @@ async function show(job, image, locked) {
 }
 
 async function cutOne(job, locked) {
+  selectedId = job.id;
   job.status = "découpe…";
   patchJob(job);
   const original = imageDataFromBitmap(await bitmapFromSource(job.file), 2200).image;
