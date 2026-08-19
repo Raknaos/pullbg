@@ -245,4 +245,25 @@ function perforate(img) {
   assert(a[60 * 220 + 110] < 16, "album paper between stamps still gone");
 }
 
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillRect(img, 70, 70, 130, 130, 40, 90, 160);
+  const punch = (x, y) => fillRect(img, x - 1, y - 1, x + 2, y + 2, 8, 8, 8);
+  for (let i = 50; i <= 150; i += 8) {
+    punch(i, 50);
+    punch(i, 150);
+    punch(50, i);
+    punch(150, i);
+  }
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `inset stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[100 * 200 + 100] > 180, "inset stamp design kept");
+  assert(a[60 * 200 + 100] > 180, "inset stamp paper margin kept (whole piece)");
+  assert(a[50 * 200 + 90] < 16, "inset stamp perforations punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around inset stamp gone");
+  assert(cut.pipeline === "timbre", "inset stamp uses stamp pipeline");
+}
+
 console.log("engine window+stamp+eyes ok");
