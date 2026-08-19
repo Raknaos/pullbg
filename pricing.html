@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Offres — PullBG</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./css/site.css" />
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <a class="brand" href="./index.html"><span class="mark">P</span>PullBG</a>
+      <div class="nav-links">
+        <a href="./app.html">Studio</a>
+        <span data-auth></span>
+      </div>
+    </nav>
+    <section class="prices-hero">
+      <p class="kicker">PullBG+</p>
+      <h1>Sans limite, si tu restes.</h1>
+      <p class="lead" id="lead" style="color:var(--muted);max-width:36ch">10 images / jour avec un compte. Ensuite PullBG+.</p>
+      <p class="meter" id="meter"></p>
+    </section>
+    <section class="prices">
+      <article class="card">
+        <h3>Mensuel</h3>
+        <div class="price">2,99 € <small>/ mois</small></div>
+        <ul>
+          <li>Illimité</li>
+          <li>File + ZIP</li>
+          <li>Annulable quand tu veux</li>
+        </ul>
+        <button class="btn btn-ghost" data-plan="monthly">Prendre 2,99 € / mois</button>
+      </article>
+      <article class="card hl">
+        <h3>Annuel</h3>
+        <div class="price">19,99 € <small>/ an</small><span class="was">29,99 €</span></div>
+        <ul>
+          <li>Illimité</li>
+          <li>Soit 1,67 € / mois</li>
+          <li>Le plus simple si tu restes</li>
+        </ul>
+        <button class="btn btn-acc" data-plan="yearly">Prendre 19,99 € / an</button>
+      </article>
+    </section>
+  </div>
+  <footer><div class="wrap">Paiement simulé en local. En prod : Stripe.</div></footer>
+  <script type="module">
+    import { currentUser, setPlan, paintNav, quota, quotaLabel } from "./js/auth.js";
+    paintNav();
+    const user = currentUser();
+    if (new URLSearchParams(location.search).get("from") === "signup") {
+      document.getElementById("lead").textContent = "Compte créé. 10 images / jour, avec un compteur. Ou PullBG+.";
+    }
+    document.getElementById("meter").textContent = user ? quotaLabel(quota()) : "";
+    document.querySelectorAll("[data-plan]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (!currentUser()) { location.href = "./login.html?next=pricing"; return; }
+        setPlan(btn.dataset.plan);
+        location.href = "./account.html";
+      });
+    });
+  </script>
+</body>
+</html>

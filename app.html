@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Studio — PullBG</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./css/site.css" />
+</head>
+<body class="app">
+  <nav class="app-nav">
+    <a class="brand" href="./index.html"><span class="mark">P</span>PullBG</a>
+    <div class="nav-links">
+      <span class="meter" id="quota"></span>
+      <a href="./pricing.html">Offres</a>
+      <span data-auth></span>
+    </div>
+  </nav>
+  <div class="app-shell">
+    <aside class="rail">
+      <p class="quota-box" id="quota-side"></p>
+      <div class="film" id="queue"></div>
+    </aside>
+    <main class="stage-wrap">
+      <div class="stage empty" id="stage">
+        <div id="empty">Dépose une image<br /><span class="note">ou clique pour choisir</span></div>
+        <div class="cmp" id="cmp" hidden>
+          <img id="before" alt="" />
+          <img id="after" class="after" alt="" />
+          <span class="bar"></span>
+          <input id="split" type="range" min="6" max="94" value="50" />
+        </div>
+        <input id="file" type="file" accept="image/*" multiple hidden />
+      </div>
+    </main>
+    <aside class="tools">
+      <h4>Pipeline</h4>
+      <div class="modes" id="modes">
+        <button data-mode="auto" class="on">Auto</button>
+        <button data-mode="ia">IA</button>
+        <button data-mode="noir">Noir</button>
+        <button data-mode="blanc">Blanc</button>
+        <button data-mode="timbre">Timbre</button>
+        <button data-mode="aucun">Aucun</button>
+      </div>
+      <button class="toggle" id="interior">Percer l’intérieur</button>
+      <div class="bar" style="margin-top:18px">
+        <a class="btn btn-acc" id="dl" hidden download>Télécharger PNG</a>
+        <button class="btn btn-ghost" id="zip" hidden>ZIP</button>
+        <button class="btn btn-ghost" id="clear">Vider</button>
+      </div>
+    </aside>
+  </div>
+  <div class="gate" id="gate" hidden>
+    <div class="gate-card">
+      <h2>Aperçu bloqué</h2>
+      <p id="gate-text"></p>
+      <div class="hero-cta">
+        <a class="btn btn-acc" id="gate-cta" href="./login.html?next=pricing">Créer un compte</a>
+        <button class="btn btn-ghost" id="gate-close">Fermer</button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./js/studio.js"></script>
+</body>
+</html>

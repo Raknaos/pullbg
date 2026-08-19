@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://raknaos.github.io/pullbg/sitemap.xml

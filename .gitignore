@@ -1,0 +1,7 @@
+eval/data/
+eval/results/
+*.parquet
+.DS_Store
+Thumbs.db
+minos.html
+minos.css

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Compte — PullBG</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./css/site.css" />
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <a class="brand" href="./index.html"><span class="mark">P</span>PullBG</a>
+      <div class="nav-links">
+        <a href="./app.html">Studio</a>
+        <a href="./pricing.html">Offres</a>
+      </div>
+    </nav>
+    <section class="prices-hero">
+      <h1>Compte</h1>
+      <div class="card" style="max-width:460px">
+        <p id="who"></p>
+        <p id="plan" class="lead" style="color:var(--muted)"></p>
+        <p id="q" class="meter"></p>
+        <div class="hero-cta">
+          <a class="btn btn-acc" href="./pricing.html">Offres</a>
+          <button class="btn btn-ghost" id="out">Se déconnecter</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script type="module">
+    import { currentUser, logout, quota, quotaLabel, paintNav } from "./js/auth.js";
+    paintNav();
+    const u = currentUser();
+    if (!u) location.href = "./login.html?next=account";
+    document.getElementById("who").textContent = u.email;
+    document.getElementById("plan").textContent = u.plan === "monthly" || u.plan === "yearly"
+      ? `PullBG+ ${u.plan} · jusqu’au ${u.planUntil || "—"}`
+      : "Compte · 10 images / jour";
+    const paint = () => { document.getElementById("q").textContent = quotaLabel(quota()); };
+    paint();
+    setInterval(paint, 30000);
+    document.getElementById("out").onclick = () => { logout(); location.href = "./index.html"; };
+  </script>
+</body>
+</html>
