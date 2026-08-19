@@ -209,4 +209,40 @@ function fourPaneWindow() {
   assert(a[4 * 220 + 4] < 16, "cream album paper still flooded");
 }
 
+function perforate(img) {
+  const punch = (x, y) => fillRect(img, x - 1, y - 1, x + 2, y + 2, 8, 8, 8);
+  const { width: w, height: h } = img;
+  for (let i = 12; i <= w - 12; i += 8) {
+    punch(i, 1);
+    punch(i, h - 2);
+  }
+  for (let i = 12; i <= h - 12; i += 8) {
+    punch(1, i);
+    punch(w - 2, i);
+  }
+}
+
+{
+  const img = rgb(160, 160, 236, 214, 176);
+  fillRect(img, 48, 48, 112, 112, 40, 90, 160);
+  perforate(img);
+  const cut = stampCut(img);
+  const a = alphaOf(cut);
+  assert(a[80 * 160 + 80] > 180, "scanned stamp design kept");
+  assert(a[20 * 160 + 20] > 180, "cream paper margin kept (whole piece)");
+  assert(a[1 * 160 + 12] < 16, "perforation still punched");
+}
+
+{
+  const img = rgb(220, 120, 236, 214, 176);
+  fillRect(img, 14, 16, 96, 104, 40, 90, 160);
+  fillRect(img, 124, 16, 206, 104, 160, 50, 40);
+  perforate(img);
+  const cut = stampCut(img);
+  const a = alphaOf(cut);
+  assert(a[60 * 220 + 55] > 180, "left stamp kept with outer holes");
+  assert(a[60 * 220 + 165] > 180, "right stamp kept with outer holes");
+  assert(a[60 * 220 + 110] < 16, "album paper between stamps still gone");
+}
+
 console.log("engine window+stamp+eyes ok");
