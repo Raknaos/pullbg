@@ -7,10 +7,11 @@ import {
   nextResetAt,
   formatCountdown,
 } from "./auth.js";
-import { smartCut } from "../lib/engine.js";
+import { smartCut, warmup } from "../lib/engine.js";
 import { blobFromImageData, blobFromImageDataBlurred } from "../lib/cutout.js";
 
 paintNav();
+warmup();
 
 const drop = document.getElementById("drop");
 const fileInput = document.getElementById("file");
@@ -77,6 +78,7 @@ function addFiles(list) {
     added++;
   }
   if (!added) return;
+  fileInput.value = "";
   render();
   if (!running) processQueue();
 }
@@ -86,6 +88,10 @@ function esc(s) {
 }
 
 function render() {
+  const pending = jobs.filter((j) => !j.result && !j.status.startsWith("erreur")).length;
+  drop.querySelector(".note").textContent = pending
+    ? `${pending} en cours — tu peux en ajouter`
+    : "ou clique · Ctrl+V";
   queueEl.innerHTML = "";
   let has = false;
   for (const job of jobs) {
@@ -167,6 +173,7 @@ async function processQueue() {
   } finally {
     running = false;
     refreshQuota();
+    if (jobs.some((j) => !j.result && !j.status.startsWith("erreur") && !j.locked)) processQueue();
   }
 }
 
