@@ -56,5 +56,6 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-20: Fenêtres PVC blanches : carreaux sombres percés même si le cadre est blanc (plus bloqué par whiteFrac). Un seul objet noir sur blanc reste en IA. Cache v=26.
 - 2026-08-20: Fenêtres PVC blanches + vitres ciel : carreaux similaires dont le croisillon est de la couleur du cadre percés (plus bloqué par whiteFrac). Produits multicolores et graphismes plats inchangés. Cache v=27.
 - 2026-08-20: Deux produits sur fond blanc : plus classés fenêtre. Grille 4 carreaux ou 2 vitres ciel sur PVC blanc inchangées. Cache v=28.
+- 2026-08-20: Battant PVC blanc 2 carreaux (nuit, ou nuit+ciel) : cadre serré + croisillon = fenêtre. Deux produits avec marge restent en IA. Cache v=29.
 
 

@@ -619,6 +619,40 @@ function whiteSkyWindow() {
   assert(a[40 * 80 + 40] > 180, "white PVC 2-pane mullion kept");
 }
 
+function whiteDarkCasement() {
+  const img = rgb(80, 80, 255, 255, 255);
+  fillRect(img, 8, 10, 36, 70, 8, 8, 8);
+  fillRect(img, 44, 10, 72, 70, 8, 8, 8);
+  return img;
+}
+
+{
+  const img = whiteDarkCasement();
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `white PVC 2-pane dark classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 22] < 16, "white-frame left dark pane punched");
+  assert(a[40 * 80 + 58] < 16, "white-frame right dark pane punched");
+  assert(a[2 * 80 + 2] > 180, "white PVC 2-pane dark outer frame kept");
+  assert(a[40 * 80 + 40] > 180, "white PVC 2-pane dark mullion kept");
+  assert(cut.pipeline === "écran", "white-frame 2-pane dark uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 255, 255, 255);
+  fillRect(img, 8, 10, 36, 70, 8, 8, 8);
+  fillRect(img, 44, 10, 72, 70, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `white PVC mixed 2-pane classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 22] < 16, "white-frame mixed dark pane punched");
+  assert(a[40 * 80 + 58] < 16, "white-frame mixed sky pane punched");
+  assert(a[2 * 80 + 2] > 180, "white PVC mixed 2-pane outer frame kept");
+  assert(a[40 * 80 + 40] > 180, "white PVC mixed 2-pane mullion kept");
+}
+
 {
   const img = rgb(120, 120, 255, 255, 255);
   fillRect(img, 30, 30, 90, 90, 8, 8, 8);
@@ -648,4 +682,4 @@ function whiteSkyWindow() {
   assert(!guess.interior, `two red products are not panes (${guess.kind})`);
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white ok");
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement ok");
