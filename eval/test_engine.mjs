@@ -626,4 +626,26 @@ function whiteSkyWindow() {
   assert(guess.mode === "ia", `single dark product on white stays on IA (${guess.kind})`);
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky ok");
+{
+  const img = rgb(180, 100, 255, 255, 255);
+  fillRect(img, 20, 20, 80, 80, 8, 8, 8);
+  fillRect(img, 100, 20, 160, 80, 8, 8, 8);
+  const guess = classifyImage(img);
+  assert(guess.mode === "ia", `two dark products on white stay on IA (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[50 * 180 + 50] > 180, "left dark product kept (not punched as a pane)");
+  assert(a[50 * 180 + 130] > 180, "right dark product kept (not punched as a pane)");
+  assert(cut.needsRefine === true, "two dark products on white use IA, not pane punch");
+}
+
+{
+  const img = rgb(180, 100, 255, 255, 255);
+  fillRect(img, 20, 20, 80, 80, 200, 30, 30);
+  fillRect(img, 100, 20, 160, 80, 200, 30, 30);
+  const guess = classifyImage(img);
+  assert(guess.mode === "ia" || guess.mode === "couleur", `two red products on white stay off window route (${guess.kind})`);
+  assert(!guess.interior, `two red products are not panes (${guess.kind})`);
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white ok");
