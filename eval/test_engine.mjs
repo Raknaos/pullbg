@@ -729,4 +729,73 @@ function whiteBlownSkyWindow() {
   assert(guess.mode === "ia" || guess.mode === "couleur", `two pale-gray products stay off window route (${guess.kind})`);
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky ok");
+function coilStamp() {
+  const img = rgb(160, 160, 180, 150, 90);
+  const punch = (x, y) => fillRect(img, x - 1, y - 1, x + 2, y + 2, 8, 8, 8);
+  for (let i = 12; i <= 148; i += 8) {
+    punch(i, 1);
+    punch(i, 158);
+  }
+  return img;
+}
+
+{
+  const img = coilStamp();
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `coil stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[80 * 160 + 80] > 180, "coil stamp body kept whole");
+  assert(a[1 * 160 + 12] < 16, "coil top perforation punched");
+  assert(a[158 * 160 + 12] < 16, "coil bottom perforation punched");
+  assert(cut.pipeline === "timbre", "coil stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(160, 160, 180, 150, 90);
+  const punch = (x, y) => fillRect(img, x - 1, y - 1, x + 2, y + 2, 8, 8, 8);
+  for (let i = 12; i <= 148; i += 8) {
+    punch(1, i);
+    punch(158, i);
+  }
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `booklet stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[80 * 160 + 80] > 180, "booklet stamp body kept whole");
+  assert(a[12 * 160 + 1] < 16, "booklet left perforation punched");
+  assert(cut.pipeline === "timbre", "booklet stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillRect(img, 70, 70, 130, 130, 40, 90, 160);
+  const punch = (x, y) => fillRect(img, x - 1, y - 1, x + 2, y + 2, 8, 8, 8);
+  for (let i = 50; i <= 150; i += 8) {
+    punch(i, 50);
+    punch(i, 150);
+  }
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `inset coil classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[100 * 200 + 100] > 180, "inset coil design kept");
+  assert(a[60 * 200 + 100] > 180, "inset coil paper margin kept (whole piece)");
+  assert(a[50 * 200 + 90] < 16, "inset coil perforations punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around inset coil gone");
+  assert(cut.pipeline === "timbre", "inset coil uses stamp pipeline");
+}
+
+{
+  const img = rgb(160, 160, 255, 255, 255);
+  fillRect(img, 30, 30, 130, 130, 200, 40, 40);
+  const punch = (x, y) => fillRect(img, x - 1, y - 1, x + 2, y + 2, 8, 8, 8);
+  for (let i = 10; i <= 150; i += 8) {
+    punch(i, 2);
+    punch(i, 157);
+  }
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `studio edge dots are not a stamp (${guess.kind})`);
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil ok");
