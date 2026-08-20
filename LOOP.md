@@ -63,5 +63,6 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-20: Fond studio uni (vert/bleu/gris) : flood de la couleur du bord. Écran bleu plus classé noir. Produit blanc sur fond rouge plus une page. Cache v=32.
 - 2026-08-20: Cyclorama dégradé : flood depuis les coins (plus une moyenne de bord). Produit posé au sol ou sur un coin conservé. Cache v=33.
 - 2026-08-20: Une seule vitre ciel / feuillage / arc : percée (plus classée produit). Logo bleu et bouteille cyan inchangés. Cache v=34.
+- 2026-08-20: Œil-de-bœuf : vitre ronde ciel/feuillage percée (cadre bois gardé). Assiette bleue sur blanc et balle sur noir inchangées. Cache v=35.
 
 

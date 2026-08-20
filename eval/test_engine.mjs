@@ -963,4 +963,48 @@ function coilStamp() {
   assert(a[2 * 120 + 2] < 16, "black studio around cyan bottle gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass ok");
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillCircle(img, 40, 40, 26, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `round sky oeil-de-boeuf classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "round sky pane punched");
+  assert(a[2 * 80 + 2] > 180, "round-window wood frame kept");
+  assert(a[14 * 80 + 14] > 180, "round-window corner frame kept");
+  assert(cut.pipeline === "écran", "round sky window uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillCircle(img, 40, 40, 26, 40, 120, 45);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `round foliage oeil-de-boeuf classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "round foliage pane punched");
+  assert(a[2 * 80 + 2] > 180, "round foliage wood frame kept");
+  assert(cut.pipeline === "écran", "round foliage window uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillCircle(img, 60, 60, 40, 80, 160, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `round blue product on white is not a pane (${guess.kind})`);
+  assert(guess.mode === "ia" || guess.mode === "couleur", `round blue product on white stays off window route (${guess.kind})`);
+}
+
+{
+  const img = rgb(120, 80, 8, 8, 8);
+  fillCircle(img, 60, 40, 26, 80, 180, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `round blue product on black is not a pane (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "round blue product on black kept");
+  assert(a[2 * 120 + 2] < 16, "black studio around round blue product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass ok");
