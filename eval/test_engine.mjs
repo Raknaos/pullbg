@@ -500,6 +500,44 @@ function mixedDayNightWindow() {
   assert(cut.needsRefine === false && cut.pipeline === "couleur", "flat color skips IA");
 }
 
+function foliageWindow() {
+  const img = rgb(80, 80, 120, 80, 50);
+  fillRect(img, 6, 6, 36, 36, 40, 120, 45);
+  fillRect(img, 44, 6, 74, 36, 36, 128, 40);
+  fillRect(img, 6, 44, 36, 74, 44, 110, 50);
+  fillRect(img, 44, 44, 74, 74, 38, 118, 48);
+  return img;
+}
+
+{
+  const img = foliageWindow();
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood/foliage window classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[20 * 80 + 20] < 16, "foliage top-left pane punched");
+  assert(a[20 * 80 + 60] < 16, "foliage top-right pane punched");
+  assert(a[60 * 80 + 20] < 16, "foliage bottom-left pane punched");
+  assert(a[60 * 80 + 60] < 16, "foliage bottom-right pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood-window outer frame kept");
+  assert(a[40 * 80 + 40] > 180, "wood-window mullion kept");
+  assert(cut.pipeline === "écran", "wood/foliage window uses screen pipeline");
+}
+
+{
+  const img = rgb(160, 100, 8, 8, 8);
+  fillCircle(img, 50, 50, 22, 255, 70, 180);
+  fillCircle(img, 110, 50, 22, 40, 200, 80);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `two round products on black are not panes (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[50 * 160 + 50] > 180, "left round product on black kept");
+  assert(a[50 * 160 + 110] > 180, "right round product on black kept");
+  assert(a[2 * 160 + 2] < 16, "black studio around round products gone");
+  assert(cut.needsRefine === false, "round products on black stay on geometry");
+}
+
 {
   const img = rgb(180, 100, 255, 255, 255);
   fillRect(img, 20, 25, 60, 75, 240, 30, 30);
@@ -519,4 +557,4 @@ function mixedDayNightWindow() {
   assert(alphaOf(final.image)[0] < 16, "opaque IA cannot restore white background");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque ok");
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage ok");
