@@ -3,33 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PullBG</title>
-  <meta name="description" content="Enlève le fond. PNG transparent, dans ton navigateur." />
+  <title>PullBG — Supprimez le fond d'une image</title>
+  <meta name="description" content="Supprimez le fond d'une image, 100 % automatique, dans le navigateur." />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-  <link rel="canonical" href="./app.html" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" />
-  <link rel="stylesheet" href="./css/site.css?v=9" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800&display=swap" />
+  <link rel="stylesheet" href="./css/site.css?v=14" />
 </head>
 <body>
-  <div class="wrap">
-    <nav class="nav">
-      <a class="brand" href="./app.html"><span class="mark">P</span>PullBG</a>
-      <div class="nav-links">
-        <span data-auth></span>
+  <nav class="nav">
+    <a class="brand" href="./index.html"><span class="mark">P</span>PullBG</a>
+    <div class="nav-links">
+      <span class="meter" id="quota"></span>
+      <span data-auth></span>
+    </div>
+  </nav>
+  <section class="rb-hero">
+    <h1>Supprimez le fond d’une image</h1>
+    <p class="sub">100 % automatique</p>
+    <div class="rb-card" id="stage">
+      <div id="empty">
+        <span class="upload">Téléchargez une image</span>
+        <p class="hint">ou déposez un fichier, collez une image</p>
+        <span class="note">plusieurs images d’un coup</span>
       </div>
-    </nav>
-    <section class="hero solo">
-      <p class="kicker">PullBG</p>
-      <h1>Enlève le fond.</h1>
-      <p class="lead">Dépose plusieurs images. Le PNG sort ici. Rien ne quitte ta machine.</p>
+      <div class="rb-preview cmp" id="cmp" hidden>
+        <img id="before" alt="" />
+        <img id="after" class="after" alt="" />
+        <span class="bar"></span>
+        <input id="split" type="range" min="6" max="94" value="50" />
+      </div>
+      <input id="file" type="file" accept="image/*" multiple hidden />
+    </div>
+    <div class="rb-actions">
+      <a class="btn btn-acc" id="dl" hidden download>Télécharger</a>
+      <button class="btn btn-ghost" id="zip" hidden>Tout en ZIP</button>
+      <button class="btn btn-ghost" id="clear" hidden>Vider</button>
+    </div>
+    <div class="rb-film" id="queue"></div>
+  </section>
+  <div class="gate" id="gate" hidden>
+    <div class="gate-card">
+      <h2>Aperçu bloqué</h2>
+      <p id="gate-text"></p>
       <div class="hero-cta">
-        <a class="btn btn-acc" href="./app.html">Ouvrir le studio</a>
+        <a class="btn btn-acc" id="gate-cta" href="./login.html?next=pricing">Créer un compte</a>
+        <button class="btn btn-ghost" id="gate-close">Fermer</button>
       </div>
-    </section>
+    </div>
   </div>
-  <script type="module">
-    import { paintNav } from "./js/auth.js?v=9";
-    paintNav();
-  </script>
+  <script type="module" src="./js/studio.js?v=14"></script>
 </body>
 </html>

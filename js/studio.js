@@ -7,14 +7,14 @@ import {
   paintNav,
   nextResetAt,
   formatCountdown,
-} from "./auth.js?v=13";
-import { warmup, fastCut, refineCut } from "../lib/engine.js?v=13";
+} from "./auth.js?v=14";
+import { warmup, fastCut, refineCut } from "../lib/engine.js?v=14";
 import {
   bitmapFromSource,
   imageDataFromBitmap,
   blobFromImageData,
   blobFromImageDataBlurred,
-} from "../lib/cutout.js?v=13";
+} from "../lib/cutout.js?v=14";
 
 paintNav();
 warmup();
@@ -145,7 +145,7 @@ function showStage(job) {
 function render() {
   const pending = jobs.filter((j) => j.status === "en file" || j.status === "découpe…" || j.status === "affinage…").length;
   const note = empty && empty.querySelector(".note");
-  if (note) note.textContent = pending ? `${pending} en cours — tu peux en ajouter` : "clique · glisse · Ctrl+V";
+  if (note) note.textContent = pending ? `${pending} en cours — tu peux en ajouter` : "plusieurs images d’un coup";
   queueEl.innerHTML = "";
   let has = false;
   for (const job of jobs) {
