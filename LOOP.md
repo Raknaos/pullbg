@@ -64,5 +64,6 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-20: Cyclorama dégradé : flood depuis les coins (plus une moyenne de bord). Produit posé au sol ou sur un coin conservé. Cache v=33.
 - 2026-08-20: Une seule vitre ciel / feuillage / arc : percée (plus classée produit). Logo bleu et bouteille cyan inchangés. Cache v=34.
 - 2026-08-20: Œil-de-bœuf : vitre ronde ciel/feuillage percée (cadre bois gardé). Assiette bleue sur blanc et balle sur noir inchangées. Cache v=35.
+- 2026-08-20: Œil-de-bœuf oval + lancette gothique : vitres allongées ciel/feuillage percées. Assiette ovale sur blanc et produit oval sur noir inchangés. Cache v=36.
 
 

@@ -52,6 +52,18 @@ function fillCircle(image, cx, cy, r, rr, gg, bb) {
   }
 }
 
+function fillEllipse(image, cx, cy, rx, ry, rr, gg, bb) {
+  for (let y = cy - ry; y <= cy + ry; y++) {
+    for (let x = cx - rx; x <= cx + rx; x++) {
+      const nx = (x - cx) / rx;
+      const ny = (y - cy) / ry;
+      if (nx * nx + ny * ny > 1) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function frac(alpha, pred) {
   let n = 0;
   for (let i = 0; i < alpha.length; i++) if (pred(alpha[i])) n++;
@@ -1007,4 +1019,65 @@ function coilStamp() {
   assert(a[2 * 120 + 2] < 16, "black studio around round blue product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass ok");
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillEllipse(img, 40, 40, 32, 20, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `oval sky oeil-de-boeuf classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "oval sky pane punched");
+  assert(a[2 * 80 + 2] > 180, "oval-window wood frame kept");
+  assert(a[14 * 80 + 14] > 180, "oval-window corner frame kept");
+  assert(cut.pipeline === "écran", "oval sky window uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillEllipse(img, 40, 40, 20, 32, 40, 120, 45);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `oval foliage oeil-de-boeuf classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "oval foliage pane punched");
+  assert(a[2 * 80 + 2] > 180, "oval foliage wood frame kept");
+  assert(cut.pipeline === "écran", "oval foliage window uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 100, 48, 42, 36);
+  fillRect(img, 18, 40, 62, 90, 92, 168, 220);
+  for (let y = 10; y < 40; y++) {
+    const half = Math.round(22 * ((y - 10) / 30));
+    fillRect(img, 40 - half, y, 40 + half, y + 1, 92, 168, 220);
+  }
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `gothic sky window classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 80 + 40] < 16, "gothic window body punched");
+  assert(a[20 * 80 + 40] < 16, "gothic window crown punched");
+  assert(a[2 * 80 + 2] > 180, "gothic window frame kept");
+  assert(cut.pipeline === "écran", "gothic window uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillEllipse(img, 60, 60, 48, 28, 80, 160, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `oval blue product on white is not a pane (${guess.kind})`);
+  assert(guess.mode === "ia" || guess.mode === "couleur", `oval blue product on white stays off window route (${guess.kind})`);
+}
+
+{
+  const img = rgb(120, 80, 8, 8, 8);
+  fillEllipse(img, 60, 40, 22, 32, 80, 180, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `oval blue product on black is not a pane (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "oval blue product on black kept");
+  assert(a[2 * 120 + 2] < 16, "black studio around oval blue product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass ok");
