@@ -1,0 +1,202 @@
+/**
+ * PullBG API — one small Express app behind nginx.
+ * - POST /api/cut  (multipart, field "image") -> { id }
+ * - GET  /api/jobs/:id -> { status, pipeline, guess, createdAt, result?: url }
+ * - GET  /api/result/:id.png -> final PNG
+ * - GET  /api/health
+ * Queue: JSON file per job, one in-process worker (single flight).
+ * Quota: 10 images/day per client (localStorage client id header), mirroring the site funnel.
+ */
+import express from "express";
+import multer from "multer";
+import { randomUUID } from "node:crypto";
+import { mkdir, readFile, writeFile, rm, unlink, readdir, stat } from "node:fs/promises";
+import { existsSync, readdirSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { processImage } from "./worker.mjs";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const JOBS_DIR = process.env.PULLBG_JOBS_DIR || "/var/lib/pullbg/jobs";
+const RESULT_TTL_MS = 1000 * 60 * 60 * 24; // 24h
+const DAILY_LIMIT = 10;
+
+await mkdir(JOBS_DIR, { recursive: true });
+
+const app = express();
+app.disable("x-powered-by");
+app.use(express.json({ limit: "1mb" }));
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25 MB
+});
+
+const ALLOWED = new Set(["image/png", "image/jpeg", "image/webp", "image/gif", "image/bmp", "image/avif"]);
+
+function clientKey(req) {
+  return req.get("x-pullbg-client") || req.ip || "anon";
+}
+
+async function quotaUsed(key) {
+  const f = path.join(JOBS_DIR, `quota-${encodeURIComponent(key)}.json`);
+  if (!existsSync(f)) return 0;
+  try {
+    const q = JSON.parse(await readFile(f, "utf8"));
+    const today = new Date().toISOString().slice(0, 10);
+    return q.day === today ? q.count : 0;
+  } catch {
+    return 0;
+  }
+}
+
+async function bumpQuota(key) {
+  const f = path.join(JOBS_DIR, `quota-${encodeURIComponent(key)}.json`);
+  const q = await quotaUsed(key);
+  const day = new Date().toISOString().slice(0, 10);
+  await writeFile(f, JSON.stringify({ day, count: q + 1 }), "utf8");
+}
+
+async function saveJob(job) {
+  await writeFile(path.join(JOBS_DIR, `${job.id}.json`), JSON.stringify(job), "utf8");
+}
+
+async function loadJob(id) {
+  const f = path.join(JOBS_DIR, `${id}.json`);
+  if (!existsSync(f)) return null;
+  try {
+    return JSON.parse(await readFile(f, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+async function workingOn(ids) {
+  let current = [];
+  try {
+    for (const id of ids) {
+      const j = await loadJob(id);
+      if (j && (j.status === "pending" || j.status === "processing")) current.push(j);
+    }
+  } catch {}
+  return current;
+}
+
+app.post("/api/cut", upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "Aucune image reçue." });
+    if (!ALLOWED.has(req.file.mimetype)) return res.status(415).json({ error: "Format non supporté." });
+
+    const key = clientKey(req);
+    const used = await quotaUsed(key);
+    if (used >= DAILY_LIMIT) {
+      return res.status(429).json({ error: "Limite quotidienne atteinte.", limit: DAILY_LIMIT });
+    }
+
+    const id = randomUUID();
+    const job = {
+      id,
+      status: "pending",
+      createdAt: Date.now(),
+      input: `blob:${id}`,
+      result: null,
+      error: null,
+    };
+    await writeFile(path.join(JOBS_DIR, `${id}.in`), req.file.buffer);
+    await saveJob(job);
+    await bumpQuota(key);
+    res.json({ id, status: "pending" });
+    kickWorker();
+  } catch (e) {
+    res.status(500).json({ error: "Erreur interne." });
+  }
+});
+
+app.get("/api/jobs/:id", async (req, res) => {
+  const job = await loadJob(req.params.id);
+  if (!job) return res.status(404).json({ error: "Tâche inconnue." });
+  res.json({
+    id: job.id,
+    status: job.status,
+    pipeline: job.pipeline ?? null,
+    guess: job.guess ?? null,
+    createdAt: job.createdAt,
+    error: job.error ?? null,
+    result: job.status === "done" ? `/api/result/${job.id}.png` : null,
+  });
+});
+
+app.get("/api/result/:id.png", async (req, res) => {
+  const id = req.params.id;
+  const job = await loadJob(id);
+  if (!job || job.status !== "done") return res.status(404).end();
+  const f = path.join(JOBS_DIR, `${id}.out`);
+  if (!existsSync(f)) return res.status(404).end();
+  res.setHeader("Content-Type", "image/png");
+  res.setHeader("Content-Disposition", `attachment; filename="pullbg-${id.slice(0, 8)}.png"`);
+  res.sendFile(f);
+});
+
+app.get("/api/health", (_req, res) => res.json({ ok: true, jobs: jobsDirCount() }));
+
+function jobsDirCount() {
+  try {
+    return readdirSync(JOBS_DIR).filter((x) => x.endsWith(".json")).length;
+  } catch {
+    return 0;
+  }
+}
+
+// ---------- worker (single flight) ----------
+let running = false;
+
+async function kickWorker() {
+  if (running) return;
+  running = true;
+  try {
+    for (;;) {
+      const ids = (await readdir(JOBS_DIR)).filter((x) => x.endsWith(".json"));
+      const pending = (await workingOn(ids)).filter((j) => j.status === "pending").sort((a, b) => a.createdAt - b.createdAt);
+      if (pending.length === 0) break;
+
+      const job = pending[0];
+      job.status = "processing";
+      await saveJob(job);
+      try {
+        const input = await readFile(path.join(JOBS_DIR, `${job.id}.in`));
+        const out = await processImage(input);
+        await writeFile(path.join(JOBS_DIR, `${job.id}.out`), out.buffer);
+        job.status = "done";
+        job.pipeline = out.pipeline;
+        job.guess = out.guess;
+        job.finishedAt = Date.now();
+        await saveJob(job);
+        await unlink(path.join(JOBS_DIR, `${job.id}.in`)).catch(() => {});
+      } catch (e) {
+        job.status = "error";
+        job.error = String(e?.message || e);
+        await saveJob(job);
+      }
+    }
+  } finally {
+    running = false;
+  }
+}
+
+// daily cleanup of old results
+setInterval(async () => {
+  try {
+    for (const f of await readdir(JOBS_DIR)) {
+      if (!f.endsWith(".json")) continue;
+      const p = path.join(JOBS_DIR, f);
+      const st = await stat(p);
+      if (Date.now() - st.mtimeMs > RESULT_TTL_MS) {
+        await rm(p, { force: true });
+        await rm(path.join(JOBS_DIR, f.replace(/\.json$/, ".out")), { force: true }).catch(() => {});
+      }
+    }
+  } catch {}
+}, 60 * 60 * 1000).unref();
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`PullBG API on :${PORT}`));

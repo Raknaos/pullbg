@@ -57,5 +57,6 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-20: Fenêtres PVC blanches + vitres ciel : carreaux similaires dont le croisillon est de la couleur du cadre percés (plus bloqué par whiteFrac). Produits multicolores et graphismes plats inchangés. Cache v=27.
 - 2026-08-20: Deux produits sur fond blanc : plus classés fenêtre. Grille 4 carreaux ou 2 vitres ciel sur PVC blanc inchangées. Cache v=28.
 - 2026-08-20: Battant PVC blanc 2 carreaux (nuit, ou nuit+ciel) : cadre serré + croisillon = fenêtre. Deux produits avec marge restent en IA. Cache v=29.
+- 2026-08-20: VPS prêt : deploy/ (contabo 8 Go, 1 mois sans engagement). API Express + file JSON single-worker + worker node réutilisant lib/classify+cutout + aiworker.py (rembg isnet-local). Testé local : logo <3> route couleur (78,4 % transparent), anneaux via IA (75,4 %). Installateur install.sh + systemd + nginx + certbot.
 
 

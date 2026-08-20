@@ -1,0 +1,17 @@
+{
+  "name": "pullbg-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "PullBG API server: queue, worker, geometry engine (same validated libs as the browser build), AI via local rembg service.",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "multer": "^2.0.1",
+    "@napi-rs/canvas": "^0.1.65"
+  },
+  "scripts": {
+    "start": "node app.mjs",
+    "test": "node test.mjs"
+  }
+}

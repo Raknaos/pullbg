@@ -5,3 +5,5 @@ eval/results/
 Thumbs.db
 minos.html
 minos.css
+deploy/lib/
+deploy/server/node_modules/
