@@ -51,4 +51,5 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-20: Fenêtres : flood 4-connect, les carreaux qui se touchent en coin restent séparés. IA 100 % opaque rejetée : le secours transparent gagne toujours. Cache v=21.
 - 2026-08-20: File : ImageBitmap.close() après lecture des pixels (plus de fuite native sur les lots). Cache v=22.
 - 2026-08-20: Fenêtres mixtes jour/nuit : vitres sombres ET ciel percées ensemble (plus seulement le type majoritaire). Cache v=23.
+- 2026-08-20: Graphismes plats sur fond blanc : couleur dominante isolée par chroma. Blanc/gris intérieur et blobs IA supprimés ; photos et produits multicolores restent sur IA. Cache v=24.
 

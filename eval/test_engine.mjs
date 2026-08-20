@@ -17,7 +17,7 @@ if (typeof ImageData === "undefined") {
 
 const { classifyImage } = await import("../lib/classify.js");
 const { punchInterior, stampCut, floodBlack, alphaOf, decontaminate } = await import("../lib/cutout.js");
-const { fastCut } = await import("../lib/engine.js");
+const { fastCut, chooseRefinedResult } = await import("../lib/engine.js");
 
 function assert(cond, msg) {
   if (!cond) throw new Error(msg);
@@ -485,4 +485,38 @@ function mixedDayNightWindow() {
   assert(a[2 * 80 + 2] > 180, "corner-touch frame kept");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed ok");
+{
+  const img = rgb(160, 100, 255, 255, 255);
+  fillRect(img, 18, 14, 142, 86, 225, 225, 225);
+  fillRect(img, 30, 24, 70, 76, 255, 70, 180);
+  fillRect(img, 90, 24, 130, 76, 255, 70, 180);
+  const guess = classifyImage(img);
+  assert(guess.mode === "couleur", `flat pink graphic uses color route (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[50 * 160 + 50] > 180, "flat pink graphic kept");
+  assert(a[50 * 160 + 80] < 16, "neutral support inside graphic removed");
+  assert(a[2 * 160 + 2] < 16, "white background removed");
+  assert(cut.needsRefine === false && cut.pipeline === "couleur", "flat color skips IA");
+}
+
+{
+  const img = rgb(180, 100, 255, 255, 255);
+  fillRect(img, 20, 25, 60, 75, 240, 30, 30);
+  fillRect(img, 70, 25, 110, 75, 30, 220, 50);
+  fillRect(img, 120, 25, 160, 75, 30, 70, 230);
+  const guess = classifyImage(img);
+  assert(guess.mode === "ia", `multicolor product stays on IA route (${guess.kind})`);
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillRect(img, 30, 30, 90, 90, 255, 70, 180);
+  const draft = fastCut(img);
+  const opaqueModel = { image: img, name: "ia", score: { score: 0.05, tr: 0, br: 0, ck: 1 } };
+  const final = chooseRefinedResult(draft, opaqueModel);
+  assert(final.pipeline === draft.pipeline, "opaque IA result falls back to draft");
+  assert(alphaOf(final.image)[0] < 16, "opaque IA cannot restore white background");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque ok");
