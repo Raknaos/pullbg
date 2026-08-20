@@ -381,4 +381,48 @@ function skyPaneWindow() {
   assert(cut.pipeline === "écran", "sky window uses screen pipeline");
 }
 
+{
+  const img = rgb(220, 120, 70, 110, 170);
+  fillRect(img, 14, 16, 96, 104, 40, 90, 160);
+  fillRect(img, 124, 16, 206, 104, 160, 50, 40);
+  const cut = stampCut(img);
+  const a = alphaOf(cut);
+  assert(a[60 * 220 + 55] > 180, "left stamp on blue album kept");
+  assert(a[60 * 220 + 165] > 180, "right stamp on blue album kept");
+  assert(a[4 * 220 + 4] < 16, "blue album paper flooded");
+  assert(a[60 * 220 + 110] < 16, "blue album between stamps gone");
+}
+
+{
+  const img = rgb(220, 120, 168, 168, 168);
+  fillRect(img, 14, 16, 96, 104, 40, 90, 160);
+  fillRect(img, 124, 16, 206, 104, 160, 50, 40);
+  const cut = stampCut(img);
+  const a = alphaOf(cut);
+  assert(a[60 * 220 + 55] > 180, "left stamp on gray album kept");
+  assert(a[60 * 220 + 165] > 180, "right stamp on gray album kept");
+  assert(a[4 * 220 + 4] < 16, "gray album paper flooded");
+  assert(a[60 * 220 + 110] < 16, "gray album between stamps gone");
+}
+
+{
+  const img = rgb(220, 120, 70, 110, 170);
+  fillRect(img, 14, 16, 96, 104, 236, 214, 176);
+  fillRect(img, 28, 30, 82, 90, 40, 90, 160);
+  fillRect(img, 124, 16, 206, 104, 236, 214, 176);
+  fillRect(img, 138, 30, 192, 90, 160, 50, 40);
+  perforate(img);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `stamps on blue album classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 220 + 55] > 180, "left blue-album stamp design kept");
+  assert(a[22 * 220 + 55] > 180, "left blue-album cream margin kept (whole piece)");
+  assert(a[60 * 220 + 165] > 180, "right blue-album stamp design kept");
+  assert(a[22 * 220 + 165] > 180, "right blue-album cream margin kept (whole piece)");
+  assert(a[4 * 220 + 4] < 16, "blue album around perforated stamps gone");
+  assert(a[60 * 220 + 110] < 16, "blue album between perforated stamps gone");
+  assert(cut.pipeline === "timbre", "blue-album stamps use stamp pipeline");
+}
+
 console.log("engine window+stamp+eyes+logo+halo ok");
