@@ -42,6 +42,16 @@ function fillRect(image, x0, y0, x1, y1, r, g, b) {
   }
 }
 
+function fillCircle(image, cx, cy, r, rr, gg, bb) {
+  for (let y = cy - r; y <= cy + r; y++) {
+    for (let x = cx - r; x <= cx + r; x++) {
+      if ((x - cx) ** 2 + (y - cy) ** 2 > r * r) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function frac(alpha, pred) {
   let n = 0;
   for (let i = 0; i < alpha.length; i++) if (pred(alpha[i])) n++;
@@ -425,4 +435,17 @@ function skyPaneWindow() {
   assert(cut.pipeline === "timbre", "blue-album stamps use stamp pipeline");
 }
 
-console.log("engine window+stamp+eyes+logo+halo ok");
+{
+  const img = rgb(180, 100, 255, 255, 255);
+  fillCircle(img, 52, 50, 25, 8, 8, 8);
+  fillCircle(img, 128, 50, 25, 8, 8, 8);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `two round pupils are not panes (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[50 * 180 + 52] > 180, "left pupil kept");
+  assert(a[50 * 180 + 128] > 180, "right pupil kept");
+  assert(cut.needsRefine === true, "round pupils use IA route, not pane punch");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils ok");
