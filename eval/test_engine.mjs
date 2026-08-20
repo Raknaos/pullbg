@@ -682,4 +682,51 @@ function whiteDarkCasement() {
   assert(!guess.interior, `two red products are not panes (${guess.kind})`);
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement ok");
+function whiteBlownSkyWindow() {
+  const img = rgb(80, 80, 255, 255, 255);
+  fillRect(img, 6, 6, 36, 36, 236, 242, 250);
+  fillRect(img, 44, 6, 74, 36, 234, 240, 248);
+  fillRect(img, 6, 44, 36, 74, 238, 244, 252);
+  fillRect(img, 44, 44, 74, 74, 235, 241, 249);
+  return img;
+}
+
+{
+  const img = whiteBlownSkyWindow();
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `white PVC blown-out sky classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[20 * 80 + 20] < 16, "blown-out top-left pane punched");
+  assert(a[20 * 80 + 60] < 16, "blown-out top-right pane punched");
+  assert(a[60 * 80 + 20] < 16, "blown-out bottom-left pane punched");
+  assert(a[60 * 80 + 60] < 16, "blown-out bottom-right pane punched");
+  assert(a[2 * 80 + 2] > 180, "white PVC blown-out outer frame kept");
+  assert(a[40 * 80 + 40] > 180, "white PVC blown-out mullion kept");
+  assert(cut.pipeline === "écran", "white PVC blown-out sky uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 255, 255, 255);
+  fillRect(img, 8, 10, 36, 70, 236, 242, 250);
+  fillRect(img, 44, 10, 72, 70, 234, 240, 248);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `white PVC 2-pane blown-out sky classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 22] < 16, "blown-out left pane punched");
+  assert(a[40 * 80 + 58] < 16, "blown-out right pane punched");
+  assert(a[2 * 80 + 2] > 180, "white PVC 2-pane blown-out outer frame kept");
+  assert(a[40 * 80 + 40] > 180, "white PVC 2-pane blown-out mullion kept");
+}
+
+{
+  const img = rgb(180, 100, 255, 255, 255);
+  fillRect(img, 20, 20, 80, 80, 240, 240, 240);
+  fillRect(img, 100, 20, 160, 80, 242, 242, 242);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `two pale-gray products are not panes (${guess.kind})`);
+  assert(guess.mode === "ia" || guess.mode === "couleur", `two pale-gray products stay off window route (${guess.kind})`);
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky ok");
