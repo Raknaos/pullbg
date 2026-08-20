@@ -45,4 +45,5 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-19: Timbre au milieu d’un album : dentelé sur la pièce, plus seulement les bords de l’image. Pièce entière + album enlevé. Cache v=13.
 - 2026-08-20: Planche album : dentelé + marge sur chaque timbre, sans remplir le papier entre les pièces. Cache v=16.
 - 2026-08-20: Fenêtres 16 carreaux : petits intérieurs rectangulaires comptés et percés (plus seulement ≥1,2 %). Cache v=17.
+- 2026-08-20: Fenêtres jour / crépuscule : vitres ciel multi-carreaux et verre gris (cadre 52 / vitre 30) percés. Seuil plus le cap 22. Cache v=18.
 

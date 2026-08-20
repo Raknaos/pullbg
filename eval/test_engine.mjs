@@ -346,4 +346,39 @@ function perforate(img) {
   assert(a[0] === 0 && a[12 * 24 + 12] === 255, "weak alpha halo is removed without touching subject");
 }
 
+{
+  const img = rgb(80, 80, 52, 52, 52);
+  fillRect(img, 12, 12, 68, 68, 30, 30, 30);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `dusk-gray pane classified as window (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "dusk-gray pane punched (frame 52 / glass 30, not only lum<=22)");
+  assert(a[2 * 80 + 2] > 180, "dusk-gray window frame kept");
+}
+
+function skyPaneWindow() {
+  const img = rgb(80, 80, 48, 42, 36);
+  fillRect(img, 6, 6, 36, 36, 92, 168, 220);
+  fillRect(img, 44, 6, 74, 36, 88, 160, 214);
+  fillRect(img, 6, 44, 36, 74, 96, 172, 224);
+  fillRect(img, 44, 44, 74, 74, 90, 164, 218);
+  return img;
+}
+
+{
+  const img = skyPaneWindow();
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `4-pane sky window classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[20 * 80 + 20] < 16, "sky top-left pane punched");
+  assert(a[20 * 80 + 60] < 16, "sky top-right pane punched");
+  assert(a[60 * 80 + 20] < 16, "sky bottom-left pane punched");
+  assert(a[60 * 80 + 60] < 16, "sky bottom-right pane punched");
+  assert(a[2 * 80 + 2] > 180, "sky-window outer frame kept");
+  assert(a[40 * 80 + 40] > 180, "sky-window mullion kept");
+  assert(cut.pipeline === "écran", "sky window uses screen pipeline");
+}
+
 console.log("engine window+stamp+eyes+logo+halo ok");
