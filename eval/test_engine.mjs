@@ -448,4 +448,17 @@ function skyPaneWindow() {
   assert(cut.needsRefine === true, "round pupils use IA route, not pane punch");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils ok");
+{
+  const img = rgb(80, 80, 22, 22, 22);
+  fillRect(img, 8, 8, 38, 38, 6, 6, 6);
+  fillRect(img, 38, 38, 68, 68, 6, 6, 6);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `corner-touch panes classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[20 * 80 + 20] < 16, "top-left corner-touch pane punched");
+  assert(a[50 * 80 + 50] < 16, "bottom-right corner-touch pane punched");
+  assert(a[2 * 80 + 2] > 180, "corner-touch frame kept");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner ok");

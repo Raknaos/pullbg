@@ -48,4 +48,5 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-20: Fenêtres jour / crépuscule : vitres ciel multi-carreaux et verre gris (cadre 52 / vitre 30) percés. Seuil plus le cap 22. Cache v=18.
 - 2026-08-20: Timbres sur album bleu/gris : flood de la couleur du papier (plus seulement crème/blanc). Fond sombre = médiane des bords, pas la moyenne tirée par les trous. Cache v=19.
 - 2026-08-20: IA-first restauré pour objets généraux. Multi-pane exige désormais des composants rectangulaires : deux pupilles rondes ne sont plus percées. Cache v=20.
+- 2026-08-20: Fenêtres : flood 4-connect, les carreaux qui se touchent en coin restent séparés. IA 100 % opaque rejetée : le secours transparent gagne toujours. Cache v=21.
 
