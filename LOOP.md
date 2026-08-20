@@ -60,5 +60,6 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-20: VPS prêt : deploy/ (contabo 8 Go, 1 mois sans engagement). API Express + file JSON single-worker + worker node réutilisant lib/classify+cutout + aiworker.py (rembg isnet-local). Testé local : logo <3> route couleur (78,4 % transparent), anneaux via IA (75,4 %). Installateur install.sh + systemd + nginx + certbot.
 - 2026-08-20: Fenêtres PVC blanches, vitres ciel cramées : carreaux quasi blancs percés (tint 16, plus bloqué à 32). Deux produits gris pâles restent en IA. Cache v=30.
 - 2026-08-20: Timbres rouleau / carnet : 2 bords dentelés suffisent (plus 40 trous). Pointillés de studio ignorés. Cache v=31.
+- 2026-08-20: Fond studio uni (vert/bleu/gris) : flood de la couleur du bord. Écran bleu plus classé noir. Produit blanc sur fond rouge plus une page. Cache v=32.
 
 

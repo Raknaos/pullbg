@@ -798,4 +798,58 @@ function coilStamp() {
   assert(guess.mode !== "timbre", `studio edge dots are not a stamp (${guess.kind})`);
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil ok");
+{
+  const img = rgb(120, 80, 0, 180, 60);
+  fillRect(img, 35, 15, 85, 65, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode === "fond", `green screen classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "green-screen subject kept");
+  assert(a[2 * 120 + 2] < 16, "green screen flooded");
+  assert(cut.pipeline === "fond", "green screen uses color flood");
+  assert(cut.needsRefine === false, "green screen skips IA when flood works");
+}
+
+{
+  const img = rgb(120, 80, 10, 40, 180);
+  fillRect(img, 35, 15, 85, 65, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode === "fond", `blue screen classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "blue-screen subject kept");
+  assert(a[2 * 120 + 2] < 16, "blue screen flooded");
+  assert(cut.pipeline === "fond", "blue screen uses color flood, not failed black flood");
+  assert(cut.needsRefine === false, "blue screen skips IA when flood works");
+}
+
+{
+  const img = rgb(120, 80, 180, 180, 180);
+  fillRect(img, 40, 20, 80, 60, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode === "fond", `gray seamless classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "gray-studio subject kept");
+  assert(a[2 * 120 + 2] < 16, "gray seamless flooded");
+}
+
+{
+  const img = rgb(120, 80, 180, 20, 20);
+  fillRect(img, 35, 15, 85, 65, 240, 240, 240);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `white product on red is not a page (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "white product on red kept");
+  assert(a[2 * 120 + 2] < 16, "red studio around white product gone");
+}
+
+{
+  const img = rgb(80, 80, 20, 80, 180);
+  const guess = classifyImage(img);
+  assert(guess.mode === "ia", `full-frame ocean stays on IA (${guess.kind})`);
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color ok");
