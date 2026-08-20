@@ -266,4 +266,48 @@ function perforate(img) {
   assert(cut.pipeline === "timbre", "inset stamp uses stamp pipeline");
 }
 
-console.log("engine window+stamp+eyes ok");
+{
+  const img = rgb(280, 160, 236, 214, 176);
+  fillRect(img, 40, 40, 100, 120, 40, 90, 160);
+  fillRect(img, 180, 40, 240, 120, 160, 50, 40);
+  const punch = (x, y) => fillRect(img, x - 1, y - 1, x + 2, y + 2, 8, 8, 8);
+  for (let i = 20; i <= 120; i += 8) {
+    punch(i, 20);
+    punch(i, 140);
+    punch(20, i);
+    punch(120, i);
+  }
+  for (let i = 160; i <= 260; i += 8) {
+    punch(i, 20);
+    punch(i, 140);
+  }
+  for (let i = 20; i <= 140; i += 8) {
+    punch(160, i);
+    punch(260, i);
+  }
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `two inset stamps classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[80 * 280 + 70] > 180, "left inset stamp design kept");
+  assert(a[80 * 280 + 210] > 180, "right inset stamp design kept");
+  assert(a[30 * 280 + 70] > 180, "left inset stamp paper margin kept");
+  assert(a[30 * 280 + 210] > 180, "right inset stamp paper margin kept");
+  assert(a[20 * 280 + 60] < 16, "left inset perforations punched");
+  assert(a[20 * 280 + 200] < 16, "right inset perforations punched");
+  assert(a[80 * 280 + 140] < 16, "album paper between inset stamps gone");
+  assert(a[8 * 280 + 8] < 16, "outer album paper gone");
+  assert(cut.pipeline === "timbre", "two inset stamps use stamp pipeline");
+}
+
+{
+  const img = rgb(120, 120, 8, 8, 8);
+  fillRect(img, 30, 30, 90, 90, 255, 80, 180);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 120 + 60] > 180, "logo body kept");
+  assert(a[2 * 120 + 2] < 16, "black studio bg gone");
+  assert(cut.needsRefine === false, "logo on black must not be sent to IA");
+}
+
+console.log("engine window+stamp+eyes+logo ok");

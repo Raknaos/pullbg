@@ -7,24 +7,22 @@ import {
   paintNav,
   nextResetAt,
   formatCountdown,
-} from "./auth.js?v=14";
-import { warmup, fastCut, refineCut } from "../lib/engine.js?v=14";
+} from "./auth.js?v=15";
+import { warmup, fastCut, refineCut } from "../lib/engine.js?v=15";
 import {
   bitmapFromSource,
   imageDataFromBitmap,
   blobFromImageData,
   blobFromImageDataBlurred,
-} from "../lib/cutout.js?v=14";
+} from "../lib/cutout.js?v=15";
 
 paintNav();
 warmup();
 
 const stage = document.getElementById("stage");
 const empty = document.getElementById("empty");
-const cmp = document.getElementById("cmp");
-const before = document.getElementById("before");
-const after = document.getElementById("after");
-const split = document.getElementById("split");
+const preview = document.getElementById("preview");
+const resultImg = document.getElementById("result");
 const fileInput = document.getElementById("file");
 const queueEl = document.getElementById("queue");
 const quotaEl = document.getElementById("quota");
@@ -64,7 +62,7 @@ document.getElementById("gate-close").addEventListener("click", () => { gate.hid
 window.addEventListener("keydown", (e) => { if (e.key === "Escape") gate.hidden = true; });
 
 stage.addEventListener("click", (e) => {
-  if (e.target.closest("#cmp")) return;
+  if (e.target.closest("#preview")) return;
   fileInput.click();
 });
 fileInput.addEventListener("change", () => addFiles(fileInput.files));
@@ -78,10 +76,6 @@ window.addEventListener("paste", (e) => {
   const items = e.clipboardData && e.clipboardData.files;
   if (items && items.length) addFiles(items);
 });
-if (split) {
-  split.addEventListener("input", () => cmp.style.setProperty("--pos", split.value + "%"));
-  cmp.style.setProperty("--pos", "50%");
-}
 
 function forgetUrl(u) {
   if (u && String(u).startsWith("blob:")) URL.revokeObjectURL(u);
@@ -123,16 +117,13 @@ function selected() {
 function showStage(job) {
   if (!job) {
     empty.hidden = false;
-    cmp.hidden = true;
-    stage.classList.add("empty");
+    preview.hidden = true;
     dl.hidden = true;
     return;
   }
   empty.hidden = true;
-  cmp.hidden = false;
-  stage.classList.remove("empty");
-  before.src = job.url;
-  after.src = job.result || job.url;
+  preview.hidden = false;
+  resultImg.src = job.result || job.url;
   if (job.result && !job.locked) {
     dl.hidden = false;
     dl.href = job.result;

@@ -93,20 +93,7 @@ button, input { font: inherit; color: inherit; }
 .rb-preview {
   position: relative; height: 360px; border-radius: 12px; overflow: hidden; cursor: default;
 }
-.rb-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
-.rb-preview .after { clip-path: inset(0 0 0 var(--pos, 50%)); }
-.rb-preview input[type=range] {
-  position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize;
-}
-.rb-preview .bar {
-  position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 2px;
-  background: var(--accent); pointer-events: none;
-}
-.rb-preview .bar::after {
-  content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  width: 28px; height: 28px; border-radius: 50%; background: var(--accent);
-  box-shadow: 0 0 0 6px rgba(61,126,255,.18);
-}
+.rb-preview img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 .rb-actions { display: flex; gap: 10px; justify-content: center; margin: 16px auto 8px; width: min(560px, 100%); flex-wrap: wrap; }
 .rb-film {

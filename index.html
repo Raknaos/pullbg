@@ -7,7 +7,7 @@
   <meta name="description" content="Supprimez le fond d'une image, 100 % automatique, dans le navigateur." />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800&display=swap" />
-  <link rel="stylesheet" href="./css/site.css?v=14" />
+  <link rel="stylesheet" href="./css/site.css?v=15" />
 </head>
 <body>
   <nav class="nav">
@@ -26,11 +26,8 @@
         <p class="hint">ou déposez un fichier, collez une image</p>
         <span class="note">plusieurs images d’un coup</span>
       </div>
-      <div class="rb-preview cmp" id="cmp" hidden>
-        <img id="before" alt="" />
-        <img id="after" class="after" alt="" />
-        <span class="bar"></span>
-        <input id="split" type="range" min="6" max="94" value="50" />
+      <div class="rb-preview" id="preview" hidden>
+        <img id="result" alt="" />
       </div>
       <input id="file" type="file" accept="image/*" multiple hidden />
     </div>
@@ -51,6 +48,6 @@
       </div>
     </div>
   </div>
-  <script type="module" src="./js/studio.js?v=14"></script>
+  <script type="module" src="./js/studio.js?v=15"></script>
 </body>
 </html>
