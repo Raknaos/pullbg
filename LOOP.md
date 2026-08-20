@@ -53,5 +53,6 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-20: Fenêtres mixtes jour/nuit : vitres sombres ET ciel percées ensemble (plus seulement le type majoritaire). Cache v=23.
 - 2026-08-20: Graphismes plats sur fond blanc : couleur dominante isolée par chroma. Blanc/gris intérieur et blobs IA supprimés ; photos et produits multicolores restent sur IA. Cache v=24.
 - 2026-08-20: Fenêtres bois / feuillage : carreaux d’une autre couleur que le cadre percés (plus seulement un écart de luminance). Produits ronds sur fond noir inchangés. Cache v=25.
+- 2026-08-20: Fenêtres PVC blanches : carreaux sombres percés même si le cadre est blanc (plus bloqué par whiteFrac). Un seul objet noir sur blanc reste en IA. Cache v=26.
 
 

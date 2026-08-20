@@ -557,4 +557,35 @@ function foliageWindow() {
   assert(alphaOf(final.image)[0] < 16, "opaque IA cannot restore white background");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage ok");
+function whiteFrameWindow() {
+  const img = rgb(80, 80, 255, 255, 255);
+  fillRect(img, 6, 6, 36, 36, 8, 8, 8);
+  fillRect(img, 44, 6, 74, 36, 8, 8, 8);
+  fillRect(img, 6, 44, 36, 74, 8, 8, 8);
+  fillRect(img, 44, 44, 74, 74, 8, 8, 8);
+  return img;
+}
+
+{
+  const img = whiteFrameWindow();
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `white PVC frame window classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[20 * 80 + 20] < 16, "white-frame top-left pane punched");
+  assert(a[20 * 80 + 60] < 16, "white-frame top-right pane punched");
+  assert(a[60 * 80 + 20] < 16, "white-frame bottom-left pane punched");
+  assert(a[60 * 80 + 60] < 16, "white-frame bottom-right pane punched");
+  assert(a[2 * 80 + 2] > 180, "white PVC outer frame kept");
+  assert(a[40 * 80 + 40] > 180, "white PVC mullion kept");
+  assert(cut.pipeline === "écran", "white-frame window uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillRect(img, 30, 30, 90, 90, 8, 8, 8);
+  const guess = classifyImage(img);
+  assert(guess.mode === "ia", `single dark product on white stays on IA (${guess.kind})`);
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame ok");
