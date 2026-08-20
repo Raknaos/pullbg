@@ -581,6 +581,44 @@ function whiteFrameWindow() {
   assert(cut.pipeline === "écran", "white-frame window uses screen pipeline");
 }
 
+function whiteSkyWindow() {
+  const img = rgb(80, 80, 255, 255, 255);
+  fillRect(img, 6, 6, 36, 36, 92, 168, 220);
+  fillRect(img, 44, 6, 74, 36, 88, 160, 214);
+  fillRect(img, 6, 44, 36, 74, 96, 172, 224);
+  fillRect(img, 44, 44, 74, 74, 90, 164, 218);
+  return img;
+}
+
+{
+  const img = whiteSkyWindow();
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `white PVC sky window classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[20 * 80 + 20] < 16, "white-frame sky top-left pane punched");
+  assert(a[20 * 80 + 60] < 16, "white-frame sky top-right pane punched");
+  assert(a[60 * 80 + 20] < 16, "white-frame sky bottom-left pane punched");
+  assert(a[60 * 80 + 60] < 16, "white-frame sky bottom-right pane punched");
+  assert(a[2 * 80 + 2] > 180, "white PVC sky outer frame kept");
+  assert(a[40 * 80 + 40] > 180, "white PVC sky mullion kept");
+  assert(cut.pipeline === "écran", "white-frame sky window uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 255, 255, 255);
+  fillRect(img, 8, 10, 36, 70, 92, 168, 220);
+  fillRect(img, 44, 10, 72, 70, 88, 160, 214);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `white PVC 2-pane sky classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 22] < 16, "white-frame left sky pane punched");
+  assert(a[40 * 80 + 58] < 16, "white-frame right sky pane punched");
+  assert(a[2 * 80 + 2] > 180, "white PVC 2-pane outer frame kept");
+  assert(a[40 * 80 + 40] > 180, "white PVC 2-pane mullion kept");
+}
+
 {
   const img = rgb(120, 120, 255, 255, 255);
   fillRect(img, 30, 30, 90, 90, 8, 8, 8);
@@ -588,4 +626,4 @@ function whiteFrameWindow() {
   assert(guess.mode === "ia", `single dark product on white stays on IA (${guess.kind})`);
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame ok");
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky ok");
