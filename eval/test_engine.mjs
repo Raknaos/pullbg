@@ -16,7 +16,7 @@ if (typeof ImageData === "undefined") {
 }
 
 const { classifyImage } = await import("../lib/classify.js");
-const { punchInterior, stampCut, floodBlack, alphaOf } = await import("../lib/cutout.js");
+const { punchInterior, stampCut, floodBlack, alphaOf, decontaminate } = await import("../lib/cutout.js");
 const { fastCut } = await import("../lib/engine.js");
 
 function assert(cond, msg) {
@@ -310,4 +310,14 @@ function perforate(img) {
   assert(cut.needsRefine === false, "logo on black must not be sent to IA");
 }
 
-console.log("engine window+stamp+eyes+logo ok");
+{
+  const img = rgb(24, 24, 255, 255, 255);
+  for (let i = 0; i < img.data.length; i += 4) img.data[i + 3] = 3;
+  const center = (12 * 24 + 12) * 4;
+  img.data[center + 3] = 255;
+  const clean = decontaminate(img);
+  const a = alphaOf(clean);
+  assert(a[0] === 0 && a[12 * 24 + 12] === 255, "weak alpha halo is removed without touching subject");
+}
+
+console.log("engine window+stamp+eyes+logo+halo ok");

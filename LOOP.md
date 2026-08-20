@@ -38,6 +38,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-19: Fenêtres JPEG/gris : seuil vitre = cadre−6 borné 14–22 (plus seulement lum≤14). Test vitre 20. Cache-bust modules v=7.
 - 2026-08-19: Pages JPEG blanches : seuil = max(234, cadre+40) borné 248 (plus seulement lum≥248). Patch 210 non classé page. Cache-bust v=8.
 - 2026-08-19: Studio 3 colonnes (file / toile / actions). Accueil titre seul, zéro exemples/prix. Cache v=9.
+- 2026-08-20: Suppression du curseur avant/après. Logos sur fond noir restent en géométrie; les timbres multi-pièces ne restaurent plus le papier entre deux pièces.
 - 2026-08-19: Timbres avant fenêtres (centre gravé plus classé écran). Trous dentelés soft + halo sombre. ImageData lâchée après découpe. Cache v=10.
 - 2026-08-19: Planche de timbres : on garde toutes les pièces ≥10 % de la plus grande (plus seulement le plus gros blob). Cache v=11.
 - 2026-08-19: Timbre scanné : marge papier gardée dans le rectangle dentelé (pièce entière). Planche crème + trous ≠ fond noir. Cache v=12.
