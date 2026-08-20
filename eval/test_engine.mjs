@@ -64,6 +64,18 @@ function fillEllipse(image, cx, cy, rx, ry, rr, gg, bb) {
   }
 }
 
+function fillSemi(image, cx, cy, rx, ry, rr, gg, bb) {
+  for (let y = cy - ry; y <= cy; y++) {
+    for (let x = cx - rx; x <= cx + rx; x++) {
+      const nx = (x - cx) / rx;
+      const ny = (y - cy) / ry;
+      if (nx * nx + ny * ny > 1) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function frac(alpha, pred) {
   let n = 0;
   for (let i = 0; i < alpha.length; i++) if (pred(alpha[i])) n++;
@@ -1080,4 +1092,52 @@ function coilStamp() {
   assert(a[2 * 120 + 2] < 16, "black studio around oval blue product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass ok");
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillSemi(img, 40, 48, 32, 32, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `sky fanlight classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[32 * 80 + 40] < 16, "sky fanlight pane punched");
+  assert(a[2 * 80 + 2] > 180, "sky fanlight frame kept");
+  assert(a[70 * 80 + 40] > 180, "sky fanlight sill kept");
+  assert(cut.pipeline === "écran", "sky fanlight uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillSemi(img, 40, 48, 32, 32, 40, 120, 45);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `foliage fanlight classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[32 * 80 + 40] < 16, "foliage fanlight pane punched");
+  assert(a[2 * 80 + 2] > 180, "foliage fanlight frame kept");
+  assert(cut.pipeline === "écran", "foliage fanlight uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 50, 120, 80, 50);
+  fillSemi(img, 40, 36, 30, 24, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wide sky fanlight classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[24 * 80 + 40] < 16, "wide fanlight pane punched");
+  assert(a[2 * 80 + 2] > 180, "wide fanlight frame kept");
+  assert(cut.pipeline === "écran", "wide fanlight uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 80, 8, 8, 8);
+  fillSemi(img, 60, 50, 28, 28, 80, 180, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `semicircle product on black is not a pane (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "semicircle product on black kept");
+  assert(a[2 * 120 + 2] < 16, "black studio around semicircle product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight ok");
