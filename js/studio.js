@@ -7,14 +7,14 @@ import {
   paintNav,
   nextResetAt,
   formatCountdown,
-} from "./auth.js?v=16";
-import { warmup, fastCut, refineCut } from "../lib/engine.js?v=16";
+} from "./auth.js?v=17";
+import { warmup, fastCut, refineCut } from "../lib/engine.js?v=17";
 import {
   bitmapFromSource,
   imageDataFromBitmap,
   blobFromImageData,
   blobFromImageDataBlurred,
-} from "../lib/cutout.js?v=16";
+} from "../lib/cutout.js?v=17";
 
 paintNav();
 warmup();

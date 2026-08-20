@@ -148,6 +148,32 @@ function fourPaneWindow() {
   assert(a[40 * 80 + 40] > 180, "mullion kept");
 }
 
+function manyPaneWindow() {
+  const img = rgb(200, 200, 24, 24, 24);
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      const x = 36 + col * 30;
+      const y = 36 + row * 30;
+      fillRect(img, x, y, x + 22, y + 22, 8, 8, 8);
+    }
+  }
+  return img;
+}
+
+{
+  const img = manyPaneWindow();
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `16-pane classified as window (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[47 * 200 + 47] < 16, "first small pane punched");
+  assert(a[47 * 200 + 77] < 16, "adjacent small pane punched");
+  assert(a[137 * 200 + 137] < 16, "last small pane punched");
+  assert(a[2 * 200 + 2] > 180, "16-pane outer frame kept");
+  assert(a[47 * 200 + 62] > 180, "16-pane mullion kept");
+  assert(cut.pipeline === "écran", "16-pane uses screen pipeline");
+}
+
 {
   const img = rgb(80, 80, 32, 32, 32);
   fillRect(img, 12, 12, 68, 68, 20, 20, 20);
