@@ -894,4 +894,73 @@ function coilStamp() {
   assert(a[98 * 160 + 8] < 16, "green below the covered corner flooded");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama ok");
+{
+  const img = rgb(80, 80, 48, 42, 36);
+  fillRect(img, 12, 12, 68, 68, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `single sky pane classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "single sky pane punched");
+  assert(a[2 * 80 + 2] > 180, "single-sky frame kept");
+  assert(cut.pipeline === "écran", "single sky pane uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillRect(img, 12, 12, 68, 68, 40, 120, 45);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `single foliage pane classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "single foliage pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood frame around foliage kept");
+  assert(cut.pipeline === "écran", "single foliage pane uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 255, 255, 255);
+  fillRect(img, 12, 12, 68, 68, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `white PVC single sky classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "white PVC single sky pane punched");
+  assert(a[2 * 80 + 2] > 180, "white PVC single-pane frame kept");
+  assert(cut.pipeline === "écran", "white PVC single sky uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 48, 42, 36);
+  fillRect(img, 18, 36, 62, 70, 92, 168, 220);
+  fillCircle(img, 40, 36, 22, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `arched sky window classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[50 * 80 + 40] < 16, "arched window body punched");
+  assert(a[24 * 80 + 40] < 16, "arched window crown punched");
+  assert(a[2 * 80 + 2] > 180, "arched window frame kept");
+  assert(cut.pipeline === "écran", "arched window uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillRect(img, 30, 30, 90, 90, 80, 160, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `blue product on white is not a pane (${guess.kind})`);
+  assert(guess.mode === "ia" || guess.mode === "couleur", `blue product on white stays off window route (${guess.kind})`);
+}
+
+{
+  const img = rgb(120, 80, 8, 8, 8);
+  fillRect(img, 40, 10, 80, 70, 80, 180, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `cyan bottle on black is not a pane (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "cyan bottle on black kept");
+  assert(a[2 * 120 + 2] < 16, "black studio around cyan bottle gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass ok");
