@@ -852,4 +852,46 @@ function coilStamp() {
   assert(guess.mode === "ia", `full-frame ocean stays on IA (${guess.kind})`);
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color ok");
+{
+  const img = rgb(120, 80, 210, 210, 210);
+  for (let y = 0; y < 80; y++) {
+    const v = Math.round(210 - (y / 79) * 72);
+    fillRect(img, 0, y, 120, y + 1, v, v, v);
+  }
+  fillRect(img, 38, 16, 84, 58, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode === "fond", `cyclorama gradient classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[36 * 120 + 60] > 180, "gradient-studio subject kept");
+  assert(a[2 * 120 + 2] < 16, "light top of cyclorama flooded");
+  assert(a[78 * 120 + 8] < 16, "dark floor of cyclorama flooded");
+  assert(cut.pipeline === "fond", "cyclorama uses color flood, not a single border mean");
+  assert(cut.needsRefine === false, "working cyclorama flood skips IA");
+}
+
+{
+  const img = rgb(120, 80, 0, 180, 60);
+  fillRect(img, 40, 48, 82, 80, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode === "fond", `product on studio floor classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[64 * 120 + 60] > 180, "product sitting on the floor kept");
+  assert(a[79 * 120 + 60] > 180, "product pixels touching the bottom edge kept");
+  assert(a[2 * 120 + 2] < 16, "green screen around floor product gone");
+}
+
+{
+  const img = rgb(160, 100, 0, 180, 60);
+  fillRect(img, 0, 0, 90, 75, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode === "fond", `product covering one corner classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 160 + 40] > 180, "corner-covering product kept");
+  assert(a[2 * 160 + 150] < 16, "green opposite the covered corner flooded");
+  assert(a[98 * 160 + 8] < 16, "green below the covered corner flooded");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama ok");
