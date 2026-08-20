@@ -1140,4 +1140,61 @@ function coilStamp() {
   assert(a[2 * 120 + 2] < 16, "black studio around semicircle product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight ok");
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillRect(img, 12, 12, 68, 68, 8, 8, 8);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood night pane classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood night pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood night frame kept");
+  assert(cut.pipeline === "écran", "wood night pane uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillCircle(img, 40, 40, 26, 8, 8, 8);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood night oeil-de-boeuf classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood night round pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood night round frame kept");
+  assert(a[14 * 80 + 14] > 180, "wood night round corner frame kept");
+  assert(cut.pipeline === "écran", "wood night round uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillSemi(img, 40, 48, 32, 32, 8, 8, 8);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood night fanlight classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[32 * 80 + 40] < 16, "wood night fanlight pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood night fanlight frame kept");
+  assert(a[70 * 80 + 40] > 180, "wood night fanlight sill kept");
+  assert(cut.pipeline === "écran", "wood night fanlight uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillEllipse(img, 40, 40, 32, 20, 8, 8, 8);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood night oval classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood night oval pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood night oval frame kept");
+  assert(cut.pipeline === "écran", "wood night oval uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 80, 180, 180, 180);
+  fillRect(img, 40, 20, 80, 60, 8, 8, 8);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `dark product on gray studio is not a pane (${guess.kind})`);
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood ok");
