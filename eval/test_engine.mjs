@@ -391,6 +391,30 @@ function skyPaneWindow() {
   assert(cut.pipeline === "écran", "sky window uses screen pipeline");
 }
 
+function mixedDayNightWindow() {
+  const img = rgb(80, 80, 48, 42, 36);
+  fillRect(img, 6, 6, 36, 36, 8, 8, 8);
+  fillRect(img, 44, 6, 74, 36, 92, 168, 220);
+  fillRect(img, 6, 44, 36, 74, 10, 10, 10);
+  fillRect(img, 44, 44, 74, 74, 90, 164, 218);
+  return img;
+}
+
+{
+  const img = mixedDayNightWindow();
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `mixed day/night window classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[20 * 80 + 20] < 16, "mixed dark top-left pane punched");
+  assert(a[20 * 80 + 60] < 16, "mixed sky top-right pane punched");
+  assert(a[60 * 80 + 20] < 16, "mixed dark bottom-left pane punched");
+  assert(a[60 * 80 + 60] < 16, "mixed sky bottom-right pane punched");
+  assert(a[2 * 80 + 2] > 180, "mixed-window outer frame kept");
+  assert(a[40 * 80 + 40] > 180, "mixed-window mullion kept");
+  assert(cut.pipeline === "écran", "mixed window uses screen pipeline");
+}
+
 {
   const img = rgb(220, 120, 70, 110, 170);
   fillRect(img, 14, 16, 96, 104, 40, 90, 160);
@@ -461,4 +485,4 @@ function skyPaneWindow() {
   assert(a[2 * 80 + 2] > 180, "corner-touch frame kept");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner ok");
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed ok");
