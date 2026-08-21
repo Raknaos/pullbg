@@ -1197,4 +1197,79 @@ function coilStamp() {
   assert(!guess.interior, `dark product on gray studio is not a pane (${guess.kind})`);
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood ok");
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillRect(img, 12, 12, 68, 68, 210, 140, 50);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood warm pane classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood warm pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood warm frame kept");
+  assert(cut.pipeline === "écran", "wood warm pane uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillCircle(img, 40, 40, 26, 210, 140, 50);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood warm oeil-de-boeuf classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood warm round pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood warm round frame kept");
+  assert(a[14 * 80 + 14] > 180, "wood warm round corner frame kept");
+  assert(cut.pipeline === "écran", "wood warm round uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillEllipse(img, 40, 40, 32, 20, 210, 140, 50);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood warm oval classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood warm oval pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood warm oval frame kept");
+  assert(cut.pipeline === "écran", "wood warm oval uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillSemi(img, 40, 48, 32, 32, 210, 140, 50);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood warm fanlight classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[32 * 80 + 40] < 16, "wood warm fanlight pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood warm fanlight frame kept");
+  assert(a[70 * 80 + 40] > 180, "wood warm fanlight sill kept");
+  assert(cut.pipeline === "écran", "wood warm fanlight uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillRect(img, 30, 30, 90, 90, 210, 140, 50);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `orange product on white is not a pane (${guess.kind})`);
+}
+
+{
+  const img = rgb(120, 80, 8, 8, 8);
+  fillRect(img, 40, 10, 80, 70, 210, 140, 50);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `orange product on black is not a pane (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "orange product on black kept");
+  assert(a[2 * 120 + 2] < 16, "black studio around orange product gone");
+}
+
+{
+  const img = rgb(120, 80, 180, 180, 180);
+  fillRect(img, 40, 20, 80, 60, 210, 140, 50);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `orange product on gray studio is not a pane (${guess.kind})`);
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood ok");

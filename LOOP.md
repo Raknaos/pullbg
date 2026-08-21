@@ -67,6 +67,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-20: Œil-de-bœuf oval + lancette gothique : vitres allongées ciel/feuillage percées. Assiette ovale sur blanc et produit oval sur noir inchangés. Cache v=36.
 - 2026-08-20: Imposte demi-lune : vitre ciel/feuillage percée (plus classée fond studio). Produit semi-circulaire sur noir inchangé. Cache v=37.
 - 2026-08-20: Vitre nuit dans un cadre bois : percée (rect / rond / ovale / imposte). Produit sombre sur gris/blanc/noir inchangé. Cache v=38.
+- 2026-08-21: Vitre chaud / coucher de soleil dans un cadre bois : percée (rect / rond / ovale / imposte). Produit orange sur gris/blanc/noir inchangé. Cache v=39.
 
 
 
