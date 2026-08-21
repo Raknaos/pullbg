@@ -1272,4 +1272,91 @@ function coilStamp() {
   assert(!guess.interior, `orange product on gray studio is not a pane (${guess.kind})`);
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood ok");
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillRect(img, 12, 12, 68, 68, 162, 168, 174);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood overcast pane classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood overcast pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood overcast frame kept");
+  assert(cut.pipeline === "écran", "wood overcast pane uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillCircle(img, 40, 40, 26, 162, 168, 174);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood overcast oeil-de-boeuf classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood overcast round pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood overcast round frame kept");
+  assert(a[14 * 80 + 14] > 180, "wood overcast round corner frame kept");
+  assert(cut.pipeline === "écran", "wood overcast round uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillEllipse(img, 40, 40, 32, 20, 162, 168, 174);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood overcast oval classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood overcast oval pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood overcast oval frame kept");
+  assert(cut.pipeline === "écran", "wood overcast oval uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillSemi(img, 40, 48, 32, 32, 162, 168, 174);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood overcast fanlight classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[32 * 80 + 40] < 16, "wood overcast fanlight pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood overcast fanlight frame kept");
+  assert(a[70 * 80 + 40] > 180, "wood overcast fanlight sill kept");
+  assert(cut.pipeline === "écran", "wood overcast fanlight uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 255, 255, 255);
+  fillRect(img, 12, 12, 68, 68, 162, 168, 174);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `white PVC overcast pane classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "white PVC overcast pane punched");
+  assert(a[2 * 80 + 2] > 180, "white PVC overcast frame kept");
+  assert(cut.pipeline === "écran", "white PVC overcast uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillRect(img, 30, 30, 90, 90, 162, 168, 174);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `cool-gray product on white is not a pane (${guess.kind})`);
+}
+
+{
+  const img = rgb(120, 80, 8, 8, 8);
+  fillRect(img, 40, 10, 80, 70, 162, 168, 174);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `cool-gray product on black is not a pane (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "cool-gray product on black kept");
+  assert(a[2 * 120 + 2] < 16, "black studio around cool-gray product gone");
+}
+
+{
+  const img = rgb(120, 80, 180, 180, 180);
+  fillRect(img, 40, 20, 80, 60, 162, 168, 174);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `cool-gray product on gray studio is not a pane (${guess.kind})`);
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood ok");

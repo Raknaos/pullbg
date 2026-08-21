@@ -68,6 +68,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-20: Imposte demi-lune : vitre ciel/feuillage percée (plus classée fond studio). Produit semi-circulaire sur noir inchangé. Cache v=37.
 - 2026-08-20: Vitre nuit dans un cadre bois : percée (rect / rond / ovale / imposte). Produit sombre sur gris/blanc/noir inchangé. Cache v=38.
 - 2026-08-21: Vitre chaud / coucher de soleil dans un cadre bois : percée (rect / rond / ovale / imposte). Produit orange sur gris/blanc/noir inchangé. Cache v=39.
+- 2026-08-21: Vitre overcast / gris froid dans un cadre bois ou PVC blanc : percée (rect / rond / ovale / imposte). Produit gris sur blanc/noir/studio inchangé. Cache v=40.
 
 
 
