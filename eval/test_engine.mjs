@@ -64,6 +64,18 @@ function fillEllipse(image, cx, cy, rx, ry, rr, gg, bb) {
   }
 }
 
+function fillDiamond(image, cx, cy, rx, ry, rr, gg, bb) {
+  for (let y = cy - ry; y <= cy + ry; y++) {
+    for (let x = cx - rx; x <= cx + rx; x++) {
+      const nx = Math.abs(x - cx) / rx;
+      const ny = Math.abs(y - cy) / ry;
+      if (nx + ny > 1) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function fillSemi(image, cx, cy, rx, ry, rr, gg, bb) {
   for (let y = cy - ry; y <= cy; y++) {
     for (let x = cx - rx; x <= cx + rx; x++) {
@@ -1359,4 +1371,47 @@ function coilStamp() {
   assert(!guess.interior, `cool-gray product on gray studio is not a pane (${guess.kind})`);
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood ok");
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillDiamond(img, 40, 40, 28, 28, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood lozenge sky classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood lozenge sky pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood lozenge sky frame kept");
+  assert(a[12 * 80 + 12] > 180, "wood lozenge sky corner frame kept");
+  assert(cut.pipeline === "écran", "wood lozenge sky uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillDiamond(img, 40, 40, 28, 28, 40, 120, 45);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood lozenge foliage classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood lozenge foliage pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood lozenge foliage frame kept");
+  assert(cut.pipeline === "écran", "wood lozenge foliage uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillDiamond(img, 60, 60, 40, 40, 80, 160, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `lozenge blue product on white is not a pane (${guess.kind})`);
+}
+
+{
+  const img = rgb(120, 80, 8, 8, 8);
+  fillDiamond(img, 60, 40, 28, 28, 80, 180, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `lozenge blue product on black is not a pane (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "lozenge product on black kept");
+  assert(a[2 * 120 + 2] < 16, "black studio around lozenge product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge ok");
