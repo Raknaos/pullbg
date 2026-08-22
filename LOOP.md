@@ -74,6 +74,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-22: Vitre quadrilobe / quatre-feuilles dans un cadre bois : percée (ciel / feuillage). Produit trèfle sur blanc/noir inchangé. Cache v=43.
 - 2026-08-22: Vitre trapèze / lucarne dans un cadre bois : percée (ciel / feuillage). Produit trapèze sur blanc/noir inchangé. Cache v=44.
 - 2026-08-22: Vitre étoile / pentagramme dans un cadre bois : percée (ciel / feuillage). Produit étoile sur blanc/noir inchangé. Cache v=45.
+- 2026-08-22: Grille plombée 4 losanges dans un cadre bois : percée (ciel / feuillage), croisillon gardé. Deux produits losange sur blanc/noir inchangés. Cache v=46.
 
 
 

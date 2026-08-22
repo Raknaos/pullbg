@@ -1656,4 +1656,62 @@ function coilStamp() {
   assert(a[2 * 120 + 2] < 16, "black studio around star product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star ok");
+function leadedLattice(sky) {
+  const img = rgb(160, 160, 120, 80, 50);
+  fillDiamond(img, 48, 48, 24, 24, ...sky);
+  fillDiamond(img, 112, 48, 24, 24, sky[0] - 4, sky[1] - 8, sky[2] - 6);
+  fillDiamond(img, 48, 112, 24, 24, sky[0] + 4, sky[1] + 4, sky[2] + 4);
+  fillDiamond(img, 112, 112, 24, 24, sky[0] - 2, sky[1] - 4, sky[2] - 2);
+  return img;
+}
+
+{
+  const img = leadedLattice([92, 168, 220]);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood leaded sky lattice classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[48 * 160 + 48] < 16, "wood leaded sky top-left punched");
+  assert(a[48 * 160 + 112] < 16, "wood leaded sky top-right punched");
+  assert(a[112 * 160 + 48] < 16, "wood leaded sky bottom-left punched");
+  assert(a[112 * 160 + 112] < 16, "wood leaded sky bottom-right punched");
+  assert(a[2 * 160 + 2] > 180, "wood leaded sky outer frame kept");
+  assert(a[80 * 160 + 80] > 180, "wood leaded sky mullion kept");
+  assert(cut.pipeline === "écran", "wood leaded sky uses screen pipeline");
+}
+
+{
+  const img = leadedLattice([40, 120, 45]);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood leaded foliage lattice classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[48 * 160 + 48] < 16, "wood leaded foliage top-left punched");
+  assert(a[112 * 160 + 112] < 16, "wood leaded foliage bottom-right punched");
+  assert(a[2 * 160 + 2] > 180, "wood leaded foliage outer frame kept");
+  assert(a[80 * 160 + 80] > 180, "wood leaded foliage mullion kept");
+  assert(cut.pipeline === "écran", "wood leaded foliage uses screen pipeline");
+}
+
+{
+  const img = rgb(160, 120, 255, 255, 255);
+  fillDiamond(img, 48, 60, 28, 28, 80, 160, 220);
+  fillDiamond(img, 112, 60, 28, 28, 80, 160, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `two lozenge products on white are not a lattice (${guess.kind})`);
+}
+
+{
+  const img = rgb(160, 80, 8, 8, 8);
+  fillDiamond(img, 48, 40, 22, 22, 80, 180, 220);
+  fillDiamond(img, 112, 40, 22, 22, 80, 180, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `two lozenge products on black are not a lattice (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 160 + 48] > 180, "left lozenge product on black kept");
+  assert(a[40 * 160 + 112] > 180, "right lozenge product on black kept");
+  assert(a[2 * 160 + 2] < 16, "black studio around two lozenge products gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice ok");
