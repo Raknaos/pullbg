@@ -1714,4 +1714,57 @@ function leadedLattice(sky) {
   assert(a[2 * 160 + 2] < 16, "black studio around two lozenge products gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice ok");
+function bullseye(sky) {
+  const img = rgb(80, 80, 120, 80, 50);
+  fillCircle(img, 40, 40, 26, ...sky);
+  fillCircle(img, 40, 40, 10, 120, 80, 50);
+  return img;
+}
+
+{
+  const img = bullseye([92, 168, 220]);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood bullseye sky classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[22 * 80 + 40] < 16, "wood bullseye sky ring punched");
+  assert(a[40 * 80 + 40] > 180, "wood bullseye sky boss kept");
+  assert(a[2 * 80 + 2] > 180, "wood bullseye sky frame kept");
+  assert(cut.pipeline === "écran", "wood bullseye sky uses screen pipeline");
+}
+
+{
+  const img = bullseye([40, 120, 45]);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood bullseye foliage classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[22 * 80 + 40] < 16, "wood bullseye foliage ring punched");
+  assert(a[40 * 80 + 40] > 180, "wood bullseye foliage boss kept");
+  assert(a[2 * 80 + 2] > 180, "wood bullseye foliage frame kept");
+  assert(cut.pipeline === "écran", "wood bullseye foliage uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillCircle(img, 60, 60, 36, 80, 160, 220);
+  fillCircle(img, 60, 60, 16, 255, 255, 255);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `ring product on white is not a pane (${guess.kind})`);
+}
+
+{
+  const img = rgb(120, 80, 8, 8, 8);
+  fillCircle(img, 60, 40, 28, 80, 180, 220);
+  fillCircle(img, 60, 40, 16, 8, 8, 8);
+  fillCircle(img, 60, 40, 7, 80, 180, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `concentric product on black is not a pane (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "concentric product center kept");
+  assert(a[40 * 120 + 82] > 180, "concentric product ring kept");
+  assert(a[2 * 120 + 2] < 16, "black studio around concentric product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss ok");
