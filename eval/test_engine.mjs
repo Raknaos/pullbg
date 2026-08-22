@@ -101,6 +101,45 @@ function fillOctagon(image, cx, cy, rx, ry, rr, gg, bb) {
   }
 }
 
+function pentNorm(dx, dy, rx, ry) {
+  const x = dx / rx;
+  const y = dy / ry;
+  let m = -Infinity;
+  for (let i = 0; i < 5; i++) {
+    const a0 = -Math.PI / 2 + (i * Math.PI * 2) / 5;
+    const a1 = -Math.PI / 2 + (((i + 1) % 5) * Math.PI * 2) / 5;
+    const vx = Math.cos(a0);
+    const vy = Math.sin(a0);
+    const wx = Math.cos(a1);
+    const wy = Math.sin(a1);
+    let onx = wy - vy;
+    let ony = vx - wx;
+    const mx = (vx + wx) / 2;
+    const my = (vy + wy) / 2;
+    if (onx * mx + ony * my < 0) {
+      onx = -onx;
+      ony = -ony;
+    }
+    const len = Math.hypot(onx, ony) || 1;
+    onx /= len;
+    ony /= len;
+    const d = mx * onx + my * ony;
+    const e = (x * onx + y * ony) / (d || 1e-9);
+    if (e > m) m = e;
+  }
+  return m;
+}
+
+function fillPentagon(image, cx, cy, rx, ry, rr, gg, bb) {
+  for (let y = cy - ry; y <= cy + ry; y++) {
+    for (let x = cx - rx; x <= cx + rx; x++) {
+      if (pentNorm(x - cx, y - cy, rx, ry) > 1) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function fillTriangle(image, cx, y0, y1, half, rr, gg, bb) {
   for (let y = y0; y <= y1; y++) {
     const t = (y - y0) / Math.max(1, y1 - y0);
@@ -2015,4 +2054,54 @@ function punchOctagon(img, cx, cy, rx, ry) {
   assert(a[2 * 200 + 2] < 16, "black studio around octagon product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp ok");
+function punchPentagon(img, cx, cy, rx, ry) {
+  const verts = [];
+  for (let i = 0; i < 5; i++) {
+    const a = -Math.PI / 2 + (i * Math.PI * 2) / 5;
+    verts.push([cx + rx * Math.cos(a), cy + ry * Math.sin(a)]);
+  }
+  for (let s = 0; s < 5; s++) {
+    const [x0, y0] = verts[s];
+    const [x1, y1] = verts[(s + 1) % 5];
+    for (let i = 0; i < 7; i++) {
+      const t = (i + 0.5) / 7;
+      fillCircle(img, Math.round(x0 + (x1 - x0) * t), Math.round(y0 + (y1 - y0) * t), 2, 8, 8, 8);
+    }
+  }
+}
+
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillPentagon(img, 100, 100, 48, 48, 40, 90, 160);
+  punchPentagon(img, 100, 100, 70, 70);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `pentagon stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[100 * 200 + 100] > 180, "pentagon stamp design kept");
+  assert(a[42 * 200 + 100] > 180, "pentagon stamp paper margin kept (whole piece)");
+  assert(a[82 * 200 + 155] > 180, "pentagon stamp diagonal margin kept (whole piece)");
+  assert(a[54 * 200 + 133] < 16, "pentagon stamp perforation punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around pentagon stamp gone");
+  assert(cut.pipeline === "timbre", "pentagon stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(200, 200, 255, 255, 255);
+  fillPentagon(img, 100, 100, 70, 42, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `pentagon product on white is not a stamp (${guess.kind})`);
+}
+
+{
+  const img = rgb(200, 120, 8, 8, 8);
+  fillPentagon(img, 100, 60, 56, 34, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `pentagon product on black is not a stamp (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 200 + 100] > 180, "pentagon product on black kept");
+  assert(a[2 * 200 + 2] < 16, "black studio around pentagon product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp ok");
