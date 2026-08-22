@@ -88,6 +88,14 @@ function fillTriangle(image, cx, y0, y1, half, rr, gg, bb) {
   }
 }
 
+function fillQuatrefoil(image, cx, cy, r, rr, gg, bb) {
+  const off = Math.round(r * 0.86);
+  fillCircle(image, cx, cy - off, r, rr, gg, bb);
+  fillCircle(image, cx, cy + off, r, rr, gg, bb);
+  fillCircle(image, cx - off, cy, r, rr, gg, bb);
+  fillCircle(image, cx + off, cy, r, rr, gg, bb);
+}
+
 function fillSemi(image, cx, cy, rx, ry, rr, gg, bb) {
   for (let y = cy - ry; y <= cy; y++) {
     for (let x = cx - rx; x <= cx + rx; x++) {
@@ -1469,4 +1477,47 @@ function coilStamp() {
   assert(a[2 * 120 + 2] < 16, "black studio around triangle product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable ok");
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillQuatrefoil(img, 40, 40, 14, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood quatrefoil sky classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood quatrefoil sky pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood quatrefoil sky frame kept");
+  assert(a[12 * 80 + 12] > 180, "wood quatrefoil sky corner frame kept");
+  assert(cut.pipeline === "écran", "wood quatrefoil sky uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillQuatrefoil(img, 40, 40, 14, 40, 120, 45);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood quatrefoil foliage classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood quatrefoil foliage pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood quatrefoil foliage frame kept");
+  assert(cut.pipeline === "écran", "wood quatrefoil foliage uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillQuatrefoil(img, 60, 60, 20, 80, 160, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `quatrefoil blue product on white is not a pane (${guess.kind})`);
+}
+
+{
+  const img = rgb(120, 80, 8, 8, 8);
+  fillQuatrefoil(img, 60, 40, 14, 80, 180, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `quatrefoil blue product on black is not a pane (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "quatrefoil product on black kept");
+  assert(a[2 * 120 + 2] < 16, "black studio around quatrefoil product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil ok");
