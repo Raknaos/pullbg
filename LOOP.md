@@ -89,6 +89,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-22: Timbre croissant : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit croissant sur blanc/noir inchangé. Cache v=58.
 - 2026-08-22: Timbre goutte : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit goutte sur blanc/noir inchangé. Cache v=59.
 - 2026-08-22: Timbre écu : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit écu sur blanc/noir inchangé. Cache v=60.
+- 2026-08-22: Timbre croix : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit croix sur blanc/noir inchangé. Cache v=61.
 
 
 
