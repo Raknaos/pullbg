@@ -739,6 +739,107 @@ function fillArrow(image, cx, cy, rx, ry, rr, gg, bb) {
   }
 }
 
+function cloudRaw() {
+  const corners = [
+    [-1.00, 0.20],
+    [-0.78, -0.18],
+    [-0.42, -0.38],
+    [-0.22, -0.78],
+    [0.08, -1.00],
+    [0.40, -0.72],
+    [0.58, -0.32],
+    [0.88, -0.18],
+    [1.00, 0.18],
+    [0.86, 0.58],
+    [0.50, 0.88],
+    [0.12, 0.70],
+    [-0.22, 1.00],
+    [-0.62, 0.82],
+    [-0.90, 0.52],
+    [-1.00, 0.20],
+  ];
+  const dense = [];
+  for (let s = 0; s < corners.length - 1; s++) {
+    const [x0, y0] = corners[s];
+    const [x1, y1] = corners[s + 1];
+    const n = 48;
+    for (let i = 0; i < n; i++) {
+      const t = i / n;
+      dense.push([x0 + (x1 - x0) * t, y0 + (y1 - y0) * t]);
+    }
+  }
+  dense.push(corners[corners.length - 1]);
+  return dense;
+}
+
+function cloudVerts(cx, cy, rx, ry) {
+  const dense = cloudRaw();
+  const acc = [0];
+  for (let i = 1; i < dense.length; i++) {
+    acc.push(acc[i - 1] + Math.hypot(dense[i][0] - dense[i - 1][0], dense[i][1] - dense[i - 1][1]));
+  }
+  const total = acc[acc.length - 1] || 1;
+  const raw = [];
+  for (let s = 0; s < 16; s++) {
+    const target = (s / 16) * total;
+    let k = 1;
+    while (k < acc.length && acc[k] < target) k++;
+    const u = (target - acc[k - 1]) / Math.max(1e-9, acc[k] - acc[k - 1]);
+    raw.push([
+      dense[k - 1][0] + (dense[k][0] - dense[k - 1][0]) * u,
+      dense[k - 1][1] + (dense[k][1] - dense[k - 1][1]) * u,
+    ]);
+  }
+  let x0 = Infinity;
+  let y0 = Infinity;
+  let x1 = -Infinity;
+  let y1 = -Infinity;
+  for (const [x, y] of raw) {
+    if (x < x0) x0 = x;
+    if (y < y0) y0 = y;
+    if (x > x1) x1 = x;
+    if (y > y1) y1 = y;
+  }
+  const ocx = (x0 + x1) / 2;
+  const ocy = (y0 + y1) / 2;
+  const orx = (x1 - x0) / 2 || 1;
+  const ory = (y1 - y0) / 2 || 1;
+  return raw.map(([x, y]) => [cx + ((x - ocx) / orx) * rx, cy + ((y - ocy) / ory) * ry]);
+}
+
+function fillCloud(image, cx, cy, rx, ry, rr, gg, bb) {
+  const pts = cloudVerts(cx, cy, rx, ry);
+  const n = pts.length;
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const [x, y] of pts) {
+    if (x < minX) minX = x;
+    if (y < minY) minY = y;
+    if (x > maxX) maxX = x;
+    if (y > maxY) maxY = y;
+  }
+  minX = Math.max(0, Math.floor(minX));
+  minY = Math.max(0, Math.floor(minY));
+  maxX = Math.min(image.width - 1, Math.ceil(maxX));
+  maxY = Math.min(image.height - 1, Math.ceil(maxY));
+  for (let y = minY; y <= maxY; y++) {
+    for (let x = minX; x <= maxX; x++) {
+      let inside = false;
+      for (let i = 0, j = n - 1; i < n; j = i++) {
+        const [xi, yi] = pts[i];
+        const [xj, yj] = pts[j];
+        const hit = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi + 1e-9) + xi);
+        if (hit) inside = !inside;
+      }
+      if (!inside) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function fillQuatrefoil(image, cx, cy, r, rr, gg, bb) {
   const off = Math.round(r * 0.86);
   fillCircle(image, cx, cy - off, r, rr, gg, bb);
@@ -3062,4 +3163,60 @@ function punchArrow(img, cx, cy, rx, ry) {
   assert(a[2 * 200 + 2] < 16, "black studio around arrow product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp+crescent-stamp+teardrop-stamp+shield-stamp+cross-stamp+arrow-stamp ok");
+function punchCloud(img, cx, cy, rx, ry) {
+  const verts = cloudVerts(cx, cy, rx, ry);
+  const holes = [];
+  for (let s = 0; s < 16; s++) {
+    const [x0, y0] = verts[s];
+    const [x1, y1] = verts[(s + 1) % 16];
+    for (let i = 0; i < 3; i++) {
+      const t = (i + 0.5) / 3;
+      const x = Math.round(x0 + (x1 - x0) * t);
+      const y = Math.round(y0 + (y1 - y0) * t);
+      fillCircle(img, x, y, 2, 8, 8, 8);
+      holes.push([x, y]);
+    }
+  }
+  return holes;
+}
+
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillCloud(img, 100, 100, 40, 42, 40, 90, 160);
+  const holes = punchCloud(img, 100, 100, 70, 74);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `cloud stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  const large = cloudVerts(100, 100, 70, 74);
+  let tip = large[0];
+  for (const v of large) if (v[1] < tip[1]) tip = v;
+  const mx = Math.round(100 + (tip[0] - 100) * 0.72);
+  const my = Math.round(100 + (tip[1] - 100) * 0.72);
+  assert(a[100 * 200 + 100] > 180, "cloud stamp design kept");
+  assert(a[my * 200 + mx] > 180, "cloud stamp paper margin kept (whole piece)");
+  assert(a[holes[0][1] * 200 + holes[0][0]] < 16, "cloud stamp perforation punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around cloud stamp gone");
+  assert(a[32 * 200 + 36] < 16, "cloud stamp notch not filled");
+  assert(cut.pipeline === "timbre", "cloud stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(200, 200, 255, 255, 255);
+  fillCloud(img, 100, 100, 56, 58, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `cloud product on white is not a stamp (${guess.kind})`);
+}
+
+{
+  const img = rgb(200, 120, 8, 8, 8);
+  fillCloud(img, 100, 60, 48, 50, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `cloud product on black is not a stamp (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 200 + 100] > 180, "cloud product on black kept");
+  assert(a[2 * 200 + 2] < 16, "black studio around cloud product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp+crescent-stamp+teardrop-stamp+shield-stamp+cross-stamp+arrow-stamp+cloud-stamp ok");

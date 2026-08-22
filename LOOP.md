@@ -91,6 +91,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-22: Timbre écu : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit écu sur blanc/noir inchangé. Cache v=60.
 - 2026-08-22: Timbre croix : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit croix sur blanc/noir inchangé. Cache v=61.
 - 2026-08-22: Timbre flèche : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit flèche sur blanc/noir inchangé. Cache v=62.
+- 2026-08-22: Timbre nuage : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit nuage sur blanc/noir inchangé. Cache v=63.
 
 
 
