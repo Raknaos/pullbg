@@ -72,6 +72,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-21: Vitre losange / plomb dans un cadre bois : percée (ciel / feuillage). Produit losange sur blanc/noir inchangé. Cache v=41.
 - 2026-08-22: Vitre triangulaire / pignon dans un cadre bois : percée (ciel / feuillage). Produit triangle sur blanc/noir inchangé. Cache v=42.
 - 2026-08-22: Vitre quadrilobe / quatre-feuilles dans un cadre bois : percée (ciel / feuillage). Produit trèfle sur blanc/noir inchangé. Cache v=43.
+- 2026-08-22: Vitre trapèze / lucarne dans un cadre bois : percée (ciel / feuillage). Produit trapèze sur blanc/noir inchangé. Cache v=44.
 
 
 
