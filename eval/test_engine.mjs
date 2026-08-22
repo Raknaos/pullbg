@@ -2152,4 +2152,54 @@ function punchTriangle(img, cx, cy, rx, ry, flip) {
   assert(a[2 * 200 + 2] < 16, "black studio around triangle product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp ok");
+function punchStar(img, cx, cy, ro, ri) {
+  const verts = [];
+  for (let i = 0; i < 10; i++) {
+    const a = -Math.PI / 2 + (i * Math.PI) / 5;
+    const rad = i % 2 === 0 ? ro : ri;
+    verts.push([cx + rad * Math.cos(a), cy + rad * Math.sin(a)]);
+  }
+  for (let s = 0; s < 10; s++) {
+    const [x0, y0] = verts[s];
+    const [x1, y1] = verts[(s + 1) % 10];
+    for (let i = 0; i < 4; i++) {
+      const t = (i + 0.5) / 4;
+      fillCircle(img, Math.round(x0 + (x1 - x0) * t), Math.round(y0 + (y1 - y0) * t), 2, 8, 8, 8);
+    }
+  }
+}
+
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillStar(img, 100, 100, 48, 20, 40, 90, 160);
+  punchStar(img, 100, 100, 70, 30);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `star stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[100 * 200 + 100] > 180, "star stamp design kept");
+  assert(a[44 * 200 + 100] > 180, "star stamp paper margin kept (whole piece)");
+  assert(a[36 * 200 + 102] < 16, "star stamp perforation punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around star stamp gone");
+  assert(cut.pipeline === "timbre", "star stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(200, 200, 255, 255, 255);
+  fillStar(img, 100, 100, 70, 28, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `star product on white is not a stamp (${guess.kind})`);
+}
+
+{
+  const img = rgb(200, 120, 8, 8, 8);
+  fillStar(img, 100, 60, 48, 20, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `star product on black is not a stamp (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 200 + 100] > 180, "star product on black kept");
+  assert(a[2 * 200 + 2] < 16, "black studio around star product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp ok");
