@@ -76,6 +76,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-22: Vitre étoile / pentagramme dans un cadre bois : percée (ciel / feuillage). Produit étoile sur blanc/noir inchangé. Cache v=45.
 - 2026-08-22: Grille plombée 4 losanges dans un cadre bois : percée (ciel / feuillage), croisillon gardé. Deux produits losange sur blanc/noir inchangés. Cache v=46.
 - 2026-08-22: Œil-de-bœuf à bossage : anneau percé, médaillon central gardé (plus traité comme poussière). Produit concentrique sur noir inchangé. Cache v=47.
+- 2026-08-22: Timbre rond : dentelé circulaire reconnu, pièce entière + trous percés (plus classé fond). Produit rond sur blanc/noir inchangé. Cache v=48.
 
 
 

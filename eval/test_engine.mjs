@@ -1767,4 +1767,40 @@ function bullseye(sky) {
   assert(a[2 * 120 + 2] < 16, "black studio around concentric product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss ok");
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillCircle(img, 100, 100, 48, 40, 90, 160);
+  for (let i = 0; i < 36; i++) {
+    const t = (i / 36) * Math.PI * 2;
+    fillCircle(img, Math.round(100 + Math.cos(t) * 58), Math.round(100 + Math.sin(t) * 58), 2, 8, 8, 8);
+  }
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `round stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[100 * 200 + 100] > 180, "round stamp design kept");
+  assert(a[100 * 200 + 154] > 180, "round stamp paper margin kept (whole piece)");
+  assert(a[100 * 200 + 158] < 16, "round stamp perforation punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around round stamp gone");
+  assert(cut.pipeline === "timbre", "round stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(200, 200, 255, 255, 255);
+  fillCircle(img, 100, 100, 48, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `round product on white is not a stamp (${guess.kind})`);
+}
+
+{
+  const img = rgb(200, 120, 8, 8, 8);
+  fillCircle(img, 100, 60, 40, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `round product on black is not a stamp (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 200 + 100] > 180, "round product on black kept");
+  assert(a[2 * 200 + 2] < 16, "black studio around round product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp ok");
