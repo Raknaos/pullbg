@@ -76,6 +76,19 @@ function fillDiamond(image, cx, cy, rx, ry, rr, gg, bb) {
   }
 }
 
+function fillHexagon(image, cx, cy, rx, ry, flat, rr, gg, bb) {
+  for (let y = cy - ry; y <= cy + ry; y++) {
+    for (let x = cx - rx; x <= cx + rx; x++) {
+      const ax = Math.abs(x - cx) / rx;
+      const ay = Math.abs(y - cy) / ry;
+      const e = flat ? Math.max(ax, ay, ax + ay * 0.5) : Math.max(ax, ay, ax * 0.5 + ay);
+      if (e > 1) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function fillTriangle(image, cx, y0, y1, half, rr, gg, bb) {
   for (let y = y0; y <= y1; y++) {
     const t = (y - y0) / Math.max(1, y1 - y0);
@@ -1885,4 +1898,52 @@ function punchDiamond(img, cx, cy, rx, ry) {
   assert(a[2 * 200 + 2] < 16, "black studio around diamond product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp ok");
+function punchHexagon(img, cx, cy, rx, ry, flat) {
+  const verts = flat
+    ? [[cx + rx, cy], [cx + rx * 0.5, cy + ry], [cx - rx * 0.5, cy + ry], [cx - rx, cy], [cx - rx * 0.5, cy - ry], [cx + rx * 0.5, cy - ry]]
+    : [[cx, cy - ry], [cx + rx, cy - ry * 0.5], [cx + rx, cy + ry * 0.5], [cx, cy + ry], [cx - rx, cy + ry * 0.5], [cx - rx, cy - ry * 0.5]];
+  for (let s = 0; s < 6; s++) {
+    const [x0, y0] = verts[s];
+    const [x1, y1] = verts[(s + 1) % 6];
+    for (let i = 0; i < 8; i++) {
+      const t = (i + 0.5) / 8;
+      fillCircle(img, Math.round(x0 + (x1 - x0) * t), Math.round(y0 + (y1 - y0) * t), 2, 8, 8, 8);
+    }
+  }
+}
+
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillHexagon(img, 100, 100, 48, 56, false, 40, 90, 160);
+  punchHexagon(img, 100, 100, 70, 80, false);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `hexagon stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[100 * 200 + 100] > 180, "hexagon stamp design kept");
+  assert(a[100 * 200 + 160] > 180, "hexagon stamp paper margin kept (whole piece)");
+  assert(a[36 * 200 + 100] > 180, "hexagon stamp vertical margin kept (whole piece)");
+  assert(a[100 * 200 + 170] < 16, "hexagon stamp perforation punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around hexagon stamp gone");
+  assert(cut.pipeline === "timbre", "hexagon stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(200, 200, 255, 255, 255);
+  fillHexagon(img, 100, 100, 70, 42, false, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `hexagon product on white is not a stamp (${guess.kind})`);
+}
+
+{
+  const img = rgb(200, 120, 8, 8, 8);
+  fillHexagon(img, 100, 60, 56, 34, false, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `hexagon product on black is not a stamp (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 200 + 100] > 180, "hexagon product on black kept");
+  assert(a[2 * 200 + 2] < 16, "black studio around hexagon product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp ok");

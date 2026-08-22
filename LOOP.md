@@ -79,6 +79,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-22: Timbre rond : dentelé circulaire reconnu, pièce entière + trous percés (plus classé fond). Produit rond sur blanc/noir inchangé. Cache v=48.
 - 2026-08-22: Timbre ovale : dentelé elliptique reconnu, pièce entière + trous percés (plus classé fond). Produit ovale sur blanc/noir inchangé. Cache v=49.
 - 2026-08-22: Timbre losange : dentelé en losange reconnu, pièce entière + trous percés (plus classé fond). Produit losange sur blanc/noir inchangé. Cache v=50.
+- 2026-08-22: Timbre hexagonal : dentelé 6 côtés reconnu, pièce entière + trous percés (plus classé fond). Produit hexagonal sur blanc/noir inchangé. Cache v=51.
 
 
 
