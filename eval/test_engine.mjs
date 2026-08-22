@@ -89,6 +89,18 @@ function fillHexagon(image, cx, cy, rx, ry, flat, rr, gg, bb) {
   }
 }
 
+function fillOctagon(image, cx, cy, rx, ry, rr, gg, bb) {
+  for (let y = cy - ry; y <= cy + ry; y++) {
+    for (let x = cx - rx; x <= cx + rx; x++) {
+      const ax = Math.abs(x - cx) / rx;
+      const ay = Math.abs(y - cy) / ry;
+      if (Math.max(ax, ay, (ax + ay) / Math.SQRT2) > 1) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function fillTriangle(image, cx, y0, y1, half, rr, gg, bb) {
   for (let y = y0; y <= y1; y++) {
     const t = (y - y0) / Math.max(1, y1 - y0);
@@ -1946,4 +1958,61 @@ function punchHexagon(img, cx, cy, rx, ry, flat) {
   assert(a[2 * 200 + 2] < 16, "black studio around hexagon product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp ok");
+function punchOctagon(img, cx, cy, rx, ry) {
+  const k = Math.SQRT2 - 1;
+  const verts = [
+    [cx + rx, cy - ry * k],
+    [cx + rx, cy + ry * k],
+    [cx + rx * k, cy + ry],
+    [cx - rx * k, cy + ry],
+    [cx - rx, cy + ry * k],
+    [cx - rx, cy - ry * k],
+    [cx - rx * k, cy - ry],
+    [cx + rx * k, cy - ry],
+  ];
+  for (let s = 0; s < 8; s++) {
+    const [x0, y0] = verts[s];
+    const [x1, y1] = verts[(s + 1) % 8];
+    for (let i = 0; i < 6; i++) {
+      const t = (i + 0.5) / 6;
+      fillCircle(img, Math.round(x0 + (x1 - x0) * t), Math.round(y0 + (y1 - y0) * t), 2, 8, 8, 8);
+    }
+  }
+}
+
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillOctagon(img, 100, 100, 48, 48, 40, 90, 160);
+  punchOctagon(img, 100, 100, 70, 70);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `octagon stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[100 * 200 + 100] > 180, "octagon stamp design kept");
+  assert(a[100 * 200 + 160] > 180, "octagon stamp paper margin kept (whole piece)");
+  assert(a[40 * 200 + 100] > 180, "octagon stamp vertical margin kept (whole piece)");
+  assert(a[128 * 200 + 168] > 180, "octagon stamp chamfer margin kept (whole piece)");
+  assert(a[76 * 200 + 170] < 16, "octagon stamp perforation punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around octagon stamp gone");
+  assert(cut.pipeline === "timbre", "octagon stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(200, 200, 255, 255, 255);
+  fillOctagon(img, 100, 100, 70, 42, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `octagon product on white is not a stamp (${guess.kind})`);
+}
+
+{
+  const img = rgb(200, 120, 8, 8, 8);
+  fillOctagon(img, 100, 60, 56, 34, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `octagon product on black is not a stamp (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 200 + 100] > 180, "octagon product on black kept");
+  assert(a[2 * 200 + 2] < 16, "black studio around octagon product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp ok");
