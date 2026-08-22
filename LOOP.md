@@ -86,6 +86,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-22: Timbre étoile : dentelé 10 côtés reconnu, pièce entière + trous percés (plus classé fond). Produit étoile sur blanc/noir inchangé. Cache v=55.
 - 2026-08-22: Timbre cœur : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit cœur sur blanc/noir inchangé. Cache v=56.
 - 2026-08-22: File : le mur quota ne consomme plus de slots sans découper, et n’abandonne plus l’affinage des images déjà prêtes. Pixels lâchés si découpe/affinage plante. Cache v=57.
+- 2026-08-22: Timbre croissant : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit croissant sur blanc/noir inchangé. Cache v=58.
 
 
 

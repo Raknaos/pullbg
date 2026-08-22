@@ -278,6 +278,121 @@ function fillHeart(image, cx, cy, rx, ry, rr, gg, bb) {
   }
 }
 
+function rotCrescent(x, y, dir) {
+  if (dir === 1) return [-x, y];
+  if (dir === 2) return [y, -x];
+  if (dir === 3) return [-y, x];
+  return [x, y];
+}
+
+function unrotCrescent(x, y, dir) {
+  if (dir === 1) return [-x, y];
+  if (dir === 2) return [-y, x];
+  if (dir === 3) return [y, -x];
+  return [x, y];
+}
+
+function crescentRaw(inner, shift) {
+  const n = 256;
+  const outerAng = [];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    const x = Math.cos(a);
+    const y = Math.sin(a);
+    if (((x - shift) / inner) ** 2 + (y / inner) ** 2 >= 0.999) outerAng.push(a);
+  }
+  let start = 0;
+  let bestGap = 0;
+  for (let i = 0; i < outerAng.length; i++) {
+    const next = outerAng[(i + 1) % outerAng.length] + (i + 1 >= outerAng.length ? Math.PI * 2 : 0);
+    const gap = next - outerAng[i];
+    if (gap > bestGap) {
+      bestGap = gap;
+      start = (i + 1) % outerAng.length;
+    }
+  }
+  const outer = [];
+  for (let k = 0; k < outerAng.length; k++) {
+    const a = outerAng[(start + k) % outerAng.length];
+    outer.push([Math.cos(a), Math.sin(a)]);
+  }
+  const innerAng = [];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    const x = shift + inner * Math.cos(a);
+    const y = inner * Math.sin(a);
+    if (x * x + y * y <= 1.001) innerAng.push(a);
+  }
+  let iStart = 0;
+  let iGap = 0;
+  for (let i = 0; i < innerAng.length; i++) {
+    const next = innerAng[(i + 1) % innerAng.length] + (i + 1 >= innerAng.length ? Math.PI * 2 : 0);
+    const gap = next - innerAng[i];
+    if (gap > iGap) {
+      iGap = gap;
+      iStart = (i + 1) % innerAng.length;
+    }
+  }
+  const inn = [];
+  for (let k = 0; k < innerAng.length; k++) {
+    const a = innerAng[(iStart + k) % innerAng.length];
+    inn.push([shift + inner * Math.cos(a), inner * Math.sin(a)]);
+  }
+  if (!outer.length || !inn.length) return [];
+  const last = outer[outer.length - 1];
+  const d0 = Math.hypot(inn[0][0] - last[0], inn[0][1] - last[1]);
+  const d1 = Math.hypot(inn[inn.length - 1][0] - last[0], inn[inn.length - 1][1] - last[1]);
+  if (d1 < d0) inn.reverse();
+  return outer.concat(inn);
+}
+
+function crescentVerts(cx, cy, rx, ry, inner = 0.72, shift = 0.4, dir = 0) {
+  const dense = crescentRaw(inner, shift);
+  if (dense.length < 8) return [];
+  const acc = [0];
+  for (let i = 1; i < dense.length; i++) {
+    acc.push(acc[i - 1] + Math.hypot(dense[i][0] - dense[i - 1][0], dense[i][1] - dense[i - 1][1]));
+  }
+  const total = acc[acc.length - 1] || 1;
+  const raw = [];
+  for (let s = 0; s < 16; s++) {
+    const target = (s / 16) * total;
+    let k = 1;
+    while (k < acc.length && acc[k] < target) k++;
+    const u = (target - acc[k - 1]) / Math.max(1e-9, acc[k] - acc[k - 1]);
+    raw.push([
+      dense[k - 1][0] + (dense[k][0] - dense[k - 1][0]) * u,
+      dense[k - 1][1] + (dense[k][1] - dense[k - 1][1]) * u,
+    ]);
+  }
+  return raw.map(([x, y]) => {
+    const [xx, yy] = rotCrescent(x, y, dir);
+    return [cx + xx * rx, cy + yy * ry];
+  });
+}
+
+function inCrescent(x, y, cx, cy, rx, ry, inner = 0.72, shift = 0.4, dir = 0) {
+  const [ux, uy] = unrotCrescent((x - cx) / rx, (y - cy) / ry, dir);
+  if (ux * ux + uy * uy > 1) return false;
+  const ix = (ux - shift) / inner;
+  const iy = uy / inner;
+  return ix * ix + iy * iy >= 1;
+}
+
+function fillCrescent(image, cx, cy, rx, ry, rr, gg, bb, inner = 0.72, shift = 0.4, dir = 0) {
+  const x0 = Math.max(0, Math.floor(cx - rx - 1));
+  const x1 = Math.min(image.width - 1, Math.ceil(cx + rx + 1));
+  const y0 = Math.max(0, Math.floor(cy - ry - 1));
+  const y1 = Math.min(image.height - 1, Math.ceil(cy + ry + 1));
+  for (let y = y0; y <= y1; y++) {
+    for (let x = x0; x <= x1; x++) {
+      if (!inCrescent(x, y, cx, cy, rx, ry, inner, shift, dir)) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function fillQuatrefoil(image, cx, cy, r, rr, gg, bb) {
   const off = Math.round(r * 0.86);
   fillCircle(image, cx, cy - off, r, rr, gg, bb);
@@ -2333,4 +2448,56 @@ function punchHeart(img, cx, cy, rx, ry) {
   assert(a[2 * 200 + 2] < 16, "black studio around heart product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp ok");
+function punchCrescent(img, cx, cy, rx, ry, inner = 0.72, shift = 0.4, dir = 0) {
+  const verts = crescentVerts(cx, cy, rx, ry, inner, shift, dir);
+  const holes = [];
+  for (let s = 0; s < 16; s++) {
+    const [x0, y0] = verts[s];
+    const [x1, y1] = verts[(s + 1) % 16];
+    for (let i = 0; i < 3; i++) {
+      const t = (i + 0.5) / 3;
+      const x = Math.round(x0 + (x1 - x0) * t);
+      const y = Math.round(y0 + (y1 - y0) * t);
+      fillCircle(img, x, y, 2, 8, 8, 8);
+      holes.push([x, y]);
+    }
+  }
+  return holes;
+}
+
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillCrescent(img, 100, 100, 40, 42, 40, 90, 160);
+  const holes = punchCrescent(img, 100, 100, 70, 74);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `crescent stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  const mx = Math.round(100 - 70 * 0.72);
+  const my = 100;
+  assert(a[100 * 200 + 70] > 180, "crescent stamp design kept");
+  assert(a[my * 200 + mx] > 180, "crescent stamp paper margin kept (whole piece)");
+  assert(a[holes[0][1] * 200 + holes[0][0]] < 16, "crescent stamp perforation punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around crescent stamp gone");
+  assert(cut.pipeline === "timbre", "crescent stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(200, 200, 255, 255, 255);
+  fillCrescent(img, 100, 100, 56, 58, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `crescent product on white is not a stamp (${guess.kind})`);
+}
+
+{
+  const img = rgb(200, 120, 8, 8, 8);
+  fillCrescent(img, 100, 60, 48, 50, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `crescent product on black is not a stamp (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 200 + 70] > 180, "crescent product on black kept");
+  assert(a[2 * 200 + 2] < 16, "black studio around crescent product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp+crescent-stamp ok");
