@@ -88,6 +88,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-22: File : le mur quota ne consomme plus de slots sans découper, et n’abandonne plus l’affinage des images déjà prêtes. Pixels lâchés si découpe/affinage plante. Cache v=57.
 - 2026-08-22: Timbre croissant : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit croissant sur blanc/noir inchangé. Cache v=58.
 - 2026-08-22: Timbre goutte : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit goutte sur blanc/noir inchangé. Cache v=59.
+- 2026-08-22: Timbre écu : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit écu sur blanc/noir inchangé. Cache v=60.
 
 
 
