@@ -78,6 +78,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-22: Œil-de-bœuf à bossage : anneau percé, médaillon central gardé (plus traité comme poussière). Produit concentrique sur noir inchangé. Cache v=47.
 - 2026-08-22: Timbre rond : dentelé circulaire reconnu, pièce entière + trous percés (plus classé fond). Produit rond sur blanc/noir inchangé. Cache v=48.
 - 2026-08-22: Timbre ovale : dentelé elliptique reconnu, pièce entière + trous percés (plus classé fond). Produit ovale sur blanc/noir inchangé. Cache v=49.
+- 2026-08-22: Timbre losange : dentelé en losange reconnu, pièce entière + trous percés (plus classé fond). Produit losange sur blanc/noir inchangé. Cache v=50.
 
 
 

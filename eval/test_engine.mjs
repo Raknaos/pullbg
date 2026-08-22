@@ -1839,4 +1839,50 @@ function bullseye(sky) {
   assert(a[2 * 200 + 2] < 16, "black studio around oval product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp ok");
+function punchDiamond(img, cx, cy, rx, ry) {
+  const verts = [[cx, cy - ry], [cx + rx, cy], [cx, cy + ry], [cx - rx, cy]];
+  for (let s = 0; s < 4; s++) {
+    const [x0, y0] = verts[s];
+    const [x1, y1] = verts[(s + 1) % 4];
+    for (let i = 0; i < 9; i++) {
+      const t = (i + 0.5) / 9;
+      fillCircle(img, Math.round(x0 + (x1 - x0) * t), Math.round(y0 + (y1 - y0) * t), 2, 8, 8, 8);
+    }
+  }
+}
+
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillDiamond(img, 100, 100, 56, 40, 40, 90, 160);
+  punchDiamond(img, 100, 100, 80, 60);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `diamond stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[100 * 200 + 100] > 180, "diamond stamp design kept");
+  assert(a[100 * 200 + 166] > 180, "diamond stamp paper margin kept (whole piece)");
+  assert(a[56 * 200 + 100] > 180, "diamond stamp vertical margin kept (whole piece)");
+  assert(a[100 * 200 + 180] < 16, "diamond stamp perforation punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around diamond stamp gone");
+  assert(cut.pipeline === "timbre", "diamond stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(200, 200, 255, 255, 255);
+  fillDiamond(img, 100, 100, 70, 42, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `diamond product on white is not a stamp (${guess.kind})`);
+}
+
+{
+  const img = rgb(200, 120, 8, 8, 8);
+  fillDiamond(img, 100, 60, 56, 34, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `diamond product on black is not a stamp (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 200 + 100] > 180, "diamond product on black kept");
+  assert(a[2 * 200 + 2] < 16, "black studio around diamond product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp ok");
