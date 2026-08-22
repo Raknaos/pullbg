@@ -93,6 +93,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-22: Timbre flèche : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit flèche sur blanc/noir inchangé. Cache v=62.
 - 2026-08-22: Timbre nuage : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit nuage sur blanc/noir inchangé. Cache v=63.
 - 2026-08-22: Timbre trèfle : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit trèfle sur blanc/noir inchangé. Cache v=64.
+- 2026-08-22: Timbre fleur : dentelé 5 pétales reconnu, pièce entière + trous percés. Motif <8 % plus avalé si le dentelé tient. Produit fleur sur blanc/noir inchangé. Cache v=65.
 
 
 
