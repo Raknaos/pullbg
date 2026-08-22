@@ -84,6 +84,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-22: Timbre pentagonal : dentelé 5 côtés reconnu, pièce entière + trous percés (plus classé fond). Produit pentagonal sur blanc/noir inchangé. Cache v=53.
 - 2026-08-22: Timbre triangulaire : dentelé 3 côtés reconnu, pièce entière + trous percés (plus classé fond). Produit triangulaire sur blanc/noir inchangé. Cache v=54.
 - 2026-08-22: Timbre étoile : dentelé 10 côtés reconnu, pièce entière + trous percés (plus classé fond). Produit étoile sur blanc/noir inchangé. Cache v=55.
+- 2026-08-22: Timbre cœur : dentelé reconnu, pièce entière + trous percés (plus classé fond). Produit cœur sur blanc/noir inchangé. Cache v=56.
 
 
 

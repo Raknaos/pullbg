@@ -202,6 +202,82 @@ function fillStar(image, cx, cy, ro, ri, rr, gg, bb) {
   }
 }
 
+function heartVerts(cx, cy, rx, ry) {
+  const dense = [];
+  const n = 256;
+  for (let i = 0; i <= n; i++) {
+    const t = (i / n) * Math.PI * 2;
+    dense.push([
+      16 * Math.sin(t) ** 3,
+      -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)),
+    ]);
+  }
+  const acc = [0];
+  for (let i = 1; i < dense.length; i++) {
+    acc.push(acc[i - 1] + Math.hypot(dense[i][0] - dense[i - 1][0], dense[i][1] - dense[i - 1][1]));
+  }
+  const total = acc[acc.length - 1] || 1;
+  const raw = [];
+  for (let s = 0; s < 16; s++) {
+    const target = (s / 16) * total;
+    let k = 1;
+    while (k < acc.length && acc[k] < target) k++;
+    const u = (target - acc[k - 1]) / Math.max(1e-9, acc[k] - acc[k - 1]);
+    raw.push([
+      dense[k - 1][0] + (dense[k][0] - dense[k - 1][0]) * u,
+      dense[k - 1][1] + (dense[k][1] - dense[k - 1][1]) * u,
+    ]);
+  }
+  let x0 = Infinity;
+  let y0 = Infinity;
+  let x1 = -Infinity;
+  let y1 = -Infinity;
+  for (const [x, y] of raw) {
+    if (x < x0) x0 = x;
+    if (y < y0) y0 = y;
+    if (x > x1) x1 = x;
+    if (y > y1) y1 = y;
+  }
+  const ocx = (x0 + x1) / 2;
+  const ocy = (y0 + y1) / 2;
+  const orx = (x1 - x0) / 2 || 1;
+  const ory = (y1 - y0) / 2 || 1;
+  return raw.map(([x, y]) => [cx + ((x - ocx) / orx) * rx, cy + ((y - ocy) / ory) * ry]);
+}
+
+function fillHeart(image, cx, cy, rx, ry, rr, gg, bb) {
+  const pts = heartVerts(cx, cy, rx, ry);
+  const n = pts.length;
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const [x, y] of pts) {
+    if (x < minX) minX = x;
+    if (y < minY) minY = y;
+    if (x > maxX) maxX = x;
+    if (y > maxY) maxY = y;
+  }
+  minX = Math.max(0, Math.floor(minX));
+  minY = Math.max(0, Math.floor(minY));
+  maxX = Math.min(image.width - 1, Math.ceil(maxX));
+  maxY = Math.min(image.height - 1, Math.ceil(maxY));
+  for (let y = minY; y <= maxY; y++) {
+    for (let x = minX; x <= maxX; x++) {
+      let inside = false;
+      for (let i = 0, j = n - 1; i < n; j = i++) {
+        const [xi, yi] = pts[i];
+        const [xj, yj] = pts[j];
+        const hit = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi + 1e-9) + xi);
+        if (hit) inside = !inside;
+      }
+      if (!inside) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function fillQuatrefoil(image, cx, cy, r, rr, gg, bb) {
   const off = Math.round(r * 0.86);
   fillCircle(image, cx, cy - off, r, rr, gg, bb);
@@ -2202,4 +2278,59 @@ function punchStar(img, cx, cy, ro, ri) {
   assert(a[2 * 200 + 2] < 16, "black studio around star product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp ok");
+function punchHeart(img, cx, cy, rx, ry) {
+  const verts = heartVerts(cx, cy, rx, ry);
+  const holes = [];
+  for (let s = 0; s < 16; s++) {
+    const [x0, y0] = verts[s];
+    const [x1, y1] = verts[(s + 1) % 16];
+    for (let i = 0; i < 3; i++) {
+      const t = (i + 0.5) / 3;
+      const x = Math.round(x0 + (x1 - x0) * t);
+      const y = Math.round(y0 + (y1 - y0) * t);
+      fillCircle(img, x, y, 2, 8, 8, 8);
+      holes.push([x, y]);
+    }
+  }
+  return holes;
+}
+
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillHeart(img, 100, 100, 40, 42, 40, 90, 160);
+  const holes = punchHeart(img, 100, 100, 70, 74);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `heart stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  const large = heartVerts(100, 100, 70, 74);
+  let top = large[0];
+  for (const v of large) if (v[1] < top[1]) top = v;
+  const mx = Math.round(100 + (top[0] - 100) * 0.72);
+  const my = Math.round(100 + (top[1] - 100) * 0.72);
+  assert(a[100 * 200 + 100] > 180, "heart stamp design kept");
+  assert(a[my * 200 + mx] > 180, "heart stamp paper margin kept (whole piece)");
+  assert(a[holes[0][1] * 200 + holes[0][0]] < 16, "heart stamp perforation punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around heart stamp gone");
+  assert(cut.pipeline === "timbre", "heart stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(200, 200, 255, 255, 255);
+  fillHeart(img, 100, 100, 56, 58, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `heart product on white is not a stamp (${guess.kind})`);
+}
+
+{
+  const img = rgb(200, 120, 8, 8, 8);
+  fillHeart(img, 100, 60, 48, 50, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `heart product on black is not a stamp (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 200 + 100] > 180, "heart product on black kept");
+  assert(a[2 * 200 + 2] < 16, "black studio around heart product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp ok");
