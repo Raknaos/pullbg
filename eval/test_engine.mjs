@@ -100,6 +100,44 @@ function fillTrapezoid(image, cx, y0, y1, topHalf, botHalf, rr, gg, bb) {
   }
 }
 
+function fillStar(image, cx, cy, ro, ri, rr, gg, bb) {
+  const pts = [];
+  for (let i = 0; i < 10; i++) {
+    const a = -Math.PI / 2 + i * Math.PI / 5;
+    const rad = i % 2 === 0 ? ro : ri;
+    pts.push([cx + rad * Math.cos(a), cy + rad * Math.sin(a)]);
+  }
+  const n = pts.length;
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const [x, y] of pts) {
+    if (x < minX) minX = x;
+    if (y < minY) minY = y;
+    if (x > maxX) maxX = x;
+    if (y > maxY) maxY = y;
+  }
+  minX = Math.max(0, Math.floor(minX));
+  minY = Math.max(0, Math.floor(minY));
+  maxX = Math.min(image.width - 1, Math.ceil(maxX));
+  maxY = Math.min(image.height - 1, Math.ceil(maxY));
+  for (let y = minY; y <= maxY; y++) {
+    for (let x = minX; x <= maxX; x++) {
+      let inside = false;
+      for (let i = 0, j = n - 1; i < n; j = i++) {
+        const [xi, yi] = pts[i];
+        const [xj, yj] = pts[j];
+        const hit = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi + 1e-9) + xi);
+        if (hit) inside = !inside;
+      }
+      if (!inside) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function fillQuatrefoil(image, cx, cy, r, rr, gg, bb) {
   const off = Math.round(r * 0.86);
   fillCircle(image, cx, cy - off, r, rr, gg, bb);
@@ -1575,4 +1613,47 @@ function coilStamp() {
   assert(a[2 * 120 + 2] < 16, "black studio around trapezoid product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid ok");
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillStar(img, 40, 40, 28, 12, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood star sky classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood star sky pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood star sky frame kept");
+  assert(a[12 * 80 + 12] > 180, "wood star sky corner frame kept");
+  assert(cut.pipeline === "écran", "wood star sky uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillStar(img, 40, 40, 28, 12, 40, 120, 45);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood star foliage classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 80 + 40] < 16, "wood star foliage pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood star foliage frame kept");
+  assert(cut.pipeline === "écran", "wood star foliage uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillStar(img, 60, 60, 40, 16, 80, 160, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `star blue product on white is not a pane (${guess.kind})`);
+}
+
+{
+  const img = rgb(120, 80, 8, 8, 8);
+  fillStar(img, 60, 40, 28, 12, 80, 180, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `star blue product on black is not a pane (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[40 * 120 + 60] > 180, "star product on black kept");
+  assert(a[2 * 120 + 2] < 16, "black studio around star product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star ok");
