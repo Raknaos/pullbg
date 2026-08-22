@@ -111,6 +111,12 @@ export function canCut() {
   return { ok: false, gate: "plan", q };
 }
 
+/** How many pending jobs can consume a quota slot in this parallel batch. */
+export function paidBatchSize(remaining, pending, max = 3) {
+  if (!Number.isFinite(remaining)) return Math.min(max, pending);
+  return Math.min(max, pending, Math.max(0, remaining));
+}
+
 export function consumeOne() {
   const user = currentUser();
   if (user && isSubscribed(user)) return quota();

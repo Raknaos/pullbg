@@ -7,7 +7,8 @@ import {
   paintNav,
   nextResetAt,
   formatCountdown,
-} from "./auth.js?v=56";
+  paidBatchSize,
+} from "./auth.js?v=57";
 import { warmup, fastCut, refineCut } from "../lib/engine.js?v=56";
 import {
   bitmapFromSource,
@@ -223,14 +224,19 @@ async function cutOne(job, locked) {
   selectedId = job.id;
   job.status = "découpe…";
   patchJob(job);
-  const original = imageDataFromBitmap(await bitmapFromSource(job.file), 2200).image;
-  job.source = original;
-  job.draft = fastCut(original);
-  await show(job, job.draft.image, locked);
-  job.status = locked ? "aperçu flou" : (job.draft.needsRefine ? "affinage…" : "prêt");
-  job.locked = locked;
-  if (locked || !job.draft.needsRefine) dropPixels(job);
-  patchJob(job);
+  try {
+    const original = imageDataFromBitmap(await bitmapFromSource(job.file), 2200).image;
+    job.source = original;
+    job.draft = fastCut(original);
+    await show(job, job.draft.image, locked);
+    job.status = locked ? "aperçu flou" : (job.draft.needsRefine ? "affinage…" : "prêt");
+    job.locked = locked;
+    if (locked || !job.draft.needsRefine) dropPixels(job);
+    patchJob(job);
+  } catch (err) {
+    dropPixels(job);
+    throw err;
+  }
 }
 
 async function processQueue() {
@@ -239,25 +245,22 @@ async function processQueue() {
     while (true) {
       const pending = jobs.filter((j) => !j.draft && !j.locked && !j.status.startsWith("erreur"));
       if (!pending.length) break;
-      const batch = [];
-      for (const job of pending) {
-        if (batch.length >= 3) break;
-        const gateState = canCut();
-        if (!gateState.ok) {
-          try {
-            await cutOne(job, true);
-          } catch (err) {
-            job.status = "erreur : " + (err.message || err);
-            job.locked = true;
-            patchJob(job);
-          }
-          openGate(gateState.gate);
-          return;
+      const gateState = canCut();
+      if (!gateState.ok) {
+        try {
+          await cutOne(pending[0], true);
+        } catch (err) {
+          pending[0].status = "erreur : " + (err.message || err);
+          pending[0].locked = true;
+          patchJob(pending[0]);
         }
-        consumeOne();
-        refreshQuota();
-        batch.push(job);
+        openGate(gateState.gate);
+        break;
       }
+      const n = paidBatchSize(gateState.q.remaining, pending.length);
+      const batch = pending.slice(0, n);
+      for (const job of batch) consumeOne();
+      refreshQuota();
       await Promise.all(batch.map((job) => cutOne(job, false).catch((err) => {
         refundOne();
         refreshQuota();
@@ -283,6 +286,7 @@ async function processQueue() {
         job.status = "prêt";
         patchJob(job);
       } catch {
+        dropPixels(job);
         job.status = "prêt";
         patchJob(job);
       }
