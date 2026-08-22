@@ -2104,4 +2104,52 @@ function punchPentagon(img, cx, cy, rx, ry) {
   assert(a[2 * 200 + 2] < 16, "black studio around pentagon product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp ok");
+function punchTriangle(img, cx, cy, rx, ry, flip) {
+  const verts = flip
+    ? [[cx, cy + ry], [cx + rx, cy - ry], [cx - rx, cy - ry]]
+    : [[cx, cy - ry], [cx - rx, cy + ry], [cx + rx, cy + ry]];
+  for (let s = 0; s < 3; s++) {
+    const [x0, y0] = verts[s];
+    const [x1, y1] = verts[(s + 1) % 3];
+    for (let i = 0; i < 7; i++) {
+      const t = (i + 0.5) / 7;
+      fillCircle(img, Math.round(x0 + (x1 - x0) * t), Math.round(y0 + (y1 - y0) * t), 2, 8, 8, 8);
+    }
+  }
+}
+
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillTriangle(img, 100, 52, 148, 48, 40, 90, 160);
+  punchTriangle(img, 100, 100, 70, 70, false);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `triangle stamp classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[100 * 200 + 100] > 180, "triangle stamp design kept");
+  assert(a[48 * 200 + 100] > 180, "triangle stamp paper margin kept (whole piece)");
+  assert(a[158 * 200 + 100] > 180, "triangle stamp base margin kept (whole piece)");
+  assert(a[170 * 200 + 100] < 16, "triangle stamp perforation punched");
+  assert(a[8 * 200 + 8] < 16, "album paper around triangle stamp gone");
+  assert(cut.pipeline === "timbre", "triangle stamp uses stamp pipeline");
+}
+
+{
+  const img = rgb(200, 200, 255, 255, 255);
+  fillTriangle(img, 100, 58, 142, 70, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `triangle product on white is not a stamp (${guess.kind})`);
+}
+
+{
+  const img = rgb(200, 120, 8, 8, 8);
+  fillTriangle(img, 100, 26, 94, 56, 200, 40, 40);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `triangle product on black is not a stamp (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[60 * 200 + 100] > 180, "triangle product on black kept");
+  assert(a[2 * 200 + 2] < 16, "black studio around triangle product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp ok");
