@@ -76,6 +76,18 @@ function fillDiamond(image, cx, cy, rx, ry, rr, gg, bb) {
   }
 }
 
+function fillTriangle(image, cx, y0, y1, half, rr, gg, bb) {
+  for (let y = y0; y <= y1; y++) {
+    const t = (y - y0) / Math.max(1, y1 - y0);
+    const span = Math.round(half * t);
+    for (let x = cx - span; x <= cx + span; x++) {
+      if (x < 0 || y < 0 || x >= image.width || y >= image.height) continue;
+      const i = (y * image.width + x) * 4;
+      image.data[i] = rr; image.data[i + 1] = gg; image.data[i + 2] = bb; image.data[i + 3] = 255;
+    }
+  }
+}
+
 function fillSemi(image, cx, cy, rx, ry, rr, gg, bb) {
   for (let y = cy - ry; y <= cy; y++) {
     for (let x = cx - rx; x <= cx + rx; x++) {
@@ -1414,4 +1426,47 @@ function coilStamp() {
   assert(a[2 * 120 + 2] < 16, "black studio around lozenge product gone");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge ok");
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillTriangle(img, 40, 12, 68, 26, 92, 168, 220);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood gable sky classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[50 * 80 + 40] < 16, "wood gable sky pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood gable sky frame kept");
+  assert(a[72 * 80 + 40] > 180, "wood gable sky sill kept");
+  assert(cut.pipeline === "écran", "wood gable sky uses screen pipeline");
+}
+
+{
+  const img = rgb(80, 80, 120, 80, 50);
+  fillTriangle(img, 40, 12, 68, 26, 40, 120, 45);
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `wood gable foliage classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[50 * 80 + 40] < 16, "wood gable foliage pane punched");
+  assert(a[2 * 80 + 2] > 180, "wood gable foliage frame kept");
+  assert(cut.pipeline === "écran", "wood gable foliage uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 120, 255, 255, 255);
+  fillTriangle(img, 60, 20, 100, 40, 80, 160, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `triangle blue product on white is not a pane (${guess.kind})`);
+}
+
+{
+  const img = rgb(120, 80, 8, 8, 8);
+  fillTriangle(img, 60, 10, 70, 28, 80, 180, 220);
+  const guess = classifyImage(img);
+  assert(!guess.interior, `triangle blue product on black is not a pane (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[50 * 120 + 60] > 180, "triangle product on black kept");
+  assert(a[2 * 120 + 2] < 16, "black studio around triangle product gone");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable ok");
