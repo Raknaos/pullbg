@@ -114,6 +114,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-23: Timbre oie : dentelé cou long + bec relevé + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit oie sur blanc/noir inchangé. Cache v=83.
 - 2026-08-23: Timbre dinde : dentelé éventail + caroncule + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit dinde sur blanc/noir inchangé. Cache v=84.
 - 2026-08-23: Timbre cygne : dentelé cou en S + ailes + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit cygne sur blanc/noir inchangé. Cache v=85.
+- 2026-08-23: Timbre cygne : cutout restaure la pièce entière (cou S + ailes + pattes) si le flood mange la marge. Produit cygne inchangé. Cache v=86.
 
 
 
