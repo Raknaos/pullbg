@@ -101,6 +101,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-23: Timbre chat : dentelé 2 oreilles + queue reconnu, pièce entière + trous percés (plus classé fond). Produit chat sur blanc/noir inchangé. Cache v=70.
 - 2026-08-23: Timbre chien : dentelé museau + oreille + queue reconnu, pièce entière + trous percés (plus classé fond). Produit chien sur blanc/noir inchangé. Cache v=71.
 - 2026-08-23: Timbre lapin : dentelé 2 oreilles longues + queue reconnu, pièce entière + trous percés (plus classé fond). Produit lapin sur blanc/noir inchangé. Cache v=72.
+- 2026-08-23: Timbre écureuil : dentelé oreille + museau + queue en panache reconnu, pièce entière + trous percés (plus classé fond). Produit écureuil sur blanc/noir inchangé. Cache v=73.
 
 
 
