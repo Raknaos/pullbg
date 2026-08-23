@@ -112,6 +112,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-23: Timbre coq : dentelé crête + bec + queue en éventail + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit coq sur blanc/noir inchangé. Cache v=81.
 - 2026-08-23: Timbre canard : dentelé bec plat + tête + queue courte + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit canard sur blanc/noir inchangé. Cache v=82.
 - 2026-08-23: Timbre oie : dentelé cou long + bec relevé + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit oie sur blanc/noir inchangé. Cache v=83.
+- 2026-08-23: Timbre dinde : dentelé éventail + caroncule + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit dinde sur blanc/noir inchangé. Cache v=84.
 
 
 
