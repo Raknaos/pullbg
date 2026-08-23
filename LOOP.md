@@ -122,3 +122,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-23: Timbre baleine : dentelé tête ronde + aileron arrière + nageoire longue + nageoire caudale reconnu, pièce entière + trous percés (plus classé fond). Produit baleine sur blanc/noir inchangé. Cache v=91.
 - 2026-08-23: Timbre requin : dentelé museau pointu + aileron central + queue hétérocerque reconnu, pièce entière + trous percés (plus classé fond). Produit requin sur blanc/noir inchangé. Cache v=92.
 - 2026-08-23: Timbre tortue : dentelé tête + 4 nageoires + queue reconnu, pièce entière + trous percés (plus classé fond). Produit tortue sur blanc/noir inchangé. Cache v=93.
+- 2026-08-23: Timbre poulpe : dentelé manteau + 8 tentacules reconnu, pièce entière + trous percés (plus classé fond). Produit poulpe sur blanc/noir inchangé. Cache v=94.
