@@ -118,3 +118,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-23: Timbre paon : dentelé crête + train + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit paon sur blanc/noir inchangé. Cache v=87.
 - 2026-08-23: Timbre hibou : dentelé 2 aigrettes + bec + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit hibou sur blanc/noir inchangé. Cache v=88.
 - 2026-08-23: Timbre pingouin : dentelé tête + bec + nageoires + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit pingouin sur blanc/noir inchangé. Cache v=89.
+- 2026-08-23: Timbre dauphin : dentelé rostre + aileron + nageoire + nageoire caudale reconnu, pièce entière + trous percés (plus classé fond). Produit dauphin sur blanc/noir inchangé. Cache v=90.
