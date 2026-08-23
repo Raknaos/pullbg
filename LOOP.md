@@ -105,6 +105,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-23: Timbre renard : dentelé 2 oreilles + museau + queue pendante reconnu, pièce entière + trous percés (plus classé fond). Produit renard sur blanc/noir inchangé. Cache v=74.
 - 2026-08-23: Timbre ours : dentelé 2 oreilles rondes + museau + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit ours sur blanc/noir inchangé. Cache v=75.
 - 2026-08-23: Timbre cheval : dentelé oreilles + crinière + museau + pattes reconnu, pièce entière + trous percés (plus classé fond). Produit cheval sur blanc/noir inchangé. Cache v=76.
+- 2026-08-23: Timbre cochon : dentelé oreilles + groin + queue en tire-bouchon reconnu, pièce entière + trous percés (plus classé fond). Produit cochon sur blanc/noir inchangé. Cache v=77.
 
 
 
