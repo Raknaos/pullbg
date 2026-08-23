@@ -9,13 +9,13 @@ import {
   formatCountdown,
   paidBatchSize,
 } from "./auth.js?v=57";
-import { warmup, fastCut, refineCut } from "../lib/engine.js?v=92";
+import { warmup, fastCut, refineCut } from "../lib/engine.js?v=93";
 import {
   bitmapFromSource,
   imageDataFromBitmap,
   blobFromImageData,
   blobFromImageDataBlurred,
-} from "../lib/cutout.js?v=92";
+} from "../lib/cutout.js?v=93";
 
 paintNav();
 warmup();
