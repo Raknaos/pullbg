@@ -97,6 +97,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-23: Timbre papillon : dentelé 4 lobes reconnu, pièce entière + trous percés (plus classé fond). Produit papillon sur blanc/noir inchangé. Cache v=66.
 - 2026-08-23: Timbre feuille : dentelé 5 lobes + tige reconnu, pièce entière + trous percés (plus classé fond). Produit feuille sur blanc/noir inchangé. Cache v=67.
 - 2026-08-23: Timbre poisson : dentelé tête + nageoires + queue fourchue reconnu, pièce entière + trous percés (plus classé fond). Produit poisson sur blanc/noir inchangé. Cache v=68.
+- 2026-08-23: Timbre oiseau : dentelé bec + aile + queue reconnu, pièce entière + trous percés (plus classé fond). Produit oiseau sur blanc/noir inchangé. Cache v=69.
 
 
 
