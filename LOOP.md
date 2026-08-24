@@ -142,3 +142,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-24: VPS worker : floodColor pour fond studio/cyclorama (plus renvoyé à rembg). Décodage plafonné 2200px. Test `deploy/server/test_geo.mjs`.
 - 2026-08-24: Timbre zèbre : dentelé crinière + tête + 2 pattes + queue reconnu, pièce entière + trous percés (plus classé fond). Produit zèbre sur blanc/noir inchangé. Cache v=109.
 - 2026-08-24: VPS rembg : affinage sur le PNG déjà orienté et plafonné 2200px (plus le JPEG original). Test `deploy/server/test_geo.mjs`.
+- 2026-08-24: File VPS : rembg aborté à 90s (secours géo), jobs `processing` repris au reboot, `.in` effacé même en erreur. Studio poll 20 min + File/blob lâchés après découpe. Cache v=111.

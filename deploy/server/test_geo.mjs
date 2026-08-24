@@ -4,7 +4,7 @@ const require = createRequire(import.meta.url);
 const { createCanvas, ImageData } = require("@napi-rs/canvas");
 globalThis.ImageData = globalThis.ImageData ?? ImageData;
 
-const { fastCutServer, decodeToImage, encodePng, processImage } = await import("./worker.mjs");
+const { fastCutServer, decodeToImage, encodePng, processImage, askRembg } = await import("./worker.mjs");
 
 function assert(cond, msg) {
   if (!cond) throw new Error(msg);
@@ -99,4 +99,60 @@ function fillRect(image, x0, y0, x1, y1, r, g, b) {
   }
 }
 
-console.log("worker geo: studio flood + 2200px rembg source OK");
+function hangFetch() {
+  return (_url, opts) => new Promise((_resolve, reject) => {
+    const signal = opts && opts.signal;
+    if (!signal) return;
+    const fail = () => reject(Object.assign(new Error("aborted"), { name: "AbortError" }));
+    if (signal.aborted) fail();
+    else signal.addEventListener("abort", fail, { once: true });
+  });
+}
+
+{
+  const prev = globalThis.fetch;
+  let aborted = false;
+  globalThis.fetch = (_url, opts) => {
+    const inner = hangFetch();
+    return inner(_url, opts).catch((err) => {
+      aborted = true;
+      throw err;
+    });
+  };
+  try {
+    const png = encodePng(rgb(32, 32, 200, 40, 40));
+    const t0 = Date.now();
+    const model = await askRembg(png, 80);
+    const dt = Date.now() - t0;
+    assert(model === null, "hung rembg returns null");
+    assert(aborted, "hung rembg is aborted");
+    assert(dt < 2000, `rembg timeout should be fast, took ${dt}ms`);
+  } finally {
+    globalThis.fetch = prev;
+  }
+}
+
+{
+  const canvas = createCanvas(80, 80);
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#f0f0f0";
+  ctx.fillRect(0, 0, 80, 80);
+  ctx.fillStyle = "#555555";
+  ctx.fillRect(22, 18, 36, 44);
+  const raw = canvas.toBuffer("image/png");
+
+  const prev = globalThis.fetch;
+  globalThis.fetch = hangFetch();
+  try {
+    const t0 = Date.now();
+    const out = await processImage(raw, { aiTimeoutMs: 80 });
+    const dt = Date.now() - t0;
+    assert(out.buffer && out.buffer.length > 0, "hung rembg still returns a PNG");
+    assert(out.pipeline !== "ia", `fallback pipeline, got ${out.pipeline}`);
+    assert(dt < 2000, `processImage must not wait on hung rembg, took ${dt}ms`);
+  } finally {
+    globalThis.fetch = prev;
+  }
+}
+
+console.log("worker geo: studio flood + 2200px rembg source + rembg timeout OK");

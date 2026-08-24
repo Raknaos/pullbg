@@ -165,7 +165,10 @@ async function kickWorker() {
       const ids = (await readdir(JOBS_DIR))
         .filter((x) => x.endsWith(".json") && !x.startsWith("quota-"))
         .map((x) => x.replace(/\.json$/, ""));
-      const pending = (await workingOn(ids)).filter((j) => j.status === "pending").sort((a, b) => a.createdAt - b.createdAt);
+      // Single-flight: any "processing" job we see here is leftover from a crash.
+      const pending = (await workingOn(ids))
+        .filter((j) => j.status === "pending" || j.status === "processing")
+        .sort((a, b) => a.createdAt - b.createdAt);
       if (pending.length === 0) break;
 
       const job = pending[0];
@@ -180,12 +183,12 @@ async function kickWorker() {
         job.guess = out.guess;
         job.finishedAt = Date.now();
         await saveJob(job);
-        await unlink(path.join(JOBS_DIR, `${job.id}.in`)).catch(() => {});
       } catch (e) {
         job.status = "error";
         job.error = String(e?.message || e);
         await saveJob(job);
       }
+      await unlink(path.join(JOBS_DIR, `${job.id}.in`)).catch(() => {});
     }
   } finally {
     running = false;
@@ -196,16 +199,26 @@ async function kickWorker() {
 setInterval(async () => {
   try {
     for (const f of await readdir(JOBS_DIR)) {
+      if (f.endsWith(".in")) {
+        const json = path.join(JOBS_DIR, f.replace(/\.in$/, ".json"));
+        if (!existsSync(json)) await rm(path.join(JOBS_DIR, f), { force: true });
+        continue;
+      }
       if (!f.endsWith(".json")) continue;
       const p = path.join(JOBS_DIR, f);
       const st = await stat(p);
       if (Date.now() - st.mtimeMs > RESULT_TTL_MS) {
+        const id = f.replace(/\.json$/, "");
         await rm(p, { force: true });
-        await rm(path.join(JOBS_DIR, f.replace(/\.json$/, ".out")), { force: true }).catch(() => {});
+        await rm(path.join(JOBS_DIR, `${id}.out`), { force: true });
+        await rm(path.join(JOBS_DIR, `${id}.in`), { force: true });
       }
     }
   } catch {}
 }, 60 * 60 * 1000).unref();
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`PullBG API on :${PORT}`));
+app.listen(PORT, () => {
+  console.log(`PullBG API on :${PORT}`);
+  kickWorker();
+});

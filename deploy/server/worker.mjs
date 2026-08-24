@@ -19,6 +19,7 @@ import {
 
 const AI_URL = process.env.PULLBG_AI_URL || "http://127.0.0.1:8155";
 const MAX_EDGE = 2200;
+const AI_TIMEOUT_MS = 90_000;
 
 /** Decode any image buffer (png/jpg/webp/gif) into ImageData-like. */
 export async function decodeToImage(buffer) {
@@ -114,26 +115,31 @@ export function encodePng(image) {
   return canvas.toBuffer("image/png");
 }
 
+/** Ask rembg; hang/timeout returns null so the single worker can move on. */
+export async function askRembg(pngBuffer, timeoutMs = AI_TIMEOUT_MS) {
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), timeoutMs);
+  try {
+    const fd = new FormData();
+    fd.append("file", new Blob([pngBuffer], { type: "image/png" }), "input.png");
+    const res = await fetch(`${AI_URL}/cut`, { method: "POST", body: fd, signal: ac.signal });
+    if (!res.ok) return null;
+    return packed(await decodeToImage(Buffer.from(await res.arrayBuffer())), "ia");
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /** Full job: geometry first, then AI when the classifier asks for it. */
-export async function processImage(buffer) {
+export async function processImage(buffer, opts = {}) {
   const original = await decodeToImage(buffer);
   const draft = fastCutServer(original);
   if (!draft.needsRefine) return { ...draft, buffer: encodePng(draft.image) };
 
   // Same as browser refineCut: rembg sees the already-oriented, 2200px-capped pixels.
-  let model = null;
-  try {
-    const fd = new FormData();
-    fd.append("file", new Blob([encodePng(original)], { type: "image/png" }), "input.png");
-    const res = await fetch(`${AI_URL}/cut`, { method: "POST", body: fd });
-    if (res.ok) {
-      const png = Buffer.from(await res.arrayBuffer());
-      model = packed(await decodeToImage(png), "ia");
-    }
-  } catch {
-    model = null;
-  }
-
+  const model = await askRembg(encodePng(original), opts.aiTimeoutMs ?? AI_TIMEOUT_MS);
   const final = chooseRefinedServer(draft, model);
   return { ...final, buffer: encodePng(final.image) };
 }

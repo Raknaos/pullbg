@@ -240,12 +240,13 @@ async function cutOnServer(file) {
   if (!started.ok) throw new Error("serveur indisponible");
   const { id } = await started.json();
   let info = { status: "pending" };
-  for (let i = 0; i < 90; i++) {
+  const deadline = Date.now() + 20 * 60 * 1000;
+  while (Date.now() < deadline) {
     const res = await fetch(`${API}/api/jobs/${id}`);
     if (!res.ok) throw new Error("tâche perdue");
     info = await res.json();
     if (info.status === "done" || info.status === "error") break;
-    await sleep(800);
+    await sleep(1000);
   }
   if (info.status !== "done") throw new Error(info.error || "échec du modèle");
   const png = await fetch(`${API}${info.result}`);
@@ -273,6 +274,11 @@ async function cutOne(job, locked) {
     job.draft = { needsRefine: false, pipeline };
     job.status = locked ? "aperçu flou" : "prêt";
     job.locked = locked;
+    if (job.url && job.url !== job.result) {
+      forgetUrl(job.url);
+      job.url = job.result;
+    }
+    job.file = null;
     dropPixels(job);
     patchJob(job);
   } catch (err) {
