@@ -4,7 +4,7 @@ const require = createRequire(import.meta.url);
 const { createCanvas, ImageData } = require("@napi-rs/canvas");
 globalThis.ImageData = globalThis.ImageData ?? ImageData;
 
-const { fastCutServer, decodeToImage, encodePng, processImage, askRembg } = await import("./worker.mjs");
+const { fastCutServer, decodeToImage, encodePng, processImage, askRembg, jpegOrientation } = await import("./worker.mjs");
 
 function assert(cond, msg) {
   if (!cond) throw new Error(msg);
@@ -155,4 +155,80 @@ function hangFetch() {
   }
 }
 
-console.log("worker geo: studio flood + 2200px rembg source + rembg timeout OK");
+function exifApp1(orientation) {
+  const payload = Buffer.alloc(32);
+  payload.write("Exif\0\0", 0, 6, "binary");
+  payload.write("II", 6, 2, "ascii");
+  payload.writeUInt16LE(42, 8);
+  payload.writeUInt32LE(8, 10);
+  payload.writeUInt16LE(1, 14);
+  payload.writeUInt16LE(0x0112, 16);
+  payload.writeUInt16LE(3, 18);
+  payload.writeUInt32LE(1, 20);
+  payload.writeUInt16LE(orientation, 24);
+  payload.writeUInt32LE(0, 28);
+  const app1 = Buffer.alloc(4 + payload.length);
+  app1[0] = 0xFF;
+  app1[1] = 0xE1;
+  app1.writeUInt16BE(2 + payload.length, 2);
+  payload.copy(app1, 4);
+  return app1;
+}
+
+function jpegWithOrientation(jpeg, orientation) {
+  assert(jpeg[0] === 0xFF && jpeg[1] === 0xD8, "canvas JPEG starts with SOI");
+  return Buffer.concat([Buffer.from([0xFF, 0xD8]), exifApp1(orientation), jpeg.subarray(2)]);
+}
+
+{
+  const png = encodePng(rgb(16, 16, 10, 20, 30));
+  assert(jpegOrientation(png) === 1, "PNG has no EXIF orientation");
+  assert(jpegOrientation(Buffer.from([0, 1, 2])) === 1, "garbage is orientation 1");
+}
+
+{
+  const canvas = createCanvas(80, 40);
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#e02020";
+  ctx.fillRect(0, 0, 40, 40);
+  ctx.fillStyle = "#2040e0";
+  ctx.fillRect(40, 0, 40, 40);
+  const raw = canvas.toBuffer("image/jpeg", 95);
+  assert(jpegOrientation(raw) === 1, "plain JPEG is orientation 1");
+
+  const tagged = jpegWithOrientation(raw, 6);
+  assert(jpegOrientation(tagged) === 6, `injected EXIF 6, got ${jpegOrientation(tagged)}`);
+
+  const plain = await decodeToImage(raw);
+  assert(plain.width === 80 && plain.height === 40, `plain JPEG stays 80x40, got ${plain.width}x${plain.height}`);
+  const px = (img, x, y) => {
+    const i = (y * img.width + x) * 4;
+    return [img.data[i], img.data[i + 1], img.data[i + 2]];
+  };
+  const left = px(plain, 10, 20);
+  const right = px(plain, 70, 20);
+  assert(left[0] > 160 && left[2] < 80, `plain left is red, got ${left}`);
+  assert(right[2] > 160 && right[0] < 80, `plain right is blue, got ${right}`);
+
+  const rotated = await decodeToImage(tagged);
+  assert(rotated.width === 40 && rotated.height === 80, `ori 6 swaps to 40x80, got ${rotated.width}x${rotated.height}`);
+  const top = px(rotated, 20, 8);
+  const bottom = px(rotated, 20, 72);
+  assert(top[0] > 160 && top[2] < 80, `ori 6 puts red on top (phone portrait), got ${top}`);
+  assert(bottom[2] > 160 && bottom[0] < 80, `ori 6 puts blue at bottom, got ${bottom}`);
+}
+
+{
+  const canvas = createCanvas(3000, 1200);
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#00b43c";
+  ctx.fillRect(0, 0, 3000, 1200);
+  ctx.fillStyle = "#c82828";
+  ctx.fillRect(200, 200, 800, 800);
+  const tagged = jpegWithOrientation(canvas.toBuffer("image/jpeg", 90), 6);
+  const decoded = await decodeToImage(tagged);
+  assert(decoded.width === 880, `ori 6 then 2200 cap width, got ${decoded.width}`);
+  assert(decoded.height === 2200, `ori 6 then 2200 cap height, got ${decoded.height}`);
+}
+
+console.log("worker geo: studio flood + 2200px rembg source + rembg timeout + jpeg exif OK");

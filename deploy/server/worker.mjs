@@ -21,11 +21,139 @@ const AI_URL = process.env.PULLBG_AI_URL || "http://127.0.0.1:8155";
 const MAX_EDGE = 2200;
 const AI_TIMEOUT_MS = 90_000;
 
+function u16(buf, off, le) {
+  if (off + 2 > buf.length) return 0;
+  return le ? buf[off] | (buf[off + 1] << 8) : (buf[off] << 8) | buf[off + 1];
+}
+
+function u32(buf, off, le) {
+  if (off + 4 > buf.length) return 0;
+  return (le
+    ? buf[off] | (buf[off + 1] << 8) | (buf[off + 2] << 16) | (buf[off + 3] << 24)
+    : (buf[off] << 24) | (buf[off + 1] << 16) | (buf[off + 2] << 8) | buf[off + 3]) >>> 0;
+}
+
+function readIfdOrientation(buf, tiff, ifdRel, le) {
+  const ifd = tiff + ifdRel;
+  if (ifd + 2 > buf.length) return 0;
+  const n = u16(buf, ifd, le);
+  for (let i = 0; i < n; i++) {
+    const e = ifd + 2 + i * 12;
+    if (e + 12 > buf.length) break;
+    if (u16(buf, e, le) !== 0x0112) continue;
+    const type = u16(buf, e + 2, le);
+    const count = u32(buf, e + 4, le);
+    if (count !== 1) continue;
+    const value = type === 3 ? u16(buf, e + 8, le) : u32(buf, e + 8, le);
+    if (value >= 1 && value <= 8) return value;
+  }
+  return 0;
+}
+
+/** JPEG EXIF Orientation (1–8). Other formats and missing tags → 1. */
+export function jpegOrientation(input) {
+  const buf = input instanceof Uint8Array ? input : new Uint8Array(input);
+  if (buf.length < 4 || buf[0] !== 0xFF || buf[1] !== 0xD8) return 1;
+  let offset = 2;
+  while (offset + 4 < buf.length) {
+    if (buf[offset] !== 0xFF) break;
+    const marker = buf[offset + 1];
+    if (marker === 0xDA || marker === 0xD9) break;
+    const size = (buf[offset + 2] << 8) | buf[offset + 3];
+    if (size < 2 || offset + 2 + size > buf.length) break;
+    if (marker === 0xE1) {
+      const start = offset + 4;
+      if (
+        start + 14 < buf.length &&
+        buf[start] === 0x45 && buf[start + 1] === 0x78 &&
+        buf[start + 2] === 0x69 && buf[start + 3] === 0x66 &&
+        buf[start + 4] === 0 && buf[start + 5] === 0
+      ) {
+        const tiff = start + 6;
+        const le = buf[tiff] === 0x49 && buf[tiff + 1] === 0x49;
+        const mm = buf[tiff] === 0x4D && buf[tiff + 1] === 0x4D;
+        if ((le || mm) && u16(buf, tiff + 2, le) === 42) {
+          const ori = readIfdOrientation(buf, tiff, u32(buf, tiff + 4, le), le);
+          if (ori) return ori;
+        }
+      }
+    }
+    offset += 2 + size;
+  }
+  return 1;
+}
+
+function applyOrientationTransform(ctx, w, h, ori) {
+  switch (ori) {
+    case 2: ctx.setTransform(-1, 0, 0, 1, w, 0); break;
+    case 3: ctx.setTransform(-1, 0, 0, -1, w, h); break;
+    case 4: ctx.setTransform(1, 0, 0, -1, 0, h); break;
+    case 5: ctx.setTransform(0, 1, 1, 0, 0, 0); break;
+    case 6: ctx.setTransform(0, 1, -1, 0, h, 0); break;
+    case 7: ctx.setTransform(0, -1, -1, 0, h, w); break;
+    case 8: ctx.setTransform(0, -1, 1, 0, 0, w); break;
+    default: break;
+  }
+}
+
+function paintOriented(img, ori) {
+  if (ori === 1) return img;
+  const swap = ori >= 5 && ori <= 8;
+  const w = swap ? img.height : img.width;
+  const h = swap ? img.width : img.height;
+  const canvas = createCanvas(w, h);
+  const ctx = canvas.getContext("2d");
+  applyOrientationTransform(ctx, img.width, img.height, ori);
+  ctx.drawImage(img, 0, 0);
+  return canvas;
+}
+
+function stripJpegExif(input) {
+  const buf = Buffer.isBuffer(input) ? input : Buffer.from(input);
+  if (buf.length < 4 || buf[0] !== 0xFF || buf[1] !== 0xD8) return buf;
+  const parts = [buf.subarray(0, 2)];
+  let offset = 2;
+  let dropped = false;
+  while (offset + 4 < buf.length) {
+    if (buf[offset] !== 0xFF) {
+      parts.push(buf.subarray(offset));
+      break;
+    }
+    const marker = buf[offset + 1];
+    if (marker === 0xDA) {
+      parts.push(buf.subarray(offset));
+      break;
+    }
+    if (marker === 0x00 || marker === 0x01 || (marker >= 0xD0 && marker <= 0xD9)) {
+      parts.push(buf.subarray(offset, offset + 2));
+      offset += 2;
+      continue;
+    }
+    const size = buf.readUInt16BE(offset + 2);
+    if (size < 2 || offset + 2 + size > buf.length) {
+      parts.push(buf.subarray(offset));
+      break;
+    }
+    const start = offset + 4;
+    const isExif = marker === 0xE1
+      && start + 6 <= buf.length
+      && buf[start] === 0x45 && buf[start + 1] === 0x78
+      && buf[start + 2] === 0x69 && buf[start + 3] === 0x66
+      && buf[start + 4] === 0 && buf[start + 5] === 0;
+    if (isExif) dropped = true;
+    else parts.push(buf.subarray(offset, offset + 2 + size));
+    offset += 2 + size;
+  }
+  return dropped ? Buffer.concat(parts) : buf;
+}
+
 /** Decode any image buffer (png/jpg/webp/gif) into ImageData-like. */
 export async function decodeToImage(buffer) {
-  const img = await loadImage(buffer);
-  let w = img.width;
-  let h = img.height;
+  const ori = jpegOrientation(buffer);
+  const img = await loadImage(ori === 1 ? buffer : stripJpegExif(buffer));
+  const source = paintOriented(img, ori);
+  let w = source.width;
+  let h = source.height;
   if (Math.max(w, h) > MAX_EDGE) {
     const s = MAX_EDGE / Math.max(w, h);
     w = Math.max(1, Math.round(w * s));
@@ -33,7 +161,7 @@ export async function decodeToImage(buffer) {
   }
   const canvas = createCanvas(w, h);
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0, w, h);
+  ctx.drawImage(source, 0, 0, w, h);
   return ctx.getImageData(0, 0, w, h);
 }
 
