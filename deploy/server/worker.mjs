@@ -120,11 +120,11 @@ export async function processImage(buffer) {
   const draft = fastCutServer(original);
   if (!draft.needsRefine) return { ...draft, buffer: encodePng(draft.image) };
 
-  // General object — ask the local rembg service for a high-quality mask.
+  // Same as browser refineCut: rembg sees the already-oriented, 2200px-capped pixels.
   let model = null;
   try {
     const fd = new FormData();
-    fd.append("file", new Blob([buffer], { type: "application/octet-stream" }), "input.png");
+    fd.append("file", new Blob([encodePng(original)], { type: "image/png" }), "input.png");
     const res = await fetch(`${AI_URL}/cut`, { method: "POST", body: fd });
     if (res.ok) {
       const png = Buffer.from(await res.arrayBuffer());

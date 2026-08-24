@@ -141,3 +141,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-24: Timbre girafe : dentelé cou + tête + 2 pattes + queue reconnu, pièce entière + trous percés (plus classé fond). Produit girafe sur blanc/noir inchangé. Cache v=108.
 - 2026-08-24: VPS worker : floodColor pour fond studio/cyclorama (plus renvoyé à rembg). Décodage plafonné 2200px. Test `deploy/server/test_geo.mjs`.
 - 2026-08-24: Timbre zèbre : dentelé crinière + tête + 2 pattes + queue reconnu, pièce entière + trous percés (plus classé fond). Produit zèbre sur blanc/noir inchangé. Cache v=109.
+- 2026-08-24: VPS rembg : affinage sur le PNG déjà orienté et plafonné 2200px (plus le JPEG original). Test `deploy/server/test_geo.mjs`.

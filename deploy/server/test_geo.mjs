@@ -4,7 +4,7 @@ const require = createRequire(import.meta.url);
 const { createCanvas, ImageData } = require("@napi-rs/canvas");
 globalThis.ImageData = globalThis.ImageData ?? ImageData;
 
-const { fastCutServer, decodeToImage } = await import("./worker.mjs");
+const { fastCutServer, decodeToImage, encodePng, processImage } = await import("./worker.mjs");
 
 function assert(cond, msg) {
   if (!cond) throw new Error(msg);
@@ -65,4 +65,38 @@ function fillRect(image, x0, y0, x1, y1, r, g, b) {
   assert(decoded.height === 1320, `height scaled with the cap, got ${decoded.height}`);
 }
 
-console.log("worker geo: studio flood + 2200px cap OK");
+{
+  const canvas = createCanvas(3000, 1800);
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, 3000, 1800);
+  ctx.fillStyle = "#888888";
+  ctx.fillRect(1100, 600, 800, 600);
+  const raw = canvas.toBuffer("image/png");
+  const capped = encodePng(await decodeToImage(raw));
+  const again = await decodeToImage(capped);
+  assert(again.width === 2200, `AI source width is the 2200 cap, got ${again.width}`);
+  assert(again.height === 1320, `AI source height scaled with the cap, got ${again.height}`);
+
+  const prev = globalThis.fetch;
+  let sentW = 0;
+  let sentH = 0;
+  globalThis.fetch = async (_url, opts) => {
+    const file = opts.body.get("file");
+    const buf = Buffer.from(await file.arrayBuffer());
+    const img = await decodeToImage(buf);
+    sentW = img.width;
+    sentH = img.height;
+    return { ok: false, status: 503 };
+  };
+  try {
+    const out = await processImage(raw);
+    assert(out.guess.mode === "ia", `gray product asks rembg (${out.guess.kind})`);
+    assert(sentW === 2200, `rembg received capped width, got ${sentW}`);
+    assert(sentH === 1320, `rembg received capped height, got ${sentH}`);
+  } finally {
+    globalThis.fetch = prev;
+  }
+}
+
+console.log("worker geo: studio flood + 2200px rembg source OK");
