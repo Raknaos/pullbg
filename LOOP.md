@@ -129,3 +129,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-24: Timbre hippocampe : dentelé museau + couronne + nageoire + queue enroulée reconnu, pièce entière + trous percés (plus classé fond). Produit hippocampe sur blanc/noir inchangé. Cache v=98.
 - 2026-08-24: Timbre méduse : dentelé cloche + bords + tentacules reconnu, pièce entière + trous percés (plus classé fond). Produit méduse sur blanc/noir inchangé. Cache v=99.
 - 2026-08-24: Timbre étoile de mer : dentelé 5 bras reconnus, pièce entière + trous percés (plus classé fond). Produit étoile de mer sur blanc/noir inchangé. Cache v=100.
+- 2026-08-24: Timbre coquille : dentelé éventail + charnière + oreilles reconnu, pièce entière + trous percés (plus classé fond). Produit coquille sur blanc/noir inchangé. Cache v=101.
