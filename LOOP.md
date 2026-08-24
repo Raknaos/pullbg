@@ -139,3 +139,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-24: Timbre crocodile : dentelé museau + crête + 2 pattes + queue reconnu, pièce entière + trous percés (plus classé fond). Produit crocodile sur blanc/noir inchangé. Cache v=106.
 - 2026-08-24: Timbre éléphant : dentelé trompe + oreille + 2 pattes + queue reconnu, pièce entière + trous percés (plus classé fond). Produit éléphant sur blanc/noir inchangé. Cache v=107.
 - 2026-08-24: Timbre girafe : dentelé cou + tête + 2 pattes + queue reconnu, pièce entière + trous percés (plus classé fond). Produit girafe sur blanc/noir inchangé. Cache v=108.
+- 2026-08-24: VPS worker : floodColor pour fond studio/cyclorama (plus renvoyé à rembg). Décodage plafonné 2200px. Test `deploy/server/test_geo.mjs`.

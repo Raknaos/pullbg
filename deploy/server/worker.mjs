@@ -13,19 +13,27 @@ globalThis.ImageData = globalThis.ImageData ?? ImageData;
 
 import { classifyImage } from "../lib/classify.js";
 import {
-  chromaCut, floodBlack, floodWhite, stampCut, punchInterior,
+  chromaCut, floodBlack, floodWhite, floodColor, stampCut, punchInterior,
   decontaminate, scoreCut, cleanupSpeckles,
 } from "../lib/cutout.js";
 
 const AI_URL = process.env.PULLBG_AI_URL || "http://127.0.0.1:8155";
+const MAX_EDGE = 2200;
 
 /** Decode any image buffer (png/jpg/webp/gif) into ImageData-like. */
 export async function decodeToImage(buffer) {
   const img = await loadImage(buffer);
-  const canvas = createCanvas(img.width, img.height);
+  let w = img.width;
+  let h = img.height;
+  if (Math.max(w, h) > MAX_EDGE) {
+    const s = MAX_EDGE / Math.max(w, h);
+    w = Math.max(1, Math.round(w * s));
+    h = Math.max(1, Math.round(h * s));
+  }
+  const canvas = createCanvas(w, h);
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0);
-  return ctx.getImageData(0, 0, img.width, img.height);
+  ctx.drawImage(img, 0, 0, w, h);
+  return ctx.getImageData(0, 0, w, h);
 }
 
 function packed(image, name) {
@@ -61,13 +69,31 @@ function fallbacks(image, guess) {
 export function fastCutServer(image) {
   const guess = classifyImage(image);
 
-  if (guess.mode === "timbre") return { image: packedGeo(stampCut(image), "timbre").image, guess, pipeline: "timbre", needsRefine: false };
-  if (guess.mode === "couleur") return { image: packedGeo(chromaCut(image), "couleur").image, guess, pipeline: "couleur", needsRefine: false };
-  if (guess.interior && guess.mode === "noir") return { image: packedGeo(punchInterior(image, "black"), "écran").image, guess, pipeline: "écran", needsRefine: false };
-  if (guess.interior) return { image: packedGeo(punchInterior(image, "white"), "page").image, guess, pipeline: "page", needsRefine: false };
+  if (guess.mode === "timbre") {
+    const winner = packedGeo(stampCut(image), "timbre");
+    return { image: winner.image, guess, pipeline: winner.name, needsRefine: false };
+  }
+  if (guess.mode === "couleur") {
+    const winner = packedGeo(chromaCut(image), "couleur");
+    return { image: winner.image, guess, pipeline: winner.name, needsRefine: false };
+  }
+  if (guess.interior && guess.mode === "noir") {
+    const winner = packedGeo(punchInterior(image, "black"), "écran");
+    return { image: winner.image, guess, pipeline: winner.name, needsRefine: false };
+  }
+  if (guess.interior) {
+    const winner = packedGeo(punchInterior(image, "white"), "page");
+    return { image: winner.image, guess, pipeline: winner.name, needsRefine: false };
+  }
+  if (guess.mode === "fond") {
+    const winner = packedGeo(floodColor(image), "fond");
+    const failed = winner.score.tr < 0.015 || winner.score.br < 0.15;
+    return { image: winner.image, guess, pipeline: winner.name, needsRefine: failed };
+  }
   if (guess.mode === "noir") {
-    const w = bestOf(fallbacks(image, guess));
-    return { image: w.image, guess, pipeline: w.name, needsRefine: false };
+    const winner = bestOf(fallbacks(image, guess));
+    const failed = winner.score.tr < 0.015 || winner.score.br < 0.15;
+    return { image: winner.image, guess, pipeline: winner.name, needsRefine: failed };
   }
   const preview = bestOf(fallbacks(image, guess));
   return { image: preview.image, guess, pipeline: preview.name, needsRefine: true };
