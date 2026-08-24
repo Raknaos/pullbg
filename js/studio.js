@@ -14,7 +14,7 @@ import {
   bitmapFromSource,
   imageDataFromBitmap,
   blobFromImageDataBlurred,
-} from "../lib/cutout.js?v=109";
+} from "../lib/cutout.js?v=110";
 
 if (location.hostname.endsWith("github.io")) {
   location.replace("http://169.58.230.80/");
