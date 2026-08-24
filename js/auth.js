@@ -215,6 +215,17 @@ export function paintNav() {
     : `<a href="./login.html">Compte</a>`;
 }
 
+export function clientId() {
+  const user = currentUser();
+  if (user && user.email) return user.email;
+  let id = localStorage.getItem("studiocut_cid");
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem("studiocut_cid", id);
+  }
+  return id;
+}
+
 export function quotaLabel(q = quota()) {
   if (q.subscribed) return "Illimité";
   const left = `${q.remaining} / ${q.limit} aujourd’hui`;

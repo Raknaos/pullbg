@@ -8,17 +8,21 @@ import {
   nextResetAt,
   formatCountdown,
   paidBatchSize,
-} from "./auth.js?v=57";
-import { warmup, fastCut, refineCut } from "../lib/engine.js?v=108";
+  clientId,
+} from "./auth.js?v=109";
 import {
   bitmapFromSource,
   imageDataFromBitmap,
-  blobFromImageData,
   blobFromImageDataBlurred,
-} from "../lib/cutout.js?v=108";
+} from "../lib/cutout.js?v=109";
+
+if (location.hostname.endsWith("github.io")) {
+  location.replace("http://169.58.230.80/");
+}
+
+const API = location.hostname === "169.58.230.80" ? "" : "http://169.58.230.80";
 
 paintNav();
-warmup();
 
 const stage = document.getElementById("stage");
 const empty = document.getElementById("empty");
@@ -220,18 +224,56 @@ async function show(job, image, locked) {
   if (prev && prev !== job.result) forgetUrl(prev);
 }
 
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function cutOnServer(file) {
+  const body = new FormData();
+  body.append("image", file);
+  const started = await fetch(`${API}/api/cut`, {
+    method: "POST",
+    body,
+    headers: { "x-pullbg-client": clientId() },
+  });
+  if (started.status === 429) throw Object.assign(new Error("quota"), { gate: "account" });
+  if (!started.ok) throw new Error("serveur indisponible");
+  const { id } = await started.json();
+  let info = { status: "pending" };
+  for (let i = 0; i < 90; i++) {
+    const res = await fetch(`${API}/api/jobs/${id}`);
+    if (!res.ok) throw new Error("tâche perdue");
+    info = await res.json();
+    if (info.status === "done" || info.status === "error") break;
+    await sleep(800);
+  }
+  if (info.status !== "done") throw new Error(info.error || "échec du modèle");
+  const png = await fetch(`${API}${info.result}`);
+  if (!png.ok) throw new Error("résultat introuvable");
+  return { blob: await png.blob(), pipeline: info.pipeline };
+}
+
 async function cutOne(job, locked) {
   selectedId = job.id;
   job.status = "découpe…";
   patchJob(job);
   try {
-    const original = imageDataFromBitmap(await bitmapFromSource(job.file), 2200).image;
-    job.source = original;
-    job.draft = fastCut(original);
-    await show(job, job.draft.image, locked);
-    job.status = locked ? "aperçu flou" : (job.draft.needsRefine ? "affinage…" : "prêt");
+    const { blob, pipeline } = await cutOnServer(job.file);
+    if (locked) {
+      const bmp = await createImageBitmap(blob);
+      const { image } = imageDataFromBitmap(bmp);
+      if (typeof bmp.close === "function") bmp.close();
+      await show(job, image, true);
+    } else {
+      const prev = job.result;
+      job.blob = blob;
+      job.result = URL.createObjectURL(blob);
+      if (prev && prev !== job.result) forgetUrl(prev);
+    }
+    job.draft = { needsRefine: false, pipeline };
+    job.status = locked ? "aperçu flou" : "prêt";
     job.locked = locked;
-    if (locked || !job.draft.needsRefine) dropPixels(job);
+    dropPixels(job);
     patchJob(job);
   } catch (err) {
     dropPixels(job);
@@ -274,23 +316,7 @@ async function processQueue() {
         patchJob(job);
       })));
     }
-    for (const job of jobs) {
-      if (!job.draft || !job.draft.needsRefine || job.locked) continue;
-      try {
-        job.status = "affinage…";
-        patchJob(job);
-        const better = await refineCut(job.file, job.draft, job.source);
-        job.draft = better;
-        await show(job, better.image, false);
-        dropPixels(job);
-        job.status = "prêt";
-        patchJob(job);
-      } catch {
-        dropPixels(job);
-        job.status = "prêt";
-        patchJob(job);
-      }
-    }
+    /* Le modèle tourne sur le VPS : plus d'affinage navigateur. */
   } finally {
     running = false;
     refreshQuota();
@@ -319,7 +345,7 @@ async function downloadZip() {
   const a = document.createElement("a");
   const url = URL.createObjectURL(blob);
   a.href = url;
-  a.download = "pullbg.zip";
+  a.download = "studiocut.zip";
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 20000);
 }

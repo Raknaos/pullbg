@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Compte — PullBG</title>
+  <title>Compte — StudioCut</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&display=swap" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./css/site.css?v=14" />
@@ -11,7 +11,7 @@
 <body>
   <div class="wrap">
     <nav class="nav">
-      <a class="brand" href="./index.html"><span class="mark">P</span>PullBG</a>
+      <a class="brand" href="./index.html"><span class="mark">S</span>StudioCut</a>
       <div class="nav-links">
         <a href="./app.html">Studio</a>
         <a href="./pricing.html">Offres</a>
@@ -37,7 +37,7 @@
     if (!u) location.href = "./login.html?next=account";
     document.getElementById("who").textContent = u.email;
     document.getElementById("plan").textContent = u.plan === "monthly" || u.plan === "yearly"
-      ? `PullBG+ ${u.plan} · jusqu’au ${u.planUntil || "—"}`
+      ? `StudioCut+ ${u.plan} · jusqu’au ${u.planUntil || "—"}`
       : "Compte · 10 images / jour";
     const paint = () => { document.getElementById("q").textContent = quotaLabel(quota()); };
     paint();

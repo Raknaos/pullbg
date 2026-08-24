@@ -1,4 +1,4 @@
-# PullBG
+# StudioCut
 
 https://raknaos.github.io/pullbg/
 

@@ -25,6 +25,13 @@ await mkdir(JOBS_DIR, { recursive: true });
 
 const app = express();
 app.disable("x-powered-by");
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "x-pullbg-client, content-type");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  if (req.method === "OPTIONS") return res.status(204).end();
+  next();
+});
 app.use(express.json({ limit: "1mb" }));
 
 const upload = multer({
