@@ -155,7 +155,9 @@ async function kickWorker() {
   running = true;
   try {
     for (;;) {
-      const ids = (await readdir(JOBS_DIR)).filter((x) => x.endsWith(".json"));
+      const ids = (await readdir(JOBS_DIR))
+        .filter((x) => x.endsWith(".json") && !x.startsWith("quota-"))
+        .map((x) => x.replace(/\.json$/, ""));
       const pending = (await workingOn(ids)).filter((j) => j.status === "pending").sort((a, b) => a.createdAt - b.createdAt);
       if (pending.length === 0) break;
 

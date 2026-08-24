@@ -58,6 +58,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-20: Deux produits sur fond blanc : plus classés fenêtre. Grille 4 carreaux ou 2 vitres ciel sur PVC blanc inchangées. Cache v=28.
 - 2026-08-20: Battant PVC blanc 2 carreaux (nuit, ou nuit+ciel) : cadre serré + croisillon = fenêtre. Deux produits avec marge restent en IA. Cache v=29.
 - 2026-08-20: VPS prêt : deploy/ (contabo 8 Go, 1 mois sans engagement). API Express + file JSON single-worker + worker node réutilisant lib/classify+cutout + aiworker.py (rembg isnet-local). Testé local : logo <3> route couleur (78,4 % transparent), anneaux via IA (75,4 %). Installateur install.sh + systemd + nginx + certbot.
+- 2026-08-24: File d'attente : les IDs étaient lus avec le suffixe .json puis rechargé en .json.json — jobs bloqués en pending. Fix + déploiement live 169.58.230.80. Anneaux IA 75,4 % / logo couleur 78,4 % via HTTP public.
 - 2026-08-20: Fenêtres PVC blanches, vitres ciel cramées : carreaux quasi blancs percés (tint 16, plus bloqué à 32). Deux produits gris pâles restent en IA. Cache v=30.
 - 2026-08-20: Timbres rouleau / carnet : 2 bords dentelés suffisent (plus 40 trous). Pointillés de studio ignorés. Cache v=31.
 - 2026-08-20: Fond studio uni (vert/bleu/gris) : flood de la couleur du bord. Écran bleu plus classé noir. Produit blanc sur fond rouge plus une page. Cache v=32.
