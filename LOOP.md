@@ -135,3 +135,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-24: Timbre lézard : dentelé tête + queue + 2 pattes reconnu, pièce entière + trous percés (plus classé fond). Produit lézard sur blanc/noir inchangé. Cache v=104.
 - 2026-08-24: Timbre serpent : dentelé tête + S + queue reconnu, pièce entière + trous percés (plus classé fond). Produit serpent sur blanc/noir inchangé. Cache v=105.
 - 2026-08-24: Timbre crocodile : dentelé museau + crête + 2 pattes + queue reconnu, pièce entière + trous percés (plus classé fond). Produit crocodile sur blanc/noir inchangé. Cache v=106.
+- 2026-08-24: Timbre éléphant : dentelé trompe + oreille + 2 pattes + queue reconnu, pièce entière + trous percés (plus classé fond). Produit éléphant sur blanc/noir inchangé. Cache v=107.
