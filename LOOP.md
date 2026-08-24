@@ -126,3 +126,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-23: Timbre crabe : dentelé 2 pinces + pattes + arrière reconnu, pièce entière + trous percés (plus classé fond). Produit crabe sur blanc/noir inchangé. Cache v=95.
 - 2026-08-24: Timbre homard : dentelé antennes + pinces + pattes + éventail reconnu, pièce entière + trous percés (plus classé fond). Produit homard sur blanc/noir inchangé. Cache v=96.
 - 2026-08-24: Timbre crevette : dentelé antennes + pattes + éventail reconnu, pièce entière + trous percés (plus classé fond). Produit crevette sur blanc/noir inchangé. Cache v=97.
+- 2026-08-24: Timbre hippocampe : dentelé museau + couronne + nageoire + queue enroulée reconnu, pièce entière + trous percés (plus classé fond). Produit hippocampe sur blanc/noir inchangé. Cache v=98.
