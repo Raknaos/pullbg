@@ -156,43 +156,59 @@ function jobsDirCount() {
 
 // ---------- worker (single flight) ----------
 let running = false;
+let wake = false;
 
-async function kickWorker() {
+/** Test seam: awaited after an empty scan, before the wake re-check. */
+export const queueHooks = { afterIdleScan: null };
+
+async function pendingJobs() {
+  const ids = (await readdir(JOBS_DIR))
+    .filter((x) => x.endsWith(".json") && !x.startsWith("quota-"))
+    .map((x) => x.replace(/\.json$/, ""));
+  // Single-flight: any "processing" job we see here is leftover from a crash.
+  return (await workingOn(ids))
+    .filter((j) => j.status === "pending" || j.status === "processing")
+    .sort((a, b) => a.createdAt - b.createdAt);
+}
+
+async function runJob(job) {
+  job.status = "processing";
+  await saveJob(job);
+  try {
+    const input = await readFile(path.join(JOBS_DIR, `${job.id}.in`));
+    const out = await processImage(input);
+    await writeFile(path.join(JOBS_DIR, `${job.id}.out`), out.buffer);
+    job.status = "done";
+    job.pipeline = out.pipeline;
+    job.guess = out.guess;
+    job.finishedAt = Date.now();
+    await saveJob(job);
+  } catch (e) {
+    job.status = "error";
+    job.error = String(e?.message || e);
+    await saveJob(job);
+  }
+  await unlink(path.join(JOBS_DIR, `${job.id}.in`)).catch(() => {});
+}
+
+export async function kickWorker() {
+  wake = true;
   if (running) return;
   running = true;
   try {
-    for (;;) {
-      const ids = (await readdir(JOBS_DIR))
-        .filter((x) => x.endsWith(".json") && !x.startsWith("quota-"))
-        .map((x) => x.replace(/\.json$/, ""));
-      // Single-flight: any "processing" job we see here is leftover from a crash.
-      const pending = (await workingOn(ids))
-        .filter((j) => j.status === "pending" || j.status === "processing")
-        .sort((a, b) => a.createdAt - b.createdAt);
-      if (pending.length === 0) break;
-
-      const job = pending[0];
-      job.status = "processing";
-      await saveJob(job);
-      try {
-        const input = await readFile(path.join(JOBS_DIR, `${job.id}.in`));
-        const out = await processImage(input);
-        await writeFile(path.join(JOBS_DIR, `${job.id}.out`), out.buffer);
-        job.status = "done";
-        job.pipeline = out.pipeline;
-        job.guess = out.guess;
-        job.finishedAt = Date.now();
-        await saveJob(job);
-      } catch (e) {
-        job.status = "error";
-        job.error = String(e?.message || e);
-        await saveJob(job);
+    while (wake) {
+      wake = false;
+      for (;;) {
+        const pending = await pendingJobs();
+        if (pending.length === 0) break;
+        await runJob(pending[0]);
       }
-      await unlink(path.join(JOBS_DIR, `${job.id}.in`)).catch(() => {});
+      if (queueHooks.afterIdleScan) await queueHooks.afterIdleScan();
     }
   } finally {
     running = false;
   }
+  if (wake) void kickWorker();
 }
 
 // daily cleanup of old results
@@ -218,7 +234,9 @@ setInterval(async () => {
 }, 60 * 60 * 1000).unref();
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`PullBG API on :${PORT}`);
-  kickWorker();
-});
+if (process.env.PULLBG_NO_LISTEN !== "1") {
+  app.listen(PORT, () => {
+    console.log(`PullBG API on :${PORT}`);
+    kickWorker();
+  });
+}
