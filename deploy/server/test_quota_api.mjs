@@ -123,6 +123,22 @@ async function quotaCount(client) {
   assert(nextInfo.status === "done", `next-day cut done (${nextInfo.status})`);
 }
 
+{
+  const day = new Date().toISOString().slice(0, 10);
+  const client = "race";
+  const replies = await Promise.all(Array.from({ length: 20 }, () => postCut(png, { client, day })));
+  const accepted = replies.filter((r) => r.status === 200);
+  const blocked = replies.filter((r) => r.status === 429);
+  assert(accepted.length === 10, `parallel lot is 10, got ${accepted.length} accepted`);
+  assert(blocked.length === 10, `parallel overflow is 429, got ${blocked.length}`);
+  const q = await quotaCount(client);
+  assert(q.count === 10, `quota file matches 10, got ${q.count}`);
+  await Promise.all(accepted.map(async (res) => {
+    const info = await waitJob((await res.json()).id);
+    assert(info.status === "done", `race job ${info.status} ${info.error || ""}`);
+  }));
+}
+
 server.close();
 await rm(JOBS, { recursive: true, force: true });
 console.log("quota api: local day + refund on failed cut OK");

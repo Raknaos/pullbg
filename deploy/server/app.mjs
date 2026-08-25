@@ -79,15 +79,31 @@ async function writeQuota(key, day, count) {
   await writeFile(quotaFile(key), JSON.stringify({ day, count }), "utf8");
 }
 
-async function bumpQuota(key, day) {
-  await writeQuota(key, day, (await quotaUsed(key, day)) + 1);
+let quotaChain = Promise.resolve();
+
+function withQuotaLock(fn) {
+  const run = quotaChain.then(fn, fn);
+  quotaChain = run.then(() => {}, () => {});
+  return run;
+}
+
+/** One check+increment at a time — studio posts up to 3 cuts in parallel. */
+async function takeQuota(key, day) {
+  return withQuotaLock(async () => {
+    const used = await quotaUsed(key, day);
+    if (used >= DAILY_LIMIT) return false;
+    await writeQuota(key, day, used + 1);
+    return true;
+  });
 }
 
 async function refundQuota(key, day) {
   if (!key || !day) return;
-  const used = await quotaUsed(key, day);
-  if (used <= 0) return;
-  await writeQuota(key, day, used - 1);
+  return withQuotaLock(async () => {
+    const used = await quotaUsed(key, day);
+    if (used <= 0) return;
+    await writeQuota(key, day, used - 1);
+  });
 }
 
 async function saveJob(job) {
@@ -122,8 +138,8 @@ app.post("/api/cut", upload.single("image"), async (req, res) => {
 
     const key = clientKey(req);
     const day = quotaDay(req);
-    const used = await quotaUsed(key, day);
-    if (used >= DAILY_LIMIT) {
+    const taken = await takeQuota(key, day);
+    if (!taken) {
       return res.status(429).json({ error: "Limite quotidienne atteinte.", limit: DAILY_LIMIT });
     }
 
@@ -138,9 +154,13 @@ app.post("/api/cut", upload.single("image"), async (req, res) => {
       client: key,
       day,
     };
-    await writeFile(path.join(JOBS_DIR, `${id}.in`), req.file.buffer);
-    await saveJob(job);
-    await bumpQuota(key, day);
+    try {
+      await writeFile(path.join(JOBS_DIR, `${id}.in`), req.file.buffer);
+      await saveJob(job);
+    } catch (e) {
+      await refundQuota(key, day);
+      throw e;
+    }
     res.json({ id, status: "pending" });
     kickWorker();
   } catch (e) {
