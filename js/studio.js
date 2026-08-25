@@ -9,12 +9,12 @@ import {
   formatCountdown,
   paidBatchSize,
   clientId,
-} from "./auth.js?v=109";
+} from "./auth.js?v=113";
 import {
   bitmapFromSource,
   imageDataFromBitmap,
   blobFromImageDataBlurred,
-} from "../lib/cutout.js?v=110";
+} from "../lib/cutout.js?v=113";
 
 if (location.hostname.endsWith("github.io")) {
   location.replace("http://169.58.230.80/");
@@ -212,15 +212,10 @@ function dropPixels(job) {
   if (job.draft) job.draft = { needsRefine: false, pipeline: job.draft.pipeline };
 }
 
-async function show(job, image, locked) {
+async function showBlurred(job, image) {
   const prev = job.result;
-  if (locked) {
-    job.blob = null;
-    job.result = URL.createObjectURL(await blobFromImageDataBlurred(image));
-  } else {
-    job.blob = await blobFromImageData(image);
-    job.result = URL.createObjectURL(job.blob);
-  }
+  job.blob = null;
+  job.result = URL.createObjectURL(await blobFromImageDataBlurred(image));
   if (prev && prev !== job.result) forgetUrl(prev);
 }
 
@@ -257,26 +252,43 @@ async function cutOnServer(file) {
   return { blob: await png.blob(), pipeline: info.pipeline };
 }
 
-async function cutOne(job, locked) {
+async function cutOne(job) {
   selectedId = job.id;
   job.status = "découpe…";
   patchJob(job);
   try {
     const { blob, pipeline } = await cutOnServer(job.file);
-    if (locked) {
-      const bmp = await createImageBitmap(blob);
-      const { image } = imageDataFromBitmap(bmp);
-      if (typeof bmp.close === "function") bmp.close();
-      await show(job, image, true);
-    } else {
-      const prev = job.result;
-      job.blob = blob;
-      job.result = URL.createObjectURL(blob);
-      if (prev && prev !== job.result) forgetUrl(prev);
-    }
+    const prev = job.result;
+    job.blob = blob;
+    job.result = URL.createObjectURL(blob);
+    if (prev && prev !== job.result) forgetUrl(prev);
     job.draft = { needsRefine: false, pipeline };
-    job.status = locked ? "aperçu flou" : "prêt";
-    job.locked = locked;
+    job.status = "prêt";
+    job.locked = false;
+    if (job.url && job.url !== job.result) {
+      forgetUrl(job.url);
+      job.url = job.result;
+    }
+    job.file = null;
+    dropPixels(job);
+    patchJob(job);
+  } catch (err) {
+    dropPixels(job);
+    throw err;
+  }
+}
+
+/** 11e image : flou local, sans slot serveur (sinon 429 = pas d’aperçu). */
+async function previewLocked(job) {
+  selectedId = job.id;
+  job.status = "aperçu flou";
+  patchJob(job);
+  try {
+    const bmp = await bitmapFromSource(job.file);
+    const { image } = imageDataFromBitmap(bmp, 2200);
+    await showBlurred(job, image);
+    job.draft = { needsRefine: false, pipeline: "aperçu" };
+    job.locked = true;
     if (job.url && job.url !== job.result) {
       forgetUrl(job.url);
       job.url = job.result;
@@ -291,7 +303,9 @@ async function cutOne(job, locked) {
 }
 
 async function processQueue() {
+  if (running) return;
   running = true;
+  let gated = false;
   try {
     while (true) {
       const pending = jobs.filter((j) => !j.draft && !j.locked && !j.status.startsWith("erreur"));
@@ -299,38 +313,40 @@ async function processQueue() {
       const gateState = canCut();
       if (!gateState.ok) {
         try {
-          await cutOne(pending[0], true);
+          await previewLocked(pending[0]);
         } catch (err) {
           pending[0].status = "erreur : " + (err.message || err);
           pending[0].locked = true;
           patchJob(pending[0]);
         }
         openGate(gateState.gate);
+        gated = true;
         break;
       }
       const n = paidBatchSize(gateState.q.remaining, pending.length);
       const batch = pending.slice(0, n);
       for (const job of batch) consumeOne();
       refreshQuota();
-      await Promise.all(batch.map((job) => cutOne(job, false).catch((err) => {
+      await Promise.all(batch.map((job) => cutOne(job).catch((err) => {
         refundOne();
         refreshQuota();
         if (err && err.gate) {
           job.locked = true;
           job.status = "verrouillé";
+          gated = true;
           openGate(err.gate);
           return;
         }
         job.status = "erreur : " + (err.message || err);
         patchJob(job);
       })));
+      if (gated) break;
     }
-    /* Le modèle tourne sur le VPS : plus d'affinage navigateur. */
   } finally {
     running = false;
     refreshQuota();
-    if (jobs.some((j) => j.status === "en file")) processQueue();
   }
+  if (!gated && canCut().ok && jobs.some((j) => j.status === "en file")) processQueue();
 }
 
 function zipName(name, used) {
