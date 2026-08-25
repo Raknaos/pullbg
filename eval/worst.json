@@ -15,11 +15,6 @@
     "score": 54.0
   },
   {
-    "id": "plant-03",
-    "tag": "plant",
-    "score": 55.1
-  },
-  {
     "id": "hair-12",
     "tag": "hair",
     "score": 57.2
@@ -28,6 +23,11 @@
     "id": "plant-04",
     "tag": "plant",
     "score": 57.7
+  },
+  {
+    "id": "plant-03",
+    "tag": "plant",
+    "score": 59.1
   },
   {
     "id": "fur-02",

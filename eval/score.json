@@ -1,13 +1,13 @@
 {
-  "cutbg_score": 72.5,
+  "cutbg_score": 72.8,
   "n": 68,
   "by_tag": {
     "food": 73.6,
-    "fur": 67.0,
+    "fur": 68.5,
     "glass": 79.1,
-    "hair": 68.8,
+    "hair": 69.5,
     "object": 71.8,
-    "plant": 65.3,
+    "plant": 66.3,
     "product": 75.6,
     "studio": 72.6,
     "window": 74.7
@@ -29,11 +29,6 @@
       "score": 54.0
     },
     {
-      "id": "plant-03",
-      "tag": "plant",
-      "score": 55.1
-    },
-    {
       "id": "hair-12",
       "tag": "hair",
       "score": 57.2
@@ -42,6 +37,11 @@
       "id": "plant-04",
       "tag": "plant",
       "score": 57.7
+    },
+    {
+      "id": "plant-03",
+      "tag": "plant",
+      "score": 59.1
     },
     {
       "id": "fur-02",
@@ -241,11 +241,11 @@
       "hard": true,
       "ok": true,
       "score": 71.2,
-      "fg": 0.5368,
-      "fringe": 0.0168,
-      "rough": 22.31,
-      "leftover": 0.02267,
-      "holes": 0.2606
+      "fg": 0.536,
+      "fringe": 0.0163,
+      "rough": 23.38,
+      "leftover": 0.02191,
+      "holes": 0.2617
     },
     {
       "id": "hair-11",
@@ -552,12 +552,12 @@
       "src": "fur-04.jpg",
       "hard": true,
       "ok": true,
-      "score": 71.6,
-      "fg": 0.299,
-      "fringe": 0.0146,
-      "rough": 36.07,
-      "leftover": 0.00895,
-      "holes": 0.3199
+      "score": 77.9,
+      "fg": 0.2903,
+      "fringe": 0.0143,
+      "rough": 36.32,
+      "leftover": 0.00025,
+      "holes": 0.3327
     },
     {
       "id": "plant-01",
@@ -591,12 +591,12 @@
       "src": "plant-03.jpg",
       "hard": false,
       "ok": true,
-      "score": 55.1,
-      "fg": 0.2563,
-      "fringe": 0.1251,
-      "rough": 21.65,
-      "leftover": 0.00516,
-      "holes": 0.7324
+      "score": 59.1,
+      "fg": 0.2512,
+      "fringe": 0.1212,
+      "rough": 21.76,
+      "leftover": 0.0,
+      "holes": 0.7259
     },
     {
       "id": "food-01",
@@ -695,12 +695,12 @@
       "src": "hair-14.jpg",
       "hard": true,
       "ok": true,
-      "score": 63.8,
-      "fg": 0.5667,
-      "fringe": 0.0161,
-      "rough": 25.71,
-      "leftover": 0.02637,
-      "holes": 0.321
+      "score": 78.1,
+      "fg": 0.5412,
+      "fringe": 0.0119,
+      "rough": 34.08,
+      "leftover": 0.00089,
+      "holes": 0.348
     },
     {
       "id": "hair-15",

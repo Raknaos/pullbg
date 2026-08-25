@@ -168,6 +168,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Imposte bureau en T (barre 3+ + montant intérieur, plus seulement L / U). 4 produits en T espacés restent en IA. Cache v=120.
 - 2026-08-25: Stick adaptatif : masque sale (frange ≥6 %) ne garde la mi-alpha que contre le sujet solide. Score 61 cas 69,3→71,6.
 - 2026-08-25: Drop studio coloré (coins chroma≥20, leftover cadre ≥1 %). hair-02 46,8→69,4. Hair 66,0→68,8. Score 71,7→72,5.
+- 2026-08-25: Leftover cadre si couleur coins ≠ sujet. fur-04 71,6→77,9. Fur 67,0→68,5. Hair 68,8→69,5. Score 72,5→72,8.
 
 
 

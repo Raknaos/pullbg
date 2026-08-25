@@ -231,6 +231,52 @@ def drop_studio(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     return Image.fromarray(out, mode="L")
 
 
+def drop_bg_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
+    """Drop frame leftover whose color matches the corners, not the subject."""
+    rgb = np.asarray(guide_rgb.convert("RGB"), dtype=np.int16)
+    arr = np.asarray(alpha)
+    h, w = arr.shape
+    bw, bh = max(2, w // 50), max(2, h // 50)
+    frame = np.zeros((h, w), dtype=bool)
+    frame[:bh] = True
+    frame[-bh:] = True
+    frame[:, :bw] = True
+    frame[:, -bw:] = True
+    fg = arr > 32
+    leftover_m = fg & frame
+    leftover = float(leftover_m.mean())
+    fg_n = int(fg.sum()) or 1
+    if leftover_m.sum() / fg_n > 0.08 or leftover < 0.005:
+        return alpha
+    interior = fg & ~frame
+    if leftover_m.sum() < 20 or interior.sum() < 40:
+        return alpha
+    p = min(8, h, w)
+    corners = [
+        rgb[:p, :p].mean((0, 1)),
+        rgb[:p, -p:].mean((0, 1)),
+        rgb[-p:, :p].mean((0, 1)),
+        rgb[-p:, -p:].mean((0, 1)),
+    ]
+    seeds = []
+    for c in corners:
+        near = sum(float(np.max(np.abs(c - other))) <= 48 for other in corners)
+        if near >= 2:
+            seeds.append(c)
+    if len(seeds) < 2:
+        return alpha
+    lo_col = rgb[leftover_m].mean(0)
+    subj = rgb[interior].mean(0)
+    d_bg = min(float(np.max(np.abs(lo_col - s))) for s in seeds)
+    d_fg = float(np.max(np.abs(lo_col - subj)))
+    if d_bg > 36 or d_fg < d_bg + 32:
+        return alpha
+    dist = np.min([np.max(np.abs(rgb - s.astype(np.int16)), axis=2) for s in seeds], axis=0)
+    out = arr.copy()
+    out[leftover_m & (dist <= 44)] = 0
+    return Image.fromarray(out, mode="L")
+
+
 def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     im = Image.open(io.BytesIO(raw)).convert("RGBA")
     if im.size != guide_rgb.size:
@@ -244,6 +290,7 @@ def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     a = guided_alpha(guide_rgb, a, radius=3, eps=8e-4)
     a = stick_fringe(a)
     a = drop_studio(guide_rgb, a)
+    a = drop_bg_leftover(guide_rgb, a)
     rgb = np.array(Image.merge("RGBA", (r, g, b, a)))
     cut = 1 if orders["hair"] or orders["tight"] else 4
     rgb[rgb[:, :, 3] < cut] = 0
