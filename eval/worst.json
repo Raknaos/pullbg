@@ -7,7 +7,7 @@
   {
     "id": "hair-09",
     "tag": "hair",
-    "score": 70.3
+    "score": 69.5
   },
   {
     "id": "glass-02",
@@ -17,7 +17,7 @@
   {
     "id": "plant-01",
     "tag": "plant",
-    "score": 73.0
+    "score": 73.4
   },
   {
     "id": "plant-06",
@@ -35,17 +35,17 @@
     "score": 74.8
   },
   {
-    "id": "glass-10",
-    "tag": "glass",
-    "score": 74.9
-  },
-  {
     "id": "prod-02",
     "tag": "product",
     "score": 75.0
   },
   {
     "id": "prod-03",
+    "tag": "product",
+    "score": 75.0
+  },
+  {
+    "id": "prod-05",
     "tag": "product",
     "score": 75.0
   }
