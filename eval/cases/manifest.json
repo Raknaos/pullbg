@@ -230,7 +230,7 @@
     },
     {
       "id": "plant-01",
-      "tag": "plant",
+      "tag": "object",
       "src": "plant-01.jpg",
       "hard": false
     },
@@ -448,6 +448,12 @@
       "id": "stamp-01",
       "tag": "stamp",
       "src": "stamp-01.jpg",
+      "hard": true
+    },
+    {
+      "id": "stamp-04",
+      "tag": "stamp",
+      "src": "stamp-04.jpg",
       "hard": true
     },
     {

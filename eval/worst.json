@@ -10,23 +10,13 @@
     "score": 72.0
   },
   {
-    "id": "glass-02",
-    "tag": "glass",
-    "score": 72.6
-  },
-  {
     "id": "plant-01",
-    "tag": "plant",
+    "tag": "object",
     "score": 74.3
   },
   {
     "id": "prod-07",
     "tag": "product",
-    "score": 74.4
-  },
-  {
-    "id": "group-03",
-    "tag": "group",
     "score": 74.4
   },
   {
@@ -46,6 +36,16 @@
   },
   {
     "id": "studio-02",
+    "tag": "studio",
+    "score": 75.0
+  },
+  {
+    "id": "obj-03",
+    "tag": "object",
+    "score": 75.0
+  },
+  {
+    "id": "white-02",
     "tag": "studio",
     "score": 75.0
   }

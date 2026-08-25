@@ -26,6 +26,7 @@ const checks = [
   { id: "win-03", file: "win-03.jpg", forbid: ["timbre"] },
   { id: "stamp-01", file: "stamp-01.jpg", want: "timbre" },
   { id: "stamp-03", file: "stamp-03.jpg", want: "timbre" },
+  { id: "stamp-04", file: "stamp-04.jpg", want: "timbre" },
 ];
 
 let fail = 0;

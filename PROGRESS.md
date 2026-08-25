@@ -1,8 +1,8 @@
 # CutBG — progression
 
-Vague **4** **19/50** · score **81,9** / **83** cas · IoU 0,803 · group **81,0** · hair **84,7**
+Vague **4** **20/50** · score **83,1** / **84** cas · IoU 0,803 · group **84,8** · hair **84,7** · stamp **84,0**
 
-Pires : fur-02 71,7 · hair-09 72,0 · glass-02 72,6 · plant-01 74,3 · prod-07 74,4
+Pires : fur-02 71,7 · hair-09 72,0 · plant-01 74,3 · prod-07 74,4 · prod-02 75,0
 
 ## Vague 4 — tâches
 
@@ -24,9 +24,9 @@ Pires : fur-02 71,7 · hair-09 72,0 · glass-02 72,6 · plant-01 74,3 · prod-07
 | w4-14 | fait | white-shirt-01 déjà au banc |
 | w4-15 | fait | +2 cas group-03 69,8 / group-04 80,3 |
 | w4-16 | fait | fur-02 leftover = poitrail, skip drop |
-| w4-17 | in_progress | +1 cas stamp dentelé |
+| w4-17 | fait | +1 cas stamp dentelé |
 | w4-18 | fait | drop_floating banc 80,2→80,9 |
-| w4-19 | restant | revoir GT group-01 |
+| w4-19 | in_progress | revoir GT group-01 |
 | w4-20 | restant | revoir GT hair-11 |
 | w4-21 | restant | revoir GT hair-09 |
 | w4-22 | restant | revoir GT fur-02 |
@@ -63,8 +63,8 @@ Pires : fur-02 71,7 · hair-09 72,0 · glass-02 72,6 · plant-01 74,3 · prod-07
 
 | id | action | score |
 |---|---|---|
+| w4-17 | stamp-04 UNR 1918 dentelé, classif timbre, coupe géo 84,6 | 84 cas · stamp 83,9→84,0 · global **83,1** |
 | w4-08 | smooth_interior_fringe r6/8e-3 | 80,8→81,9 · food 80,9→81,5 · food-03 79,9→81,7 |
 | w4-15 | group-03/04 via API live | 83 cas, group-03 **69,8** |
 | w4-45 | aiworker VPS restart | health OK build 3 |
 | w4-18 | drop_floating 60 coupes | 80,2→80,9 (81 cas) |
-| w4-44 | snapshot score-wave4 | 80,9 / 81 |
