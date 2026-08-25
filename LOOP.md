@@ -6,8 +6,8 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 
 - Studio = drop multi-images, file auto, **zéro option**
 - Accueil : pas d’exemples, pas de prix
-- 10 images/jour **sans compte** (jamais « gratuit »)
-- 11ᵉ = aperçu flou + créer un compte
+- 100 images/jour **sans compte** (jamais « gratuit »)
+- 101ᵉ = aperçu flou + créer un compte
 - Après compte → `pricing.html` : 2,99 €/mois, 19,99 €/an (29,99 barré)
 - Compteur reset minuit local
 - Moteur autonome (classifieur + géométrie puis affinage si besoin)
@@ -26,7 +26,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 
 - Demander confirmation
 - Remettre des options / galerie / prix sur l’accueil
-- Dire « 10 images gratuites »
+- Dire « 100 images gratuites »
 - Reboot / toucher d’autres projets
 
 ## Journal
@@ -157,5 +157,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Classifieur : le zoo de formes s’arrête dès 12 trous (plus 7 scans complets). Timbres / portraits inchangés.
 - 2026-08-25: Punch / classif : un seul couple seen+q pour les 4 BFS. Tint Uint8. Moins de pic mémoire sur les grandes fenêtres.
 - 2026-08-25: Punch : un cand+keep réutilisé (plus 4 masques + 4 keeps). Soft-alpha lit le fond, plus de copie. Moins de pic mémoire sur les grandes fenêtres.
+- 2026-08-25: Planche / chroma : plus de copie des cellules BFS (2e passe). Zoo dentelé sauté si le disque tient déjà. Timbres / fenêtres inchangés.
+
 
 
