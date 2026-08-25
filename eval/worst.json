@@ -10,6 +10,11 @@
     "score": 69.5
   },
   {
+    "id": "group-03",
+    "tag": "group",
+    "score": 69.8
+  },
+  {
     "id": "glass-02",
     "tag": "glass",
     "score": 72.6
@@ -41,11 +46,6 @@
   },
   {
     "id": "prod-03",
-    "tag": "product",
-    "score": 75.0
-  },
-  {
-    "id": "prod-05",
     "tag": "product",
     "score": 75.0
   }

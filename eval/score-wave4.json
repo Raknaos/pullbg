@@ -1,11 +1,11 @@
 {
-  "cutbg_score": 80.8,
-  "n": 83,
+  "cutbg_score": 80.9,
+  "n": 81,
   "by_tag": {
     "food": 80.9,
     "fur": 76.3,
     "glass": 81.2,
-    "group": 78.5,
+    "group": 81.9,
     "hair": 82.7,
     "object": 84.2,
     "plant": 77.6,
@@ -26,11 +26,6 @@
       "id": "hair-09",
       "tag": "hair",
       "score": 69.5
-    },
-    {
-      "id": "group-03",
-      "tag": "group",
-      "score": 69.8
     },
     {
       "id": "glass-02",
@@ -64,6 +59,11 @@
     },
     {
       "id": "prod-03",
+      "tag": "product",
+      "score": 75.0
+    },
+    {
+      "id": "prod-05",
       "tag": "product",
       "score": 75.0
     }
@@ -1141,32 +1141,6 @@
       "rough": 47.49,
       "leftover": 0.0,
       "holes": 0.2659
-    },
-    {
-      "id": "group-03",
-      "tag": "group",
-      "src": "group-03.jpg",
-      "hard": true,
-      "ok": true,
-      "score": 69.8,
-      "fg": 0.3674,
-      "fringe": 0.0306,
-      "rough": 42.59,
-      "leftover": 0.00354,
-      "holes": 0.3525
-    },
-    {
-      "id": "group-04",
-      "tag": "group",
-      "src": "group-04.jpg",
-      "hard": true,
-      "ok": true,
-      "score": 80.3,
-      "fg": 0.1827,
-      "fringe": 0.022,
-      "rough": 40.94,
-      "leftover": 0.0,
-      "holes": 0.2475
     }
   ]
 }

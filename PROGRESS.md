@@ -1,8 +1,8 @@
 # CutBG — progression
 
-Vague **4** **16/50** · score **80,9** / 81 cas · IoU 0,924 · group **81,9** · hair **82,7**
+Vague **4** **18/50** · score **80,8** / **83** cas · IoU 0,924 · group **78,5** · hair **82,7**
 
-Pires : fur-02 68,1 · hair-09 69,5 · glass-02 72,6 · plant-01 73,4 · plant-06 73,7
+Pires : fur-02 68,1 · hair-09 69,5 · group-03 69,8 · glass-02 72,6 · plant-01 73,4
 
 ## Vague 4 — tâches
 
@@ -22,10 +22,10 @@ Pires : fur-02 68,1 · hair-09 69,5 · glass-02 72,6 · plant-01 73,4 · plant-0
 | w4-12 | fait | laptop-02 déjà au banc |
 | w4-13 | fait | backlit-01 déjà au banc |
 | w4-14 | fait | white-shirt-01 déjà au banc |
-| w4-15 | restant | +2 cas group |
+| w4-15 | fait | +2 cas group-03 69,8 / group-04 80,3 |
 | w4-16 | fait | fur-02 leftover = poitrail, skip drop |
 | w4-17 | restant | +1 cas stamp dentelé |
-| w4-18 | fait | drop_floating sur banc (îlots hair-09) score 80,2→80,9 |
+| w4-18 | fait | drop_floating banc 80,2→80,9 |
 | w4-19 | restant | revoir GT group-01 |
 | w4-20 | restant | revoir GT hair-11 |
 | w4-21 | restant | revoir GT hair-09 |
@@ -51,8 +51,8 @@ Pires : fur-02 68,1 · hair-09 69,5 · glass-02 72,6 · plant-01 73,4 · plant-0
 | w4-41 | restant | sync decontaminate |
 | w4-42 | restant | recut rembg local |
 | w4-43 | restant | ci score gate |
-| w4-44 | restant | snapshot score-wave4 |
-| w4-45 | en cours | déployer aiworker |
+| w4-44 | fait | snapshot score-wave4.json |
+| w4-45 | fait | déployer aiworker VPS (fringe 3 % live) |
 | w4-46 | restant | accueil sans prix/exemples |
 | w4-47 | restant | pas Grok via Go |
 | w4-48 | restant | pas Phase 3 GPU |
@@ -63,8 +63,8 @@ Pires : fur-02 68,1 · hair-09 69,5 · glass-02 72,6 · plant-01 73,4 · plant-0
 
 | id | action | score |
 |---|---|---|
-| w4-18 | drop_floating îlots + dropBgLeftover papier timbre | 80,2→**80,9** stamp-03 83,9 |
-| w4-05 w4-10 | drop_fringe_bg 3,5→3,0 | group-01 74,1→79,5 |
-| w4-16 | fur-02 poitrail au cadre, skip | 68,1 |
-| w4-06 | plant-01 pot au cadre, skip | 80,2 |
-| w4-07 | prod-07 vide casque, skip fill | 80,2 |
+| w4-15 | group-03/04 via API live | 83 cas, group-03 **69,8** |
+| w4-45 | aiworker VPS restart | health OK build 3 |
+| w4-18 | drop_floating 60 coupes | 80,2→80,9 (81 cas) |
+| w4-44 | snapshot score-wave4 | 80,9 / 81 |
+| w4-10 | drop_fringe_bg 3,0 % | group-01 79,5 |

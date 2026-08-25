@@ -1,0 +1,502 @@
+{
+  "cases": [
+    {
+      "id": "hair-wind",
+      "tag": "hair",
+      "src": "hair-wind.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-coke",
+      "tag": "glass",
+      "src": "glass-coke.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-bottle",
+      "tag": "glass",
+      "src": "glass-bottle.jpg",
+      "hard": true
+    },
+    {
+      "id": "product-pack",
+      "tag": "product",
+      "src": "product-pack.jpg",
+      "hard": false
+    },
+    {
+      "id": "hair-01",
+      "tag": "hair",
+      "src": "hair-01.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-02",
+      "tag": "hair",
+      "src": "hair-02.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-03",
+      "tag": "hair",
+      "src": "hair-03.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-04",
+      "tag": "hair",
+      "src": "hair-04.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-05",
+      "tag": "hair",
+      "src": "hair-05.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-06",
+      "tag": "hair",
+      "src": "hair-06.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-07",
+      "tag": "hair",
+      "src": "hair-07.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-08",
+      "tag": "hair",
+      "src": "hair-08.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-09",
+      "tag": "hair",
+      "src": "hair-09.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-10",
+      "tag": "hair",
+      "src": "hair-10.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-11",
+      "tag": "hair",
+      "src": "hair-11.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-12",
+      "tag": "hair",
+      "src": "hair-12.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-01",
+      "tag": "glass",
+      "src": "glass-01.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-02",
+      "tag": "glass",
+      "src": "glass-02.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-03",
+      "tag": "glass",
+      "src": "glass-03.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-04",
+      "tag": "glass",
+      "src": "glass-04.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-05",
+      "tag": "glass",
+      "src": "glass-05.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-07",
+      "tag": "glass",
+      "src": "glass-07.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-08",
+      "tag": "glass",
+      "src": "glass-08.jpg",
+      "hard": true
+    },
+    {
+      "id": "prod-01",
+      "tag": "product",
+      "src": "prod-01.jpg",
+      "hard": false
+    },
+    {
+      "id": "prod-02",
+      "tag": "product",
+      "src": "prod-02.jpg",
+      "hard": false
+    },
+    {
+      "id": "prod-03",
+      "tag": "product",
+      "src": "prod-03.jpg",
+      "hard": false
+    },
+    {
+      "id": "prod-04",
+      "tag": "product",
+      "src": "prod-04.jpg",
+      "hard": false
+    },
+    {
+      "id": "prod-05",
+      "tag": "product",
+      "src": "prod-05.jpg",
+      "hard": false
+    },
+    {
+      "id": "prod-06",
+      "tag": "product",
+      "src": "prod-06.jpg",
+      "hard": false
+    },
+    {
+      "id": "prod-07",
+      "tag": "product",
+      "src": "prod-07.jpg",
+      "hard": false
+    },
+    {
+      "id": "prod-08",
+      "tag": "product",
+      "src": "prod-08.jpg",
+      "hard": false
+    },
+    {
+      "id": "studio-01",
+      "tag": "studio",
+      "src": "studio-01.jpg",
+      "hard": false
+    },
+    {
+      "id": "studio-02",
+      "tag": "studio",
+      "src": "studio-02.jpg",
+      "hard": false
+    },
+    {
+      "id": "studio-04",
+      "tag": "studio",
+      "src": "studio-04.jpg",
+      "hard": false
+    },
+    {
+      "id": "fur-01",
+      "tag": "fur",
+      "src": "fur-01.jpg",
+      "hard": true
+    },
+    {
+      "id": "fur-02",
+      "tag": "fur",
+      "src": "fur-02.jpg",
+      "hard": true
+    },
+    {
+      "id": "fur-03",
+      "tag": "fur",
+      "src": "fur-03.jpg",
+      "hard": true
+    },
+    {
+      "id": "fur-04",
+      "tag": "fur",
+      "src": "fur-04.jpg",
+      "hard": true
+    },
+    {
+      "id": "plant-01",
+      "tag": "plant",
+      "src": "plant-01.jpg",
+      "hard": false
+    },
+    {
+      "id": "plant-02",
+      "tag": "plant",
+      "src": "plant-02.jpg",
+      "hard": false
+    },
+    {
+      "id": "plant-03",
+      "tag": "plant",
+      "src": "plant-03.jpg",
+      "hard": false
+    },
+    {
+      "id": "food-01",
+      "tag": "food",
+      "src": "food-01.jpg",
+      "hard": false
+    },
+    {
+      "id": "food-02",
+      "tag": "food",
+      "src": "food-02.jpg",
+      "hard": false
+    },
+    {
+      "id": "food-03",
+      "tag": "food",
+      "src": "food-03.jpg",
+      "hard": false
+    },
+    {
+      "id": "obj-01",
+      "tag": "object",
+      "src": "obj-01.jpg",
+      "hard": false
+    },
+    {
+      "id": "obj-02",
+      "tag": "object",
+      "src": "obj-02.jpg",
+      "hard": false
+    },
+    {
+      "id": "obj-03",
+      "tag": "object",
+      "src": "obj-03.jpg",
+      "hard": false
+    },
+    {
+      "id": "hair-13",
+      "tag": "hair",
+      "src": "hair-13.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-14",
+      "tag": "hair",
+      "src": "hair-14.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-15",
+      "tag": "hair",
+      "src": "hair-15.jpg",
+      "hard": true
+    },
+    {
+      "id": "hair-16",
+      "tag": "hair",
+      "src": "hair-16.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-09",
+      "tag": "glass",
+      "src": "glass-09.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-10",
+      "tag": "glass",
+      "src": "glass-10.jpg",
+      "hard": true
+    },
+    {
+      "id": "prod-09",
+      "tag": "product",
+      "src": "prod-09.jpg",
+      "hard": false
+    },
+    {
+      "id": "prod-10",
+      "tag": "product",
+      "src": "prod-10.jpg",
+      "hard": false
+    },
+    {
+      "id": "prod-11",
+      "tag": "product",
+      "src": "prod-11.jpg",
+      "hard": false
+    },
+    {
+      "id": "obj-04",
+      "tag": "object",
+      "src": "obj-04.jpg",
+      "hard": false
+    },
+    {
+      "id": "obj-05",
+      "tag": "object",
+      "src": "obj-05.jpg",
+      "hard": false
+    },
+    {
+      "id": "studio-05",
+      "tag": "studio",
+      "src": "studio-05.jpg",
+      "hard": false
+    },
+    {
+      "id": "plant-04",
+      "tag": "plant",
+      "src": "plant-04.jpg",
+      "hard": false
+    },
+    {
+      "id": "food-04",
+      "tag": "food",
+      "src": "food-04.jpg",
+      "hard": false
+    },
+    {
+      "id": "win-01",
+      "tag": "window",
+      "src": "win-01.jpg",
+      "hard": true
+    },
+    {
+      "id": "win-02",
+      "tag": "window",
+      "src": "win-02.jpg",
+      "hard": true
+    },
+    {
+      "id": "win-03",
+      "tag": "window",
+      "src": "win-03.jpg",
+      "hard": true
+    },
+    {
+      "id": "white-01",
+      "tag": "studio",
+      "src": "white-01.jpg",
+      "hard": true
+    },
+    {
+      "id": "white-02",
+      "tag": "studio",
+      "src": "white-02.jpg",
+      "hard": true
+    },
+    {
+      "id": "group-01",
+      "tag": "group",
+      "src": "group-01.jpg",
+      "hard": true
+    },
+    {
+      "id": "group-02",
+      "tag": "group",
+      "src": "group-02.jpg",
+      "hard": true
+    },
+    {
+      "id": "laptop-01",
+      "tag": "window",
+      "src": "laptop-01.jpg",
+      "hard": true
+    },
+    {
+      "id": "laptop-02",
+      "tag": "window",
+      "src": "laptop-02.jpg",
+      "hard": true
+    },
+    {
+      "id": "backlit-01",
+      "tag": "hair",
+      "src": "backlit-01.jpg",
+      "hard": true
+    },
+    {
+      "id": "white-shirt-01",
+      "tag": "studio",
+      "src": "white-shirt-01.jpg",
+      "hard": true
+    },
+    {
+      "id": "stamp-02",
+      "tag": "stamp",
+      "src": "stamp-02.jpg",
+      "hard": true
+    },
+    {
+      "id": "stamp-03",
+      "tag": "stamp",
+      "src": "stamp-03.jpg",
+      "hard": true
+    },
+    {
+      "id": "stamp-01",
+      "tag": "stamp",
+      "src": "stamp-01.jpg",
+      "hard": true
+    },
+    {
+      "id": "fur-05",
+      "tag": "fur",
+      "src": "fur-05.jpg",
+      "hard": true
+    },
+    {
+      "id": "fur-06",
+      "tag": "fur",
+      "src": "fur-06.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-11",
+      "tag": "glass",
+      "src": "glass-11.jpg",
+      "hard": true
+    },
+    {
+      "id": "glass-12",
+      "tag": "glass",
+      "src": "glass-12.jpg",
+      "hard": true
+    },
+    {
+      "id": "plant-06",
+      "tag": "plant",
+      "src": "plant-06.jpg",
+      "hard": true
+    },
+    {
+      "id": "plant-07",
+      "tag": "plant",
+      "src": "plant-07.jpg",
+      "hard": true
+    },
+    {
+      "id": "group-03",
+      "tag": "group",
+      "src": "group-03.jpg",
+      "hard": true
+    },
+    {
+      "id": "group-04",
+      "tag": "group",
+      "src": "group-04.jpg",
+      "hard": true
+    }
+  ]
+}
