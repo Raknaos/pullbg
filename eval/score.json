@@ -1,36 +1,26 @@
 {
-  "cutbg_score": 79.8,
+  "cutbg_score": 80.2,
   "n": 81,
   "by_tag": {
     "food": 80.7,
     "fur": 76.2,
     "glass": 80.7,
-    "group": 79.2,
+    "group": 81.8,
     "hair": 82.3,
     "object": 79.2,
     "plant": 77.5,
-    "product": 77.2,
-    "stamp": 74.6,
-    "studio": 79.0,
+    "product": 77.3,
+    "stamp": 81.2,
+    "studio": 80.7,
     "window": 85.7
   },
   "iou_n": 20,
-  "iou_mean": 0.928,
+  "iou_mean": 0.926,
   "worst": [
-    {
-      "id": "stamp-03",
-      "tag": "stamp",
-      "score": 63.9
-    },
     {
       "id": "fur-02",
       "tag": "fur",
       "score": 68.1
-    },
-    {
-      "id": "studio-05",
-      "tag": "studio",
-      "score": 70.1
     },
     {
       "id": "hair-09",
@@ -53,11 +43,6 @@
       "score": 73.7
     },
     {
-      "id": "group-01",
-      "tag": "group",
-      "score": 74.1
-    },
-    {
       "id": "prod-07",
       "tag": "product",
       "score": 74.4
@@ -66,6 +51,21 @@
       "id": "prod-01",
       "tag": "product",
       "score": 74.8
+    },
+    {
+      "id": "glass-10",
+      "tag": "glass",
+      "score": 74.9
+    },
+    {
+      "id": "prod-02",
+      "tag": "product",
+      "score": 75.0
+    },
+    {
+      "id": "prod-03",
+      "tag": "product",
+      "score": 75.0
     }
   ],
   "rows": [
@@ -779,13 +779,13 @@
       "src": "prod-09.jpg",
       "hard": false,
       "ok": true,
-      "score": 80.6,
-      "fg": 0.2402,
-      "fringe": 0.0319,
-      "rough": 19.69,
+      "score": 81.9,
+      "fg": 0.2379,
+      "fringe": 0.0295,
+      "rough": 19.2,
       "leftover": 0.0,
-      "holes": 0.5801,
-      "iou": 0.971
+      "holes": 0.5825,
+      "iou": 0.9618
     },
     {
       "id": "prod-10",
@@ -845,13 +845,13 @@
       "src": "studio-05.jpg",
       "hard": false,
       "ok": true,
-      "score": 70.1,
-      "fg": 0.4358,
-      "fringe": 0.0094,
-      "rough": 47.82,
-      "leftover": 0.00853,
-      "holes": 0.3513,
-      "iou": 1.0
+      "score": 82.1,
+      "fg": 0.439,
+      "fringe": 0.0149,
+      "rough": 28.87,
+      "leftover": 0.0,
+      "holes": 0.3446,
+      "iou": 0.9548
     },
     {
       "id": "plant-04",
@@ -951,13 +951,13 @@
       "src": "group-01.jpg",
       "hard": true,
       "ok": true,
-      "score": 74.1,
-      "fg": 0.3951,
-      "fringe": 0.0332,
-      "rough": 36.28,
-      "leftover": 0.00283,
-      "holes": 0.2452,
-      "iou": 0.9253
+      "score": 79.4,
+      "fg": 0.3863,
+      "fringe": 0.0236,
+      "rough": 34.74,
+      "leftover": 0.00252,
+      "holes": 0.2379,
+      "iou": 0.9379
     },
     {
       "id": "group-02",
@@ -1031,12 +1031,12 @@
       "src": "stamp-02.jpg",
       "hard": true,
       "ok": true,
-      "score": 77.8,
-      "fg": 0.5865,
-      "fringe": 0.0292,
-      "rough": 138.11,
+      "score": 82.3,
+      "fg": 0.6104,
+      "fringe": 0.0211,
+      "rough": 137.49,
       "leftover": 0.0,
-      "holes": 0.2374
+      "holes": 0.2065
     },
     {
       "id": "stamp-03",
@@ -1044,12 +1044,12 @@
       "src": "stamp-03.jpg",
       "hard": true,
       "ok": true,
-      "score": 63.9,
-      "fg": 0.417,
-      "fringe": 0.0477,
-      "rough": 141.19,
-      "leftover": 0.0,
-      "holes": 0.4543
+      "score": 76.3,
+      "fg": 0.7595,
+      "fringe": 0.011,
+      "rough": 146.6,
+      "leftover": 0.0102,
+      "holes": 0.1633
     },
     {
       "id": "stamp-01",
@@ -1057,12 +1057,12 @@
       "src": "stamp-01.jpg",
       "hard": true,
       "ok": true,
-      "score": 82.2,
-      "fg": 0.7026,
-      "fringe": 0.0157,
-      "rough": 125.19,
+      "score": 85.0,
+      "fg": 0.7783,
+      "fringe": 0.0088,
+      "rough": 122.55,
       "leftover": 0.0,
-      "holes": 0.2192
+      "holes": 0.1357
     },
     {
       "id": "fur-05",

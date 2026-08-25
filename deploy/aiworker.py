@@ -412,7 +412,7 @@ def drop_fringe_bg(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     """Drop mid-alpha halo on the frame whose color matches the corners."""
     arr = np.asarray(alpha)
     fringe = (arr > 8) & (arr < 180)
-    if float(fringe.mean()) < 0.035:
+    if float(fringe.mean()) < 0.030:
         return alpha
     rgb = np.asarray(guide_rgb.convert("RGB"), dtype=np.int16)
     h, w = arr.shape

@@ -1,18 +1,8 @@
 [
   {
-    "id": "stamp-03",
-    "tag": "stamp",
-    "score": 63.9
-  },
-  {
     "id": "fur-02",
     "tag": "fur",
     "score": 68.1
-  },
-  {
-    "id": "studio-05",
-    "tag": "studio",
-    "score": 70.1
   },
   {
     "id": "hair-09",
@@ -35,11 +25,6 @@
     "score": 73.7
   },
   {
-    "id": "group-01",
-    "tag": "group",
-    "score": 74.1
-  },
-  {
     "id": "prod-07",
     "tag": "product",
     "score": 74.4
@@ -48,5 +33,20 @@
     "id": "prod-01",
     "tag": "product",
     "score": 74.8
+  },
+  {
+    "id": "glass-10",
+    "tag": "glass",
+    "score": 74.9
+  },
+  {
+    "id": "prod-02",
+    "tag": "product",
+    "score": 75.0
+  },
+  {
+    "id": "prod-03",
+    "tag": "product",
+    "score": 75.0
   }
 ]

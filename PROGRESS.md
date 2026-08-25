@@ -1,8 +1,8 @@
 # CutBG — progression
 
-Vague **4** **3/50** · score **79,8** / 81 cas · IoU 0,928 (20 GT)
+Vague **4** **7/50** · score **80,2** / 81 cas · IoU 0,926 (20 GT) · group **81,8**
 
-Pires : stamp-03 63,9 · fur-02 68,1 · studio-05 70,1 · hair-09 70,3 · glass-02 72,6
+Pires : fur-02 68,1 · hair-09 70,3 · glass-02 72,6 · plant-01 73,0 · plant-06 73,7
 
 ## Vague 4 — tâches
 
@@ -10,14 +10,14 @@ Pires : stamp-03 63,9 · fur-02 68,1 · studio-05 70,1 · hair-09 70,3 · glass-
 |---|---|---|
 | w4-01 | fait | leftover cheveux connecté (coin ≠ sujet, dist 52/18) |
 | w4-02 | fait | leftover fourrure (fur-02 = sujet au cadre, drop saut) |
-| w4-03 | fait | leftover studio-05 = pantalon au cadre, pas gris — skip drop |
-| w4-04 | en cours | stamp-03 classif Penny Black OK ; stampCut mange encore la gravure |
-| w4-05 | restant | groupes multi-sujets (group-01 73,3) |
-| w4-06 | restant | leftover plant (plant-01 / 06 73,0) |
-| w4-07 | restant | trous produit (prod-07 74,4) |
+| w4-03 | fait | leftover studio gris (studio-05 70,1→82,1) |
+| w4-04 | fait | stamp fringe/rough (stamp-03 63,9→76,3) |
+| w4-05 | fait | group-01 74,1→79,4 (frange cadre 3,3→2,4, IoU 0,925→0,938) |
+| w4-06 | fait | plant-01 leftover = pot au cadre, skip drop |
+| w4-07 | en cours | trous produit (prod-07 74,4) |
 | w4-08 | restant | frange food intérieure |
-| w4-09 | restant | glass-02 rough 72,6 |
-| w4-10 | restant | fringe cadre 3,0 % (group-01) |
+| w4-09 | restant | glass-02 rough 72,6 (IoU 1,0 — ne pas toucher) |
+| w4-10 | fait | fringe cadre ≥3,0 % (drop_fringe_bg 3,5→3,0) |
 | w4-11 | restant | couper laptop-01 |
 | w4-12 | restant | couper laptop-02 |
 | w4-13 | restant | couper backlit-01 |
@@ -63,8 +63,8 @@ Pires : stamp-03 63,9 · fur-02 68,1 · studio-05 70,1 · hair-09 70,3 · glass-
 
 | id | action | score |
 |---|---|---|
-| w4-04 | classif Penny Black sans dentelé (tests OK) | 79,8 inchangé — stampCut fuit |
-| w4-03 | studio-05 leftover = pantalon, skip drop | 79,8 |
+| w4-05 w4-10 | drop_fringe_bg 3,5→3,0 % | group-01 74,1→79,4 |
+| w4-06 | plant-01 leftover = pot, skip | 80,2 |
+| w4-04 | restore rect timbre sans lightMargin | 79,9→80,2 |
+| w4-03 | drop_uniform dist 50→28 live | 79,8→79,9 |
 | w4-02 | leftover saut couleur (jump≥16) | 79,5→79,8 |
-| w4-01 | leftover coin ≠ sujet 52/18 | 79,0→79,5 |
-| w3-03 | drop_uniform dist 50→28 | 78,3→78,7 |
