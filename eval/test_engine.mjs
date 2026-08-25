@@ -10298,6 +10298,58 @@ function officeSmallPaneFacade() {
 }
 
 {
+  const img = rgb(200, 120, 142, 142, 146);
+  for (let c = 0; c < 4; c++) {
+    const x = 18 + c * 16;
+    fillRect(img, x, 28, x + 12, 35, 18, 22, 28);
+  }
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `office 4-pane ribbon classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[31 * 200 + 24] < 16, "office 4-pane ribbon first pane punched");
+  assert(a[31 * 200 + 72] < 16, "office 4-pane ribbon last pane punched");
+  assert(a[2 * 200 + 2] > 180, "office 4-pane ribbon wall kept");
+  assert(a[31 * 200 + 31] > 180, "office 4-pane ribbon mullion kept");
+  assert(cut.pipeline === "écran", "office 4-pane ribbon uses screen pipeline");
+}
+
+{
+  const img = rgb(200, 140, 142, 142, 146);
+  for (let c = 0; c < 3; c++) {
+    const x = 18 + c * 16;
+    fillRect(img, x, 22, x + 12, 32, 18, 22, 28);
+  }
+  for (let r = 1; r < 3; r++) {
+    const y = 22 + r * 14;
+    fillRect(img, 18, y, 30, y + 10, 18, 22, 28);
+  }
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `office L-corner classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[27 * 200 + 24] < 16, "office L-corner top-left pane punched");
+  assert(a[27 * 200 + 56] < 16, "office L-corner last horizontal pane punched");
+  assert(a[55 * 200 + 24] < 16, "office L-corner last vertical pane punched");
+  assert(a[2 * 200 + 2] > 180, "office L-corner wall kept");
+  assert(a[27 * 200 + 31] > 180, "office L-corner horizontal mullion kept");
+  assert(a[33 * 200 + 24] > 180, "office L-corner vertical mullion kept");
+  assert(cut.pipeline === "écran", "office L-corner uses screen pipeline");
+}
+
+{
+  const img = rgb(220, 160, 142, 142, 146);
+  fillRect(img, 12, 12, 28, 22, 18, 18, 18);
+  fillRect(img, 100, 12, 116, 22, 18, 18, 18);
+  fillRect(img, 188, 12, 204, 22, 18, 18, 18);
+  fillRect(img, 12, 70, 28, 80, 18, 18, 18);
+  fillRect(img, 12, 130, 28, 140, 18, 18, 18);
+  const guess = classifyImage(img);
+  assert(guess.mode === "ia" || guess.mode === "couleur", `five spaced L products stay off corner (${guess.kind})`);
+  assert(!guess.interior, `five spaced L products are not an office corner (${guess.kind})`);
+}
+
+{
   const img = rgb(24, 24, 40, 180, 80);
   for (let i = 0; i < img.data.length; i += 4) img.data[i + 3] = 0;
   for (let y = 8; y < 16; y++) {
@@ -10317,4 +10369,4 @@ function officeSmallPaneFacade() {
   assert(as[0] === 0, "IA keepSoft still drops empty pixels");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp+crescent-stamp+teardrop-stamp+shield-stamp+cross-stamp+arrow-stamp+cloud-stamp+clover-stamp+flower-stamp+butterfly-stamp+leaf-stamp+fish-stamp+bird-stamp+cat-stamp+dog-stamp+rabbit-stamp+squirrel-stamp+fox-stamp+bear-stamp+horse-stamp+pig-stamp+cow-stamp+sheep-stamp+goat-stamp+rooster-stamp+duck-stamp+goose-stamp+turkey-stamp+swan-stamp+peacock-stamp+owl-stamp+penguin-stamp+dolphin-stamp+whale-stamp+shark-stamp+turtle-stamp+octopus-stamp+crab-stamp+lobster-stamp+shrimp-stamp+seahorse-stamp+jellyfish-stamp+starfish-stamp+shell-stamp+snail-stamp+frog-stamp+lizard-stamp+snake-stamp+crocodile-stamp+elephant-stamp+giraffe-stamp+zebra-stamp+busy-portrait+ia-fringe+office-grid+tiny-office+office-ribbon+office-strip ok");
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp+crescent-stamp+teardrop-stamp+shield-stamp+cross-stamp+arrow-stamp+cloud-stamp+clover-stamp+flower-stamp+butterfly-stamp+leaf-stamp+fish-stamp+bird-stamp+cat-stamp+dog-stamp+rabbit-stamp+squirrel-stamp+fox-stamp+bear-stamp+horse-stamp+pig-stamp+cow-stamp+sheep-stamp+goat-stamp+rooster-stamp+duck-stamp+goose-stamp+turkey-stamp+swan-stamp+peacock-stamp+owl-stamp+penguin-stamp+dolphin-stamp+whale-stamp+shark-stamp+turtle-stamp+octopus-stamp+crab-stamp+lobster-stamp+shrimp-stamp+seahorse-stamp+jellyfish-stamp+starfish-stamp+shell-stamp+snail-stamp+frog-stamp+lizard-stamp+snake-stamp+crocodile-stamp+elephant-stamp+giraffe-stamp+zebra-stamp+busy-portrait+ia-fringe+office-grid+tiny-office+office-ribbon+office-strip+office-4ribbon+office-corner ok");

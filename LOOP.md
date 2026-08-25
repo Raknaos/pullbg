@@ -163,6 +163,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Façade bureau : grille de petits carreaux (dès 0,35 %, fill 0,78, 4+ alignés) percée. 4 produits espacés restent en IA. Cache v=115.
 - 2026-08-25: Punch : carreaux dès 0,35 % (plus bloqué à 0,4 %). Petite grille bureau percée, croisillons gardés. Cache v=116.
 - 2026-08-25: Bandeau / claire-voie bureau : 6+ carreaux alignés sur 1 rangée ou 1 colonne percés. 6 produits espacés restent en IA. Cache v=117.
+- 2026-08-25: Angle bureau en L + bandeau 4 carreaux percés (plus seulement grille pleine / 6+). 5 produits en L espacés restent en IA. Cache v=118.
 
 
 
