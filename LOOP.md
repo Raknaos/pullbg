@@ -148,3 +148,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Quota VPS : jour local du client (minuit local, plus UTC) + rendu si la découpe plante. Test `deploy/server/test_quota_api.mjs`. Cache v=112.
 - 2026-08-25: File : 11ᵉ image = flou local (plus d’appel API → 429). Mur quota n’enchaîne plus le reste de la file. Cache v=113.
 - 2026-08-25: Punch / specks : plus de tableau JS par pixel (qx/qy + Int32Array). Moins de pic mémoire sur les grandes fenêtres.
+- 2026-08-25: Flood noir/blanc : pile typée. BFS 4-voisins sans tableaux JS par pixel (fenêtres, fond studio, specks).
