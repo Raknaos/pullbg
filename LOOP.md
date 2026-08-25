@@ -166,6 +166,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Angle bureau en L + bandeau 4 carreaux percés (plus seulement grille pleine / 6+). 5 produits en L espacés restent en IA. Cache v=118.
 - 2026-08-25: Baie bureau en U (imposte + 2 montants, plus seulement L / grille). 5 produits en U espacés restent en IA. Cache v=119.
 - 2026-08-25: Imposte bureau en T (barre 3+ + montant intérieur, plus seulement L / U). 4 produits en T espacés restent en IA. Cache v=120.
+- 2026-08-25: Stick adaptatif : masque sale (frange ≥6 %) ne garde la mi-alpha que contre le sujet solide. Score 61 cas 69,3→71,6.
 
 
 

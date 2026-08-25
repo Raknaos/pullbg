@@ -1,0 +1,52 @@
+[
+  {
+    "id": "hair-02",
+    "tag": "hair",
+    "score": 46.8
+  },
+  {
+    "id": "hair-13",
+    "tag": "hair",
+    "score": 51.4
+  },
+  {
+    "id": "hair-08",
+    "tag": "hair",
+    "score": 52.3
+  },
+  {
+    "id": "win-03",
+    "tag": "window",
+    "score": 54.0
+  },
+  {
+    "id": "plant-03",
+    "tag": "plant",
+    "score": 55.1
+  },
+  {
+    "id": "hair-12",
+    "tag": "hair",
+    "score": 57.2
+  },
+  {
+    "id": "plant-04",
+    "tag": "plant",
+    "score": 57.7
+  },
+  {
+    "id": "hair-05",
+    "tag": "hair",
+    "score": 59.2
+  },
+  {
+    "id": "fur-02",
+    "tag": "fur",
+    "score": 60.0
+  },
+  {
+    "id": "group-01",
+    "tag": "hair",
+    "score": 60.2
+  }
+]
