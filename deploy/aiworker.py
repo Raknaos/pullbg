@@ -104,7 +104,7 @@ def parse_orders(note: str) -> dict:
         leftover = True
         grow = 0
     elif hair:
-        grow = 1
+        grow = 2
     elif tight:
         grow = 2
     return {
@@ -258,20 +258,73 @@ def drop_bg_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
         rgb[-p:, :p].mean((0, 1)),
         rgb[-p:, -p:].mean((0, 1)),
     ]
-    seeds = []
-    for c in corners:
-        near = sum(float(np.max(np.abs(c - other))) <= 48 for other in corners)
-        if near >= 2:
-            seeds.append(c)
-    if len(seeds) < 2:
-        return alpha
-    # Average leftover color is mixed subject+bg on the frame — drop per pixel
-    # only when the pixel matches a corner seed and is far from the subject.
+    # Any corner far from the subject is leftover bg (sky vs studio, split lighting).
     subj = rgb[interior].mean(0)
+    seeds = [c for c in corners if float(np.max(np.abs(c - subj))) >= 24]
+    if len(seeds) < 1:
+        return alpha
     dist = np.min([np.max(np.abs(rgb - s.astype(np.int16)), axis=2) for s in seeds], axis=0)
     dist_subj = np.max(np.abs(rgb - subj.astype(np.int16)), axis=2)
     out = arr.copy()
-    out[leftover_m & (dist <= 44) & (dist_subj > 28)] = 0
+    out[leftover_m & (dist <= 52) & (dist_subj > 18)] = 0
+    return Image.fromarray(out, mode="L")
+
+
+def drop_gap_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
+    """Drop frame leftover whose mean color jumps from the adjacent subject."""
+    rgb = np.asarray(guide_rgb.convert("RGB"), dtype=np.int16)
+    arr = np.asarray(alpha)
+    h, w = arr.shape
+    bw, bh = max(2, w // 50), max(2, h // 50)
+    frame = np.zeros((h, w), dtype=bool)
+    frame[:bh] = True
+    frame[-bh:] = True
+    frame[:, :bw] = True
+    frame[:, -bw:] = True
+    fg = arr > 32
+    leftover_m = fg & frame
+    leftover = float(leftover_m.mean())
+    fg_n = int(fg.sum()) or 1
+    if leftover_m.sum() / fg_n > 0.08 or leftover < 0.003:
+        return alpha
+    interior = fg & ~frame
+    if leftover_m.sum() < 20 or interior.sum() < 40:
+        return alpha
+    subj = rgb[interior].mean(0)
+    dist_subj = np.max(np.abs(rgb - subj.astype(np.int16)), axis=2)
+    top = leftover_m.copy()
+    top[bh:] = False
+    bot = leftover_m.copy()
+    bot[:-bh] = False
+    left = leftover_m.copy()
+    left[:, bw:] = False
+    right = leftover_m.copy()
+    right[:, :-bw] = False
+    out = arr.copy()
+    changed = False
+    for region in (top, bot, left, right):
+        if int(region.sum()) < 20:
+            continue
+        dil = np.zeros_like(region)
+        dil[:-1] |= region[1:]
+        dil[1:] |= region[:-1]
+        dil[:, :-1] |= region[:, 1:]
+        dil[:, 1:] |= region[:, :-1]
+        adj = dil & interior
+        if adj.sum() < 10:
+            continue
+        jump = float(np.max(np.abs(rgb[region].mean(0) - rgb[adj].mean(0))))
+        if jump < 16:
+            continue
+        hit = region & (dist_subj > 14)
+        if not hit.any():
+            continue
+        out[hit] = 0
+        changed = True
+    if not changed:
+        return alpha
+    if float((out > 32).mean()) < 0.05:
+        return alpha
     return Image.fromarray(out, mode="L")
 
 
@@ -310,19 +363,8 @@ def drop_floating_leftover(alpha: Image.Image) -> Image.Image:
         return alpha
     counts = np.bincount(lab.ravel())
     counts[0] = 0
-    bw, bh = max(2, w // 50), max(2, h // 50)
-    frame = np.zeros((h, w), dtype=bool)
-    frame[:bh] = True
-    frame[-bh:] = True
-    frame[:, :bw] = True
-    frame[:, -bw:] = True
-    on = np.bincount(lab[frame].ravel(), minlength=counts.size)
-    on[0] = 0
-    frac = np.zeros(counts.size, dtype=np.float32)
-    nz = counts > 0
-    frac[nz] = on[nz] / counts[nz]
-    # Majority of the blob sits on the 2% frame → leftover, not a subject nicking the edge.
-    drop = (frac >= 0.50) & (counts < max(80, int(counts.max() * 0.10)))
+    main = int(counts.argmax())
+    drop = (np.arange(counts.size) != main) & (counts < max(80, int(counts[main] * 0.10)))
     drop[0] = False
     if not drop.any():
         return alpha
@@ -357,7 +399,7 @@ def drop_uniform_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.I
     subj = rgb[interior].mean(0)
     lo_std = float(lo.std(0).mean())
     dist = float(np.max(np.abs(lo.mean(0) - subj)))
-    if lo_std > 25 or dist < 50:
+    if lo_std > 25 or dist < 28:
         return alpha
     out = arr.copy()
     out[leftover_m] = 0
@@ -417,6 +459,7 @@ def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     a = stick_fringe(a)
     a = drop_studio(guide_rgb, a)
     a = drop_bg_leftover(guide_rgb, a)
+    a = drop_gap_leftover(guide_rgb, a)
     a = drop_fringe_bg(guide_rgb, a)
     a = drop_uniform_leftover(guide_rgb, a)
     a = drop_floating_leftover(a)

@@ -1,25 +1,13 @@
-# CutBG — roadmap vivante
+# CutBG — roadmap
 
-Objectif moteur : ANALYSE → ORDRES → COUPE → VÉRIF, CPU 8 Go, score mesuré.
-Cible honnête : ≥ 98 sur le banc. Puis site niveau remove.bg, puis suite (gomme, fonds).
+Cible ≥ 98 · 8 Go CPU · build **3** live · cache recoupe **off**
 
-Contraintes : VPS 8 Go · 5,50 €/mois · DeepSeek Vision (Go) · Grok = SuperGrok uniquement.
+| Phase | Statut |
+|---|---|
+| 0 Banc | **81 cas · 79,8** · hair 82,3 · fur 76,2 · window 85,7 |
+| 1 Ordres | DeepSeek + ciel |
+| 2 Moteur | int8 fuse stick îles grow=2 |
+| 3 Distill | bloquée < 90 |
+| 5 Site | après moteur |
 
-## Boucle
-50 tâches → mesurer → roadmap → 50 nouvelles. Jamais idle.
-
-## Où on en est (2026-08-25, soir)
-
-| Phase | Statut | Détail |
-|---|---|---|
-| **0 Banc** | **v0.4** | **75 cas**, score **78,1**. IoU 20 GT, mean **0,986**. group **72,8**. hair **79,1**. window **84,6**. |
-| **1 Ordres** | **OK** | DeepSeek + fenetre/timbre/chroma/ciel. lastGuess live. |
-| **2 Moteur** | **int8 + 2 passes + fuse + stick + fringe + float leftover** | Vague 3 **2/50**. |
-| **3 Distillation** | **bloquée** | score < 90 |
-| **4 Continu** | vague 3 | w3-03 drop_uniform dist 50→28 |
-| **5 Site / remove.bg** | après moteur ~pro | |
-
-Vague 3 live. https://cutbg.studio · 100/jour · Messenger · Stripe hors accueil.
-
-## Règle
-On ne garde un changement moteur que si `eval/score.json` monte.
+Vague 4 · 2/50. Pire : stamp-03 63,9 · fur-02 68,1 · studio-05 70,1.

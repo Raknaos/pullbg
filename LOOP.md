@@ -172,6 +172,8 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Leftover pixel (couleur coins et ≠ sujet), plus la moyenne cadre mixte. Hair 69,5→75,1. hair-13 53,2→73,9. Score 72,8→74,6.
 - 2026-08-25: Drop frange fond (frange≥5 %, couleur coins). plant-04 57,7→74,9. Plant 67,3→75,6. Score 74,6→75,9.
 - 2026-08-25: Drop leftover uniforme (std≤25, couleur loin du sujet). hair-08 61,5→83,8. studio-01/white-01 70,4→84,8. Score 76,1→77,0.
+- 2026-08-25: Leftover connecté : chaque coin loin du sujet est une graine (plus d’accord 2/4). dist 52/18. hair-10 72,3→84,6. Hair 80,2→81,6. Score 79,0→79,5.
+- 2026-08-25: Leftover à saut couleur (côté cadre jump≥16, ≠ sujet). fur-02 sujet au cadre conservé. hair-11 69,4→79,5. food-01 76,9→84,9. Score 79,5→79,8.
 
 
 
