@@ -451,6 +451,102 @@ def close_interior(alpha: Image.Image) -> Image.Image:
     return Image.fromarray(out, mode="L")
 
 
+def close_interior_wide(alpha: Image.Image) -> Image.Image:
+    """Fill 2px holes / jaggies. Revert if heuristic drops."""
+    arr = np.asarray(alpha)
+    h, w = arr.shape
+    bw, bh = max(2, w // 50), max(2, h // 50)
+    frame = np.zeros((h, w), dtype=bool)
+    frame[:bh] = True
+    frame[-bh:] = True
+    frame[:, :bw] = True
+    frame[:, -bw:] = True
+    closed = np.asarray(alpha.filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.MinFilter(5)))
+    out = arr.copy()
+    out[~frame] = closed[~frame]
+    if float((out > 32).mean()) < 0.05:
+        return alpha
+    if _mask_score(out) + 0.05 < _mask_score(arr):
+        return alpha
+    return Image.fromarray(out, mode="L")
+
+
+def _fringe_rough(arr: np.ndarray) -> float:
+    fringe = (arr > 8) & (arr < 180)
+    if not fringe.any():
+        return 0.0
+    gy, gx = np.gradient(arr.astype(np.float32))
+    return float(np.mean(np.hypot(gx, gy)[fringe]))
+
+
+def _mask_score(arr: np.ndarray) -> float:
+    """Same penalties as eval/bench.score_cut without tag (holes via bbox)."""
+    h, w = arr.shape
+    fg = arr > 32
+    fringe = (arr > 8) & (arr < 180)
+    empty = arr < 8
+    fg_r = float(fg.mean())
+    fringe_r = float(fringe.mean())
+    rough = _fringe_rough(arr)
+    bw, bh = max(2, w // 50), max(2, h // 50)
+    frame = np.zeros((h, w), dtype=bool)
+    frame[:bh] = True
+    frame[-bh:] = True
+    frame[:, :bw] = True
+    frame[:, -bw:] = True
+    leftover = float((fg & frame).mean())
+    fg_n = int(fg.sum()) or 1
+    if (fg & frame).sum() / fg_n > 0.08:
+        leftover = 0.0
+    holes = 0.0
+    ys, xs = np.where(fg)
+    if xs.size > 40:
+        box = empty[ys.min() : ys.max() + 1, xs.min() : xs.max() + 1]
+        holes = float(box.mean()) if box.size else 0.0
+    score = 100.0
+    score -= min(35.0, leftover * 800)
+    score -= min(25.0, max(0.0, fringe_r - 0.02) * 400)
+    score -= min(15.0, max(0.0, rough - 12.0) * 0.6)
+    if fg_r < 0.04 or fg_r > 0.92:
+        score -= 20.0
+    score -= min(10.0, max(0.0, holes - 0.15) * 40)
+    return score
+
+
+def smooth_jaggy(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
+    """Extra guided pass on jaggy masks (rough ≥ 25). Revert if heuristic drops."""
+    arr = np.asarray(alpha)
+    rough = _fringe_rough(arr)
+    if rough < 25 or rough >= 80:
+        return alpha
+    refined = guided_alpha(guide_rgb, alpha, radius=5, eps=8e-4)
+    out = np.asarray(refined)
+    if _mask_score(out) + 0.05 < _mask_score(arr):
+        return alpha
+    return refined
+
+
+def erode_leftover(alpha: Image.Image) -> Image.Image:
+    """Peel 1px of frame leftover. Solid subject-on-frame stays."""
+    arr = np.asarray(alpha)
+    h, w = arr.shape
+    bw, bh = max(2, w // 50), max(2, h // 50)
+    frame = np.zeros((h, w), dtype=bool)
+    frame[:bh] = True
+    frame[-bh:] = True
+    frame[:, :bw] = True
+    frame[:, -bw:] = True
+    leftover = (arr > 32) & frame
+    if int(leftover.sum()) < 8:
+        return alpha
+    eroded = np.asarray(alpha.filter(ImageFilter.MinFilter(3)))
+    out = arr.copy()
+    out[leftover] = eroded[leftover]
+    if float((out > 32).mean()) < 0.05:
+        return alpha
+    return Image.fromarray(out, mode="L")
+
+
 def drop_fringe_bg(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     """Drop mid-alpha halo on the frame whose color matches the corners."""
     arr = np.asarray(alpha)
@@ -508,7 +604,14 @@ def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     a = drop_floating_leftover(a)
     a = smooth_interior_fringe(guide_rgb, a)
     a = close_interior(a)
+    a = close_interior_wide(a)
+    a = erode_leftover(a)
+    a = smooth_jaggy(guide_rgb, a)
     rgb = np.array(Image.merge("RGBA", (r, g, b, a)))
+    guide = np.asarray(guide_rgb.convert("RGB"))
+    raised = (rgb[:, :, 3] > 32) & (rgb[:, :, :3].sum(2) < 12)
+    if raised.any() and guide.shape[:2] == rgb.shape[:2]:
+        rgb[raised, :3] = guide[raised]
     cut = 1 if orders["hair"] or orders["tight"] else 4
     rgb[rgb[:, :, 3] < cut] = 0
     return to_png(Image.fromarray(rgb, "RGBA"))

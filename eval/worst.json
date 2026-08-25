@@ -1,52 +1,52 @@
 [
   {
-    "id": "hair-09",
-    "tag": "hair",
-    "score": 72.0
-  },
-  {
-    "id": "fur-02",
-    "tag": "fur",
-    "score": 72.0
-  },
-  {
     "id": "prod-07",
     "tag": "product",
-    "score": 74.4
+    "score": 74.5
   },
   {
     "id": "plant-01",
     "tag": "object",
-    "score": 74.8
-  },
-  {
-    "id": "prod-02",
-    "tag": "product",
-    "score": 75.0
+    "score": 77.6
   },
   {
     "id": "prod-03",
     "tag": "product",
-    "score": 75.0
+    "score": 77.9
   },
   {
-    "id": "prod-08",
+    "id": "prod-01",
     "tag": "product",
-    "score": 75.0
+    "score": 78.0
   },
   {
-    "id": "studio-02",
-    "tag": "studio",
-    "score": 75.0
+    "id": "prod-02",
+    "tag": "product",
+    "score": 79.3
   },
   {
-    "id": "white-02",
-    "tag": "studio",
-    "score": 75.0
+    "id": "group-03",
+    "tag": "group",
+    "score": 80.7
   },
   {
-    "id": "obj-03",
-    "tag": "object",
-    "score": 75.4
+    "id": "hair-09",
+    "tag": "hair",
+    "score": 82.2
+  },
+  {
+    "id": "glass-02",
+    "tag": "glass",
+    "score": 82.3
+  },
+  {
+    "id": "food-04",
+    "tag": "food",
+    "score": 82.3
+  },
+  {
+    "id": "fur-02",
+    "tag": "fur",
+    "score": 83.8
   }
 ]

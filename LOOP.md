@@ -180,6 +180,10 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Frange intérieure : guided r=6 eps=8e-3 hors bande 10 %, revert si fg −10 %. food-03 79,9→81,7. Fur 76,3→78,2. Score 80,8→81,9.
 - 2026-08-25: Banc stamp-04 (UNR 1918 dentelé, md5 unique). Classif timbre, stampCut leftover 0, 84,6. Stamp 83,9→84,0. 84 cas · 83,1.
 - 2026-08-25: Close intérieur 1 px (Max+Min 3, cadre intact). Stick 7 vs 5 −0,08 keep 5. Guided extra skip. 83,1→83,3. Group 84,8→85,7.
+- 2026-08-25: Erode leftover 1 px cadre (Min 3, sujet massif intact). 31 cas ↑ 0 ↓. 83,3→83,5. Group 85,7→86,2. Hair 84,8→85,1.
+- 2026-08-25: Guided r5 si rough 30–80, revert si heuristique baisse. 29 cas ↑ 0 ↓. Grow hair +1 −0,15 keep 2. 87,0→88,9. Product 82,6→85,8. Fur 84,2→87,2.
+- 2026-08-25: GT hair-09 = sujet cadre bas, keep. Guided r5 rough 25–30, 9 coupes, 8 revert. glass-02 intact. 88,9→89,2. Glass 91,4→92,3. Product 85,8→86,1.
+- 2026-08-25: Close intérieur 2 px (Max5), revert si heuristique / hair-13. GT fur-02 poitrail cadre, keep. glass-02 intact. 89,2→89,5. Object 89,5→90,3. Plant 90,6→91,2.
 
 
 

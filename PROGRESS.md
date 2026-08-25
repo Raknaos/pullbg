@@ -1,8 +1,8 @@
 # CutBG — progression
 
-Vague **4** **22/50** · score **83,3** / **84** cas · IoU 0,802 · group **85,7** · hair **84,8** · stamp **84,5**
+Vague **4** **28/50** · score **89,5** / **83** cas · IoU 0,803 · group **86,8** · hair **92,5** · stamp **85,0**
 
-Pires : hair-09 72,0 · fur-02 72,0 · prod-07 74,4 · plant-01 74,8 · prod-02 75,0
+Pires : prod-07 74,5 · plant-01 77,6 · prod-03 77,9 · prod-01 78,0 · prod-02 79,3
 
 ## Vague 4 — tâches
 
@@ -27,10 +27,10 @@ Pires : hair-09 72,0 · fur-02 72,0 · prod-07 74,4 · plant-01 74,8 · prod-02 
 | w4-17 | fait | +1 cas stamp dentelé |
 | w4-18 | fait | drop_floating banc 80,2→80,9 |
 | w4-19 | fait | GT group-01 = sujet cadre droit, keep |
-| w4-20 | in_progress | revoir GT hair-11 |
-| w4-21 | restant | revoir GT hair-09 |
-| w4-22 | restant | revoir GT fur-02 |
-| w4-23 | restant | revoir GT hair-10 |
+| w4-20 | fait | GT hair-11 leftover bas périmé, refresh |
+| w4-21 | fait | GT hair-09 = sujet cadre bas, keep |
+| w4-22 | fait | revoir GT fur-02 |
+| w4-23 | in_progress | revoir GT hair-10 |
 | w4-24 | restant | revoir GT win-03 |
 | w4-25 | restant | GT 30 cas |
 | w4-26 | restant | GT 40 cas |
@@ -42,9 +42,9 @@ Pires : hair-09 72,0 · fur-02 72,0 · prod-07 74,4 · plant-01 74,8 · prod-02 
 | w4-32 | restant | fuse 0,35/0,65 |
 | w4-33 | restant | crop pad 0,14 |
 | w4-34 | restant | two-pass coarse 720 |
-| w4-35 | restant | guided radius |
-| w4-36 | restant | grow hair |
-| w4-37 | restant | erode leftover |
+| w4-35 | fait | guided r5 si rough 30–80, keep si score tient |
+| w4-36 | fait | grow hair +1 −0,15, keep 2 |
+| w4-37 | fait | erode leftover 1 px cadre |
 | w4-38 | restant | protectSubject live |
 | w4-39 | restant | fillInteriorHoles live |
 | w4-40 | restant | largestForeground multi |
@@ -63,8 +63,8 @@ Pires : hair-09 72,0 · fur-02 72,0 · prod-07 74,4 · plant-01 74,8 · prod-02 
 
 | id | action | score |
 |---|---|---|
-| close | close intérieur 1 px, cadre intact, 84 coupes | 83,1→**83,3** · group 84,8→85,7 · stamp 84,0→84,5 |
-| w4-31 | stick rad 7 vs 5 | −0,08, keep 5 |
-| w4-19 | GT group-01 sujet au cadre droit | IoU 0,938 keep |
-| w4-17 | stamp-04 UNR 1918 dentelé, classif timbre, coupe géo 84,6 | 84 cas · stamp 83,9→84,0 · global **83,1** |
-| w4-08 | smooth_interior_fringe r6/8e-3 | 80,8→81,9 · food 80,9→81,5 · food-03 79,9→81,7 |
+| close5 | close intérieur 2 px (Max5), 77 coupes, hair-13 revert, glass-02 intact | 89,2→**89,5** · object 89,5→90,3 · plant 90,6→91,2 · group 86,2→86,8 |
+| w4-22 | GT fur-02 : poitrail cadre bas (61 % bande), keep | leftover 0,01224 IoU 0,985 |
+| jaggy25 | guided r5 rough 25–30, 9 coupes, 8 revert, glass-02 intact | 88,9→**89,2** · glass 91,4→92,3 · product 85,8→86,1 |
+| w4-21 | GT hair-09 : sujet cadre bas (98 % largeur), keep | leftover 0,01329 IoU 0,966 |
+| w4-35 | guided r5 jaggy (rough≥30 <80), 29 coupes, glass-02 intact | 87,0→**88,9** · product 82,6→85,8 · fur 84,2→87,2 · glass 88,1→91,4 |
