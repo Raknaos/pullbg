@@ -10194,4 +10194,24 @@ function punchZebra(img, cx, cy, rx, ry) {
   assert(cut.needsRefine === true, "busy portrait goes to IA, not stamp geo");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp+crescent-stamp+teardrop-stamp+shield-stamp+cross-stamp+arrow-stamp+cloud-stamp+clover-stamp+flower-stamp+butterfly-stamp+leaf-stamp+fish-stamp+bird-stamp+cat-stamp+dog-stamp+rabbit-stamp+squirrel-stamp+fox-stamp+bear-stamp+horse-stamp+pig-stamp+cow-stamp+sheep-stamp+goat-stamp+rooster-stamp+duck-stamp+goose-stamp+turkey-stamp+swan-stamp+peacock-stamp+owl-stamp+penguin-stamp+dolphin-stamp+whale-stamp+shark-stamp+turtle-stamp+octopus-stamp+crab-stamp+lobster-stamp+shrimp-stamp+seahorse-stamp+jellyfish-stamp+starfish-stamp+shell-stamp+snail-stamp+frog-stamp+lizard-stamp+snake-stamp+crocodile-stamp+elephant-stamp+giraffe-stamp+zebra-stamp+busy-portrait ok");
+{
+  const img = rgb(24, 24, 40, 180, 80);
+  for (let i = 0; i < img.data.length; i += 4) img.data[i + 3] = 0;
+  for (let y = 8; y < 16; y++) {
+    for (let x = 8; x < 16; x++) img.data[(y * 24 + x) * 4 + 3] = 255;
+  }
+  for (let x = 8; x < 16; x++) {
+    img.data[(7 * 24 + x) * 4 + 3] = 8;
+    img.data[(16 * 24 + x) * 4 + 3] = 8;
+  }
+  const hard = decontaminate(img);
+  const soft = decontaminate(img, true);
+  const ah = alphaOf(hard);
+  const as = alphaOf(soft);
+  assert(ah[7 * 24 + 10] === 0, "geo trim still drops rembg fringe");
+  assert(as[7 * 24 + 10] === 8, "IA keepSoft keeps rembg fringe");
+  assert(as[12 * 24 + 12] === 255, "IA keepSoft keeps the subject");
+  assert(as[0] === 0, "IA keepSoft still drops empty pixels");
+}
+
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp+crescent-stamp+teardrop-stamp+shield-stamp+cross-stamp+arrow-stamp+cloud-stamp+clover-stamp+flower-stamp+butterfly-stamp+leaf-stamp+fish-stamp+bird-stamp+cat-stamp+dog-stamp+rabbit-stamp+squirrel-stamp+fox-stamp+bear-stamp+horse-stamp+pig-stamp+cow-stamp+sheep-stamp+goat-stamp+rooster-stamp+duck-stamp+goose-stamp+turkey-stamp+swan-stamp+peacock-stamp+owl-stamp+penguin-stamp+dolphin-stamp+whale-stamp+shark-stamp+turtle-stamp+octopus-stamp+crab-stamp+lobster-stamp+shrimp-stamp+seahorse-stamp+jellyfish-stamp+starfish-stamp+shell-stamp+snail-stamp+frog-stamp+lizard-stamp+snake-stamp+crocodile-stamp+elephant-stamp+giraffe-stamp+zebra-stamp+busy-portrait+ia-fringe ok");

@@ -166,7 +166,7 @@ export async function decodeToImage(buffer) {
 }
 
 function packed(image, name) {
-  const cleaned = decontaminate(image);
+  const cleaned = decontaminate(image, true);
   return { image: cleaned, name, score: scoreCut(cleaned) };
 }
 
