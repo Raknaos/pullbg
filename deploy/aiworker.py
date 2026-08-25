@@ -309,10 +309,10 @@ def drop_uniform_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.I
 
 
 def drop_fringe_bg(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
-    """Drop mid-alpha halo whose color matches the corners. Messy masks only."""
+    """Drop mid-alpha halo on the frame whose color matches the corners."""
     arr = np.asarray(alpha)
     fringe = (arr > 8) & (arr < 180)
-    if float(fringe.mean()) < 0.05:
+    if float(fringe.mean()) < 0.035:
         return alpha
     rgb = np.asarray(guide_rgb.convert("RGB"), dtype=np.int16)
     h, w = arr.shape
@@ -331,8 +331,15 @@ def drop_fringe_bg(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     if len(seeds) < 2:
         return alpha
     dist = np.min([np.max(np.abs(rgb - s.astype(np.int16)), axis=2) for s in seeds], axis=0)
+    band_h = max(2, int(round(h * 0.10)))
+    band_w = max(2, int(round(w * 0.10)))
+    band = np.zeros((h, w), dtype=bool)
+    band[:band_h] = True
+    band[-band_h:] = True
+    band[:, :band_w] = True
+    band[:, -band_w:] = True
     out = arr.copy()
-    out[fringe & (dist <= 36)] = 0
+    out[fringe & band & (dist <= 36)] = 0
     if float((out > 32).mean()) < 0.05:
         return alpha
     return Image.fromarray(out, mode="L")

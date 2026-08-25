@@ -5,40 +5,21 @@ Cible honnête : ≥ 98 sur le banc. Puis site niveau remove.bg, puis suite (gom
 
 Contraintes : VPS 8 Go · 5,50 €/mois · DeepSeek Vision (Go) · Grok = SuperGrok uniquement.
 
-## Boucle de travail (ordre de Baptiste)
+## Boucle
+50 tâches → mesurer → roadmap → 50 nouvelles. Jamais idle.
 
-1. Vague de **50 tâches** concrètes.
-2. Les finir sans pause. Mesurer. Revert si le score baisse.
-3. Mettre à jour **cette** roadmap.
-4. Inventer **50 nouvelles** tâches (moteur d’abord, ensuite site, ensuite suite produit).
-5. Recommencer. Jamais idle.
-
-## Où on en est (2026-08-25)
+## Où on en est (2026-08-25, soir)
 
 | Phase | Statut | Détail |
 |---|---|---|
-| **0 Banc** | **v0.3** | **68 cas**, score **77,0**. 61 cas **77,1**. Hair **76,9**. Fur **71,8**. Plant **75,6**. Fenêtres **78,3**. Studio **78,0**. `ci.sh` + `worst.json`. |
-| **1 Ordres** | **OK** | DeepSeek + `pipeline` honoré (fenetre/timbre/chroma). |
-| **2 Moteur** | **int8 + 2 passes + fuse + stick + leftover uniforme** | Bande cadre uniforme loin du sujet. hair-08 **83,8**. studio-01 **84,8**. win-03 **65**. fur-02 **67,9**. |
-| **3 Distillation** | **bloquée** | tant que score < 90 |
-| **4 Continu** | amorcé | cette boucle 50/50 |
-| **5 Site / remove.bg** | **après moteur ~pro** | exemples avant/après, gomme d’objet, fonds, tout le catalogue remove.bg |
+| **0 Banc** | **v0.4** | **71 cas**, score **77,5**. IoU 20 GT, mean **0,990**. group **70,6**. hair **78,1**. window **85**. |
+| **1 Ordres** | **OK** | DeepSeek + fenetre/timbre/chroma/ciel. lastGuess live. |
+| **2 Moteur** | **int8 + 2 passes + fuse + stick + fringe cadre** | Vague 3 **1/50**. |
+| **3 Distillation** | **bloquée** | score < 90 |
+| **4 Continu** | vague 3 | w3-02 leftover flottant |
+| **5 Site / remove.bg** | après moteur ~pro | |
 
-Vague 1 (50) : quasi close. Score 61 cas 69,1 (cible 70 pas encore). Fenêtres office mal classées (ia/timbre au lieu de punch).
+Vague 3 live. https://cutbg.studio · 100/jour · Messenger · Stripe hors accueil.
 
-## Produit déjà live
-
-https://cutbg.studio · 100 images/jour · Messenger · Stripe 2,99 / 19,99 · wipe démo blanc `?v=67`
-
-## Ensuite (vague 2+)
-
-- Classifieur fenêtre / timbre (les 3 `win-*` sont faux)
-- Hair **76,9**. Fur **71,8**. Plant **75,6**. fur-02 encore **67,9** (sujet sur le cadre). win-03 **65**. group-01 **64,1**.
-- Score 68 cas ≥ 80
-- Masques main sur les 20 pires
-- Site : galerie avant/après, pages features remove.bg
-- Suite : gomme, remplacer fond, batch API
-
-## Règle score
-
-On ne garde un changement moteur que s’il monte `eval/score.json`. Sinon revert.
+## Règle
+On ne garde un changement moteur que si `eval/score.json` monte.
