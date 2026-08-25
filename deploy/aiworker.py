@@ -265,15 +265,13 @@ def drop_bg_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
             seeds.append(c)
     if len(seeds) < 2:
         return alpha
-    lo_col = rgb[leftover_m].mean(0)
+    # Average leftover color is mixed subject+bg on the frame — drop per pixel
+    # only when the pixel matches a corner seed and is far from the subject.
     subj = rgb[interior].mean(0)
-    d_bg = min(float(np.max(np.abs(lo_col - s))) for s in seeds)
-    d_fg = float(np.max(np.abs(lo_col - subj)))
-    if d_bg > 36 or d_fg < d_bg + 32:
-        return alpha
     dist = np.min([np.max(np.abs(rgb - s.astype(np.int16)), axis=2) for s in seeds], axis=0)
+    dist_subj = np.max(np.abs(rgb - subj.astype(np.int16)), axis=2)
     out = arr.copy()
-    out[leftover_m & (dist <= 44)] = 0
+    out[leftover_m & (dist <= 44) & (dist_subj > 28)] = 0
     return Image.fromarray(out, mode="L")
 
 

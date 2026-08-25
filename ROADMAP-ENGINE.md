@@ -17,9 +17,9 @@ Contraintes : VPS 8 Go · 5,50 €/mois · DeepSeek Vision (Go) · Grok = SuperG
 
 | Phase | Statut | Détail |
 |---|---|---|
-| **0 Banc** | **v0.3** | **68 cas**, score **72,8**. 61 cas **72,8**. Hair **69,5**. Fur **68,5**. Fenêtres **74,7**. `ci.sh` + `worst.json`. |
+| **0 Banc** | **v0.3** | **68 cas**, score **74,6**. 61 cas **74,6**. Hair **75,1**. Fur **69,9**. Fenêtres **74,8**. `ci.sh` + `worst.json`. |
 | **1 Ordres** | **OK** | DeepSeek + `pipeline` honoré (fenetre/timbre/chroma). |
-| **2 Moteur** | **int8 + 2 passes + fuse + stick + drop studio + leftover coins** | Leftover cadre retiré si couleur coins ≠ sujet. fur-04 **77,9**. fur-02 encore **60,2**. |
+| **2 Moteur** | **int8 + 2 passes + fuse + stick + drop studio + leftover pixel** | Leftover cadre : pixel = couleur coins et ≠ sujet. hair-13 **73,9**. fur-02 encore **60,3**. |
 | **3 Distillation** | **bloquée** | tant que score < 90 |
 | **4 Continu** | amorcé | cette boucle 50/50 |
 | **5 Site / remove.bg** | **après moteur ~pro** | exemples avant/après, gomme d’objet, fonds, tout le catalogue remove.bg |
@@ -33,7 +33,7 @@ https://cutbg.studio · 100 images/jour · Messenger · Stripe 2,99 / 19,99 · w
 ## Ensuite (vague 2+)
 
 - Classifieur fenêtre / timbre (les 3 `win-*` sont faux)
-- Hair **69,5**. Fur **68,5** (w2-32 ok). fur-02 encore **60,2** (sujet sur le cadre)
+- Hair **75,1**. Fur **69,9**. fur-02 encore **60,3** (sujet sur le cadre). win-03 **54,3**.
 - Score 68 cas ≥ 80
 - Masques main sur les 20 pires
 - Site : galerie avant/après, pages features remove.bg
