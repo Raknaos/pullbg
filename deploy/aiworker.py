@@ -275,6 +275,36 @@ def drop_bg_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     return Image.fromarray(out, mode="L")
 
 
+def drop_fringe_bg(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
+    """Drop mid-alpha halo whose color matches the corners. Messy masks only."""
+    arr = np.asarray(alpha)
+    fringe = (arr > 8) & (arr < 180)
+    if float(fringe.mean()) < 0.05:
+        return alpha
+    rgb = np.asarray(guide_rgb.convert("RGB"), dtype=np.int16)
+    h, w = arr.shape
+    p = min(8, h, w)
+    corners = [
+        rgb[:p, :p].mean((0, 1)),
+        rgb[:p, -p:].mean((0, 1)),
+        rgb[-p:, :p].mean((0, 1)),
+        rgb[-p:, -p:].mean((0, 1)),
+    ]
+    seeds = []
+    for c in corners:
+        near = sum(float(np.max(np.abs(c - other))) <= 48 for other in corners)
+        if near >= 2:
+            seeds.append(c)
+    if len(seeds) < 2:
+        return alpha
+    dist = np.min([np.max(np.abs(rgb - s.astype(np.int16)), axis=2) for s in seeds], axis=0)
+    out = arr.copy()
+    out[fringe & (dist <= 36)] = 0
+    if float((out > 32).mean()) < 0.05:
+        return alpha
+    return Image.fromarray(out, mode="L")
+
+
 def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     im = Image.open(io.BytesIO(raw)).convert("RGBA")
     if im.size != guide_rgb.size:
@@ -289,6 +319,7 @@ def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     a = stick_fringe(a)
     a = drop_studio(guide_rgb, a)
     a = drop_bg_leftover(guide_rgb, a)
+    a = drop_fringe_bg(guide_rgb, a)
     rgb = np.array(Image.merge("RGBA", (r, g, b, a)))
     cut = 1 if orders["hair"] or orders["tight"] else 4
     rgb[rgb[:, :, 3] < cut] = 0

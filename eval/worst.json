@@ -5,16 +5,6 @@
     "score": 54.3
   },
   {
-    "id": "plant-04",
-    "tag": "plant",
-    "score": 57.7
-  },
-  {
-    "id": "plant-03",
-    "tag": "plant",
-    "score": 59.1
-  },
-  {
     "id": "fur-02",
     "tag": "fur",
     "score": 60.3
@@ -23,11 +13,6 @@
     "id": "hair-08",
     "tag": "hair",
     "score": 61.5
-  },
-  {
-    "id": "glass-09",
-    "tag": "glass",
-    "score": 63.7
   },
   {
     "id": "group-01",
@@ -45,8 +30,23 @@
     "score": 64.8
   },
   {
-    "id": "obj-05",
-    "tag": "object",
-    "score": 65.9
+    "id": "fur-03",
+    "tag": "fur",
+    "score": 66.2
+  },
+  {
+    "id": "studio-05",
+    "tag": "studio",
+    "score": 70.1
+  },
+  {
+    "id": "studio-01",
+    "tag": "studio",
+    "score": 70.4
+  },
+  {
+    "id": "white-01",
+    "tag": "studio",
+    "score": 70.4
   }
 ]

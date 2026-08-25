@@ -1,13 +1,13 @@
 {
-  "cutbg_score": 74.6,
+  "cutbg_score": 75.9,
   "n": 68,
   "by_tag": {
-    "food": 74.4,
+    "food": 75.7,
     "fur": 69.9,
-    "glass": 79.1,
-    "hair": 75.1,
-    "object": 71.8,
-    "plant": 67.3,
+    "glass": 80.2,
+    "hair": 75.3,
+    "object": 78.0,
+    "plant": 75.6,
     "product": 75.7,
     "studio": 73.2,
     "window": 74.8
@@ -19,16 +19,6 @@
       "score": 54.3
     },
     {
-      "id": "plant-04",
-      "tag": "plant",
-      "score": 57.7
-    },
-    {
-      "id": "plant-03",
-      "tag": "plant",
-      "score": 59.1
-    },
-    {
       "id": "fur-02",
       "tag": "fur",
       "score": 60.3
@@ -37,11 +27,6 @@
       "id": "hair-08",
       "tag": "hair",
       "score": 61.5
-    },
-    {
-      "id": "glass-09",
-      "tag": "glass",
-      "score": 63.7
     },
     {
       "id": "group-01",
@@ -59,9 +44,24 @@
       "score": 64.8
     },
     {
-      "id": "obj-05",
-      "tag": "object",
-      "score": 65.9
+      "id": "fur-03",
+      "tag": "fur",
+      "score": 66.2
+    },
+    {
+      "id": "studio-05",
+      "tag": "studio",
+      "score": 70.1
+    },
+    {
+      "id": "studio-01",
+      "tag": "studio",
+      "score": 70.4
+    },
+    {
+      "id": "white-01",
+      "tag": "studio",
+      "score": 70.4
     }
   ],
   "rows": [
@@ -136,12 +136,12 @@
       "src": "hair-02.jpg",
       "hard": true,
       "ok": true,
-      "score": 69.4,
-      "fg": 0.6142,
-      "fringe": 0.0593,
-      "rough": 18.94,
+      "score": 72.7,
+      "fg": 0.5582,
+      "fringe": 0.0032,
+      "rough": 48.34,
       "leftover": 0.00289,
-      "holes": 0.3601
+      "holes": 0.4186
     },
     {
       "id": "hair-03",
@@ -591,12 +591,12 @@
       "src": "plant-03.jpg",
       "hard": false,
       "ok": true,
-      "score": 59.1,
-      "fg": 0.2512,
-      "fringe": 0.1212,
-      "rough": 21.76,
+      "score": 75.0,
+      "fg": 0.1316,
+      "fringe": 0.0017,
+      "rough": 47.5,
       "leftover": 0.0,
-      "holes": 0.7259
+      "holes": 0.8555
     },
     {
       "id": "food-01",
@@ -643,12 +643,12 @@
       "src": "obj-01.jpg",
       "hard": false,
       "ok": true,
-      "score": 75.5,
-      "fg": 0.3094,
-      "fringe": 0.0514,
-      "rough": 15.16,
+      "score": 78.0,
+      "fg": 0.303,
+      "fringe": 0.0446,
+      "rough": 15.56,
       "leftover": 0.0,
-      "holes": 0.4732
+      "holes": 0.4847
     },
     {
       "id": "obj-02",
@@ -656,12 +656,12 @@
       "src": "obj-02.jpg",
       "hard": false,
       "ok": true,
-      "score": 66.9,
-      "fg": 0.382,
-      "fringe": 0.0637,
-      "rough": 16.46,
-      "leftover": 0.0037,
-      "holes": 0.4064
+      "score": 80.0,
+      "fg": 0.3335,
+      "fringe": 0.0142,
+      "rough": 24.99,
+      "leftover": 0.0028,
+      "holes": 0.4435
     },
     {
       "id": "obj-03",
@@ -734,12 +734,12 @@
       "src": "glass-09.jpg",
       "hard": true,
       "ok": true,
-      "score": 63.7,
-      "fg": 0.1431,
-      "fringe": 0.0741,
-      "rough": 19.81,
+      "score": 75.0,
+      "fg": 0.0723,
+      "fringe": 0.0024,
+      "rough": 59.67,
       "leftover": 0.0,
-      "holes": 0.7749
+      "holes": 0.8654
     },
     {
       "id": "glass-10",
@@ -812,12 +812,12 @@
       "src": "obj-05.jpg",
       "hard": false,
       "ok": true,
-      "score": 65.9,
-      "fg": 0.2578,
-      "fringe": 0.0689,
-      "rough": 19.36,
-      "leftover": 0.00013,
-      "holes": 0.6882
+      "score": 80.9,
+      "fg": 0.1979,
+      "fringe": 0.0089,
+      "rough": 27.2,
+      "leftover": 0.0,
+      "holes": 0.7089
     },
     {
       "id": "studio-05",
@@ -838,12 +838,12 @@
       "src": "plant-04.jpg",
       "hard": false,
       "ok": true,
-      "score": 57.7,
-      "fg": 0.2746,
-      "fringe": 0.1044,
-      "rough": 22.48,
-      "leftover": 0.00132,
-      "holes": 0.7022
+      "score": 74.9,
+      "fg": 0.1825,
+      "fringe": 0.0106,
+      "rough": 53.81,
+      "leftover": 7e-05,
+      "holes": 0.7914
     },
     {
       "id": "food-04",
@@ -851,12 +851,12 @@
       "src": "food-04.jpg",
       "hard": false,
       "ok": true,
-      "score": 73.9,
-      "fg": 0.0958,
-      "fringe": 0.0551,
-      "rough": 10.15,
-      "leftover": 0.00258,
-      "holes": 0.8996
+      "score": 79.1,
+      "fg": 0.0848,
+      "fringe": 0.0425,
+      "rough": 11.51,
+      "leftover": 0.00237,
+      "holes": 0.9123
     },
     {
       "id": "win-01",
