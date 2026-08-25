@@ -189,6 +189,8 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-26: Median 5 alpha, revert si score baisse. 60 keep / 23 revert. glass-02 intact. 89,6→89,9. Fur 88,0→88,5. Glass 93,0→93,3. Group 86,8→87,1. Plant 91,2→91,6.
 - 2026-08-26: Close intérieur 3 px (Max7), revert si score/IoU baisse. 28 keep / 55 revert. glass-02 intact. 89,9→90,0. Food 85,9→86,1. Group 87,1→87,3. Object 90,8→91,0. Plant 91,6→91,8.
 - 2026-08-26: Close intérieur 4 px (Max9), revert si score/IoU baisse. 53 keep / 28 revert. glass-02 + prod-07 skip. 90,0. Food 86,1→86,2. Group 87,3→87,6. Hair 92,6→92,7. Plant 91,8→92,0.
+- 2026-08-26: Close intérieur 5 px (Max11), revert si score/IoU baisse. 27 keep / 54 revert. glass-02 + prod-07 skip. 90,0→90,1. Food 86,2→86,3. Group 87,6→87,8. Glass 93,4→93,5. Plant 92,0→92,2.
+- 2026-08-26: Close intérieur 6 px (Max13), revert si score/IoU baisse. 26 keep / 27 revert. glass-02 + prod-07 skip. 90,1. Food 86,3→86,4. Fur 88,5→88,6. Glass 93,5→93,6. Group 87,8→88,0. Plant 92,2→92,5. Studio 89,8→89,9.
 
 
 

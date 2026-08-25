@@ -1,8 +1,8 @@
 # CutBG — progression
 
-Vague **4** **30/50** · score **90,0** / **83** cas · IoU 0,803 · group **87,6** · hair **92,7** · stamp **85,0**
+Vague **4** **30/50** · score **90,1** / **83** cas · IoU 0,803 · group **88,0** · hair **92,7** · stamp **85,0**
 
-Pires : prod-07 74,5 · plant-01 77,9 · prod-03 78,0 · prod-01 78,1 · prod-02 79,3
+Pires : prod-07 74,5 · plant-01 77,9 · prod-01 78,1 · prod-03 78,2 · prod-02 79,4
 
 ## Vague 4 — tâches
 
@@ -63,8 +63,8 @@ Pires : prod-07 74,5 · plant-01 77,9 · prod-03 78,0 · prod-01 78,1 · prod-02
 
 | id | action | score |
 |---|---|---|
+| close6 | close intérieur 6 px Max13, 26 keep / 27 revert, glass-02 + prod-07 skip | **90,1** · food 86,3→86,4 · fur 88,5→88,6 · glass 93,5→93,6 · group 87,8→88,0 · plant 92,2→92,5 · studio 89,8→89,9 |
+| close5 | close intérieur 5 px Max11, 27 keep / 54 revert, glass-02 + prod-07 skip | 90,0→**90,1** · food 86,2→86,3 · group 87,6→87,8 · glass 93,4→93,5 · plant 92,0→92,2 · object 91,0→91,1 · studio 89,7→89,8 |
 | close4 | close intérieur 4 px Max9, 53 keep / 28 revert, glass-02 + prod-07 skip | **90,0** · food 86,1→86,2 · group 87,3→87,6 · hair 92,6→92,7 · plant 91,8→92,0 |
 | close3 | close intérieur 3 px Max7, 28 keep / 55 revert, glass-02 intact | 89,9→**90,0** · food 85,9→86,1 · group 87,1→87,3 · object 90,8→91,0 · plant 91,6→91,8 |
 | med5 | MedianFilter 5, 60 keep / 23 revert, glass-02 intact | 89,6→**89,9** · fur 88,0→88,5 · glass 93,0→93,3 · group 86,8→87,1 · plant 91,2→91,6 |
-| jaggy15 | guided r5 rough 15–20, 29 coupes, 23 revert, glass-02 intact | **89,6** · glass 92,8→93,0 · product 86,6→86,8 · fur 87,9→88,0 |
-| w4-24 | GT win-03 : sujet cadre (bot 16 %, frame 8 %), keep | leftover 0 IoU 0,957 |

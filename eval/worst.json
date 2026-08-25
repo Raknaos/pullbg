@@ -10,24 +10,19 @@
     "score": 77.9
   },
   {
-    "id": "prod-03",
-    "tag": "product",
-    "score": 78.0
-  },
-  {
     "id": "prod-01",
     "tag": "product",
     "score": 78.1
   },
   {
-    "id": "prod-02",
+    "id": "prod-03",
     "tag": "product",
-    "score": 79.3
+    "score": 78.2
   },
   {
-    "id": "group-03",
-    "tag": "group",
-    "score": 81.8
+    "id": "prod-02",
+    "tag": "product",
+    "score": 79.4
   },
   {
     "id": "hair-09",
@@ -43,6 +38,11 @@
     "id": "food-04",
     "tag": "food",
     "score": 82.3
+  },
+  {
+    "id": "group-03",
+    "tag": "group",
+    "score": 82.9
   },
   {
     "id": "fur-02",

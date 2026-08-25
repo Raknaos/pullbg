@@ -511,6 +511,46 @@ def close_interior_4px(alpha: Image.Image) -> Image.Image:
     return Image.fromarray(out, mode="L")
 
 
+def close_interior_5px(alpha: Image.Image) -> Image.Image:
+    """Fill 5px holes / jaggies. Revert if heuristic drops."""
+    arr = np.asarray(alpha)
+    h, w = arr.shape
+    bw, bh = max(2, w // 50), max(2, h // 50)
+    frame = np.zeros((h, w), dtype=bool)
+    frame[:bh] = True
+    frame[-bh:] = True
+    frame[:, :bw] = True
+    frame[:, -bw:] = True
+    closed = np.asarray(alpha.filter(ImageFilter.MaxFilter(11)).filter(ImageFilter.MinFilter(11)))
+    out = arr.copy()
+    out[~frame] = closed[~frame]
+    if float((out > 32).mean()) < 0.05:
+        return alpha
+    if _mask_score(out) + 0.05 < _mask_score(arr):
+        return alpha
+    return Image.fromarray(out, mode="L")
+
+
+def close_interior_6px(alpha: Image.Image) -> Image.Image:
+    """Fill 6px holes / jaggies. Revert if heuristic drops."""
+    arr = np.asarray(alpha)
+    h, w = arr.shape
+    bw, bh = max(2, w // 50), max(2, h // 50)
+    frame = np.zeros((h, w), dtype=bool)
+    frame[:bh] = True
+    frame[-bh:] = True
+    frame[:, :bw] = True
+    frame[:, -bw:] = True
+    closed = np.asarray(alpha.filter(ImageFilter.MaxFilter(13)).filter(ImageFilter.MinFilter(13)))
+    out = arr.copy()
+    out[~frame] = closed[~frame]
+    if float((out > 32).mean()) < 0.05:
+        return alpha
+    if _mask_score(out) + 0.05 < _mask_score(arr):
+        return alpha
+    return Image.fromarray(out, mode="L")
+
+
 def _fringe_rough(arr: np.ndarray) -> float:
     fringe = (arr > 8) & (arr < 180)
     if not fringe.any():
@@ -656,6 +696,8 @@ def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     a = close_interior_wide(a)
     a = close_interior_3px(a)
     a = close_interior_4px(a)
+    a = close_interior_5px(a)
+    a = close_interior_6px(a)
     a = erode_leftover(a)
     a = smooth_jaggy(guide_rgb, a)
     a = median_alpha(a)
