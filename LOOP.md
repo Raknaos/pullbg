@@ -184,6 +184,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Guided r5 si rough 30–80, revert si heuristique baisse. 29 cas ↑ 0 ↓. Grow hair +1 −0,15 keep 2. 87,0→88,9. Product 82,6→85,8. Fur 84,2→87,2.
 - 2026-08-25: GT hair-09 = sujet cadre bas, keep. Guided r5 rough 25–30, 9 coupes, 8 revert. glass-02 intact. 88,9→89,2. Glass 91,4→92,3. Product 85,8→86,1.
 - 2026-08-25: Close intérieur 2 px (Max5), revert si heuristique / hair-13. GT fur-02 poitrail cadre, keep. glass-02 intact. 89,2→89,5. Object 89,5→90,3. Plant 90,6→91,2.
+- 2026-08-25: GT hair-10 = sujet cadre bas (43 %), keep. Guided r5 rough 20–25, 26 coupes, 19 revert. glass-02 intact. 89,5→89,6. Glass 92,6→92,8. Product 86,3→86,6.
 
 
 

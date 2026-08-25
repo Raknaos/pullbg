@@ -1,6 +1,6 @@
 # CutBG — progression
 
-Vague **4** **28/50** · score **89,5** / **83** cas · IoU 0,803 · group **86,8** · hair **92,5** · stamp **85,0**
+Vague **4** **29/50** · score **89,6** / **83** cas · IoU 0,803 · group **86,8** · hair **92,5** · stamp **85,0**
 
 Pires : prod-07 74,5 · plant-01 77,6 · prod-03 77,9 · prod-01 78,0 · prod-02 79,3
 
@@ -30,8 +30,8 @@ Pires : prod-07 74,5 · plant-01 77,6 · prod-03 77,9 · prod-01 78,0 · prod-02
 | w4-20 | fait | GT hair-11 leftover bas périmé, refresh |
 | w4-21 | fait | GT hair-09 = sujet cadre bas, keep |
 | w4-22 | fait | revoir GT fur-02 |
-| w4-23 | in_progress | revoir GT hair-10 |
-| w4-24 | restant | revoir GT win-03 |
+| w4-23 | fait | revoir GT hair-10 |
+| w4-24 | in_progress | revoir GT win-03 |
 | w4-25 | restant | GT 30 cas |
 | w4-26 | restant | GT 40 cas |
 | w4-27 | restant | classif group |
@@ -63,8 +63,8 @@ Pires : prod-07 74,5 · plant-01 77,6 · prod-03 77,9 · prod-01 78,0 · prod-02
 
 | id | action | score |
 |---|---|---|
+| jaggy20 | guided r5 rough 20–25, 26 coupes, 19 revert, glass-02 intact | 89,5→**89,6** · glass 92,6→92,8 · product 86,3→86,6 · object 90,3→90,7 |
+| w4-23 | GT hair-10 : sujet cadre bas (43 % bande), keep | leftover 0,00498 IoU 0,956 |
 | close5 | close intérieur 2 px (Max5), 77 coupes, hair-13 revert, glass-02 intact | 89,2→**89,5** · object 89,5→90,3 · plant 90,6→91,2 · group 86,2→86,8 |
 | w4-22 | GT fur-02 : poitrail cadre bas (61 % bande), keep | leftover 0,01224 IoU 0,985 |
 | jaggy25 | guided r5 rough 25–30, 9 coupes, 8 revert, glass-02 intact | 88,9→**89,2** · glass 91,4→92,3 · product 85,8→86,1 |
-| w4-21 | GT hair-09 : sujet cadre bas (98 % largeur), keep | leftover 0,01329 IoU 0,966 |
-| w4-35 | guided r5 jaggy (rough≥30 <80), 29 coupes, glass-02 intact | 87,0→**88,9** · product 82,6→85,8 · fur 84,2→87,2 · glass 88,1→91,4 |
