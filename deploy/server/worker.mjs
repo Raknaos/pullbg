@@ -244,20 +244,70 @@ export function encodePng(image) {
 }
 
 /** Ask rembg; hang/timeout returns null so the single worker can move on. */
-export async function askRembg(pngBuffer, timeoutMs = AI_TIMEOUT_MS) {
+export async function askRembg(pngBuffer, timeoutMs = AI_TIMEOUT_MS, hint = "auto") {
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), timeoutMs);
   try {
     const fd = new FormData();
     fd.append("file", new Blob([pngBuffer], { type: "image/png" }), "input.png");
+    fd.append("hint", hint);
     const res = await fetch(`${AI_URL}/cut`, { method: "POST", body: fd, signal: ac.signal });
     if (!res.ok) return null;
-    return packed(await decodeToImage(Buffer.from(await res.arrayBuffer())), "ia");
+    return packed(await decodeToImage(Buffer.from(await res.arrayBuffer())), hint === "person" ? "ia-portrait" : "ia");
   } catch {
     return null;
   } finally {
     clearTimeout(timer);
   }
+}
+
+function isSkin(r, g, b) {
+  return r > 80 && g > 30 && b > 15 && r > g && r > b && (r - g) > 12;
+}
+
+/** Portrait with a face-like skin cluster → person model. Flat orange/wood products stay on isnet. */
+export function hintForImage(image) {
+  const { data, width: w, height: h } = image;
+  const step = Math.max(1, Math.floor(Math.sqrt((w * h) / 4000)));
+  let n = 0;
+  let skin = 0;
+  let faceN = 0;
+  let face = 0;
+  let faceSum = 0;
+  let faceSum2 = 0;
+  const fx0 = w * 0.18;
+  const fx1 = w * 0.82;
+  const fy0 = h * 0.06;
+  const fy1 = h * 0.55;
+  for (let y = 0; y < h; y += step) {
+    for (let x = 0; x < w; x += step) {
+      const i = (y * w + x) * 4;
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const hit = isSkin(r, g, b);
+      n++;
+      if (hit) skin++;
+      if (x >= fx0 && x < fx1 && y >= fy0 && y < fy1) {
+        faceN++;
+        if (hit) {
+          face++;
+          const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+          faceSum += lum;
+          faceSum2 += lum * lum;
+        }
+      }
+    }
+  }
+  const skinF = n ? skin / n : 0;
+  const faceF = faceN ? face / faceN : 0;
+  const faceMean = face ? faceSum / face : 0;
+  const faceVar = face ? Math.max(0, faceSum2 / face - faceMean * faceMean) : 0;
+  if (h < w * 0.9) return "product";
+  if (skinF < 0.035 || skinF > 0.42) return "product";
+  if (faceF < 0.12 || faceF < skinF * 1.05) return "product";
+  if (face < 12 || faceVar < 80) return "product";
+  return "person";
 }
 
 /** Full job: geometry first, then AI when the classifier asks for it. */
@@ -266,8 +316,8 @@ export async function processImage(buffer, opts = {}) {
   const draft = fastCutServer(original);
   if (!draft.needsRefine) return { ...draft, buffer: encodePng(draft.image) };
 
-  // Same as browser refineCut: rembg sees the already-oriented, 2200px-capped pixels.
-  const model = await askRembg(encodePng(original), opts.aiTimeoutMs ?? AI_TIMEOUT_MS);
+  const hint = opts.hint || hintForImage(original);
+  const model = await askRembg(encodePng(original), opts.aiTimeoutMs ?? AI_TIMEOUT_MS, hint);
   const final = chooseRefinedServer(draft, model);
-  return { ...final, buffer: encodePng(final.image) };
+  return { ...final, buffer: encodePng(final.image), hint };
 }

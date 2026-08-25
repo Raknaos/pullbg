@@ -152,4 +152,6 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Domaine cutbg.studio (OVH) → A 169.58.230.80. HTTPS Let's Encrypt jusqu'au 2026-11-23. HTTP 301. API /api/health OK. Cache v=114.
 - 2026-08-25: Quota VPS : prise atomique (file parallèle studio ≤3). 20 POST d’un coup restent à 10 jobs. Test race `deploy/server/test_quota_api.mjs`.
 - 2026-08-25: BFS punch/classif : une pile d’indices (plus qx+qy). Moitié moins de mémoire sur les grandes fenêtres.
+- 2026-08-25: Portrait : plus classé timbre (formes seulement sur album/carte). rembg `u2net_human_seg` si visage, sinon isnet. Tests hint + busy-portrait.
+
 

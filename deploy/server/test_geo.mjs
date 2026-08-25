@@ -4,7 +4,7 @@ const require = createRequire(import.meta.url);
 const { createCanvas, ImageData } = require("@napi-rs/canvas");
 globalThis.ImageData = globalThis.ImageData ?? ImageData;
 
-const { fastCutServer, decodeToImage, encodePng, processImage, askRembg, jpegOrientation } = await import("./worker.mjs");
+const { fastCutServer, decodeToImage, encodePng, processImage, askRembg, jpegOrientation, hintForImage } = await import("./worker.mjs");
 
 function assert(cond, msg) {
   if (!cond) throw new Error(msg);
@@ -27,6 +27,29 @@ function fillRect(image, x0, y0, x1, y1, r, g, b) {
       data[i] = r; data[i + 1] = g; data[i + 2] = b; data[i + 3] = 255;
     }
   }
+}
+
+function busyBg(image) {
+  const { data, width: w, height: h } = image;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4;
+      data[i] = 60 + ((x * 13 + y * 7) % 90);
+      data[i + 1] = 70 + ((x * 5 + y * 11) % 80);
+      data[i + 2] = 80 + ((x * 3 + y * 17) % 100);
+      data[i + 3] = 255;
+    }
+  }
+}
+
+function facePortrait() {
+  const img = rgb(80, 120, 0, 0, 0);
+  busyBg(img);
+  fillRect(img, 22, 14, 58, 52, 198, 142, 112);
+  fillRect(img, 30, 28, 36, 34, 40, 28, 24);
+  fillRect(img, 44, 28, 50, 34, 40, 28, 24);
+  fillRect(img, 34, 38, 46, 44, 160, 90, 80);
+  return img;
 }
 
 {
@@ -231,4 +254,36 @@ function jpegWithOrientation(jpeg, orientation) {
   assert(decoded.height === 2200, `ori 6 then 2200 cap height, got ${decoded.height}`);
 }
 
-console.log("worker geo: studio flood + 2200px rembg source + rembg timeout + jpeg exif OK");
+{
+  const portrait = facePortrait();
+  assert(hintForImage(portrait) === "person", `portrait routes to person, got ${hintForImage(portrait)}`);
+
+  const product = rgb(80, 120, 240, 240, 240);
+  fillRect(product, 22, 30, 58, 90, 90, 90, 96);
+  assert(hintForImage(product) === "product", `gray product stays product, got ${hintForImage(product)}`);
+
+  const copper = rgb(120, 80, 240, 240, 240);
+  fillRect(copper, 30, 18, 90, 62, 188, 96, 42);
+  assert(hintForImage(copper) === "product", `landscape copper product stays product, got ${hintForImage(copper)}`);
+}
+
+{
+  const raw = encodePng(facePortrait());
+
+  const prev = globalThis.fetch;
+  let sent = "";
+  globalThis.fetch = async (_url, opts) => {
+    sent = String(opts.body.get("hint") || "");
+    return { ok: false, status: 503 };
+  };
+  try {
+    const out = await processImage(raw);
+    assert(sent === "person", `rembg received person hint, got ${sent}`);
+    assert(out.hint === "person", `processImage exposes person hint, got ${out.hint}`);
+    assert(out.buffer && out.buffer.length > 0, "portrait still returns a PNG if rembg fails");
+  } finally {
+    globalThis.fetch = prev;
+  }
+}
+
+console.log("worker geo: studio flood + 2200px rembg source + rembg timeout + jpeg exif + person hint OK");
