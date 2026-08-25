@@ -177,6 +177,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: drop_uniform live dist 50→28 (sol studio gris/sombre). studio-05 leftover 0,00853→0, score 70,1→82,1. Studio 79,0→80,7. Score 79,8→79,9.
 - 2026-08-25: Timbre : restore rect même si lightMarginEaten rate (pièce entière). stamp-03 63,9→76,3. Stamp 74,6→81,2. Score 79,9→80,2.
 - 2026-08-25: dropBgLeftover papier cadre (guide RGB original, seuil 0,3 %). stamp-03 76,3→83,9. Stamp 81,2→83,7. fur-02 poitrail = sujet, skip.
+- 2026-08-25: Frange intérieure : guided r=6 eps=8e-3 hors bande 10 %, revert si fg −10 %. food-03 79,9→81,7. Fur 76,3→78,2. Score 80,8→81,9.
 
 
 

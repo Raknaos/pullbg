@@ -408,6 +408,31 @@ def drop_uniform_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.I
     return Image.fromarray(out, mode="L")
 
 
+def smooth_interior_fringe(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
+    """Soften mid-alpha inside the cut (food gaps, fur) without touching the outer band."""
+    arr = np.asarray(alpha)
+    fringe = (arr > 8) & (arr < 180)
+    if float(fringe.mean()) < 0.008:
+        return alpha
+    h, w = arr.shape
+    band_h = max(2, int(round(h * 0.10)))
+    band_w = max(2, int(round(w * 0.10)))
+    band = np.zeros((h, w), dtype=bool)
+    band[:band_h] = True
+    band[-band_h:] = True
+    band[:, :band_w] = True
+    band[:, -band_w:] = True
+    hit = fringe & ~band
+    if float(hit.mean()) < 0.005:
+        return alpha
+    refined = np.asarray(guided_alpha(guide_rgb, alpha, radius=6, eps=8e-3))
+    out = arr.copy()
+    out[hit] = refined[hit]
+    if float((out > 32).mean()) < 0.90 * float((arr > 32).mean()):
+        return alpha
+    return Image.fromarray(out, mode="L")
+
+
 def drop_fringe_bg(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     """Drop mid-alpha halo on the frame whose color matches the corners."""
     arr = np.asarray(alpha)
@@ -463,6 +488,7 @@ def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     a = drop_fringe_bg(guide_rgb, a)
     a = drop_uniform_leftover(guide_rgb, a)
     a = drop_floating_leftover(a)
+    a = smooth_interior_fringe(guide_rgb, a)
     rgb = np.array(Image.merge("RGBA", (r, g, b, a)))
     cut = 1 if orders["hair"] or orders["tight"] else 4
     rgb[rgb[:, :, 3] < cut] = 0
