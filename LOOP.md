@@ -159,6 +159,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Punch : un cand+keep réutilisé (plus 4 masques + 4 keeps). Soft-alpha lit le fond, plus de copie. Moins de pic mémoire sur les grandes fenêtres.
 - 2026-08-25: Planche / chroma : plus de copie des cellules BFS (2e passe). Zoo dentelé sauté si le disque tient déjà. Timbres / fenêtres inchangés.
 - 2026-08-25: Flood noir/blanc + timbre : plus de copie bord/alpha. Pile = buffer luma. Un scratch pour pièces + plus grand blob. Timbres / fonds inchangés.
+- 2026-08-25: Classif : scratch BFS réutilisé (album + fond studio). Specks : plus de 2e copie ImageData. Timbres / fenêtres inchangés.
 
 
 
