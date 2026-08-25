@@ -433,6 +433,24 @@ def smooth_interior_fringe(guide_rgb: Image.Image, alpha: Image.Image) -> Image.
     return Image.fromarray(out, mode="L")
 
 
+def close_interior(alpha: Image.Image) -> Image.Image:
+    """Fill 1px holes / jaggies inside the cut. Frame leftover stays put."""
+    arr = np.asarray(alpha)
+    h, w = arr.shape
+    bw, bh = max(2, w // 50), max(2, h // 50)
+    frame = np.zeros((h, w), dtype=bool)
+    frame[:bh] = True
+    frame[-bh:] = True
+    frame[:, :bw] = True
+    frame[:, -bw:] = True
+    closed = np.asarray(alpha.filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3)))
+    out = arr.copy()
+    out[~frame] = closed[~frame]
+    if float((out > 32).mean()) < 0.05:
+        return alpha
+    return Image.fromarray(out, mode="L")
+
+
 def drop_fringe_bg(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     """Drop mid-alpha halo on the frame whose color matches the corners."""
     arr = np.asarray(alpha)
@@ -489,6 +507,7 @@ def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     a = drop_uniform_leftover(guide_rgb, a)
     a = drop_floating_leftover(a)
     a = smooth_interior_fringe(guide_rgb, a)
+    a = close_interior(a)
     rgb = np.array(Image.merge("RGBA", (r, g, b, a)))
     cut = 1 if orders["hair"] or orders["tight"] else 4
     rgb[rgb[:, :, 3] < cut] = 0

@@ -1,8 +1,8 @@
 # CutBG — progression
 
-Vague **4** **20/50** · score **83,1** / **84** cas · IoU 0,803 · group **84,8** · hair **84,7** · stamp **84,0**
+Vague **4** **22/50** · score **83,3** / **84** cas · IoU 0,802 · group **85,7** · hair **84,8** · stamp **84,5**
 
-Pires : fur-02 71,7 · hair-09 72,0 · plant-01 74,3 · prod-07 74,4 · prod-02 75,0
+Pires : hair-09 72,0 · fur-02 72,0 · prod-07 74,4 · plant-01 74,8 · prod-02 75,0
 
 ## Vague 4 — tâches
 
@@ -26,8 +26,8 @@ Pires : fur-02 71,7 · hair-09 72,0 · plant-01 74,3 · prod-07 74,4 · prod-02 
 | w4-16 | fait | fur-02 leftover = poitrail, skip drop |
 | w4-17 | fait | +1 cas stamp dentelé |
 | w4-18 | fait | drop_floating banc 80,2→80,9 |
-| w4-19 | in_progress | revoir GT group-01 |
-| w4-20 | restant | revoir GT hair-11 |
+| w4-19 | fait | GT group-01 = sujet cadre droit, keep |
+| w4-20 | in_progress | revoir GT hair-11 |
 | w4-21 | restant | revoir GT hair-09 |
 | w4-22 | restant | revoir GT fur-02 |
 | w4-23 | restant | revoir GT hair-10 |
@@ -38,7 +38,7 @@ Pires : fur-02 71,7 · hair-09 72,0 · plant-01 74,3 · prod-07 74,4 · prod-02 
 | w4-28 | restant | classif fur vs hair |
 | w4-29 | restant | test classif canvas local |
 | w4-30 | restant | lastGuess group live |
-| w4-31 | restant | stick 7 vs 5 retest |
+| w4-31 | fait | stick 7 vs 5 −0,08, keep 5 |
 | w4-32 | restant | fuse 0,35/0,65 |
 | w4-33 | restant | crop pad 0,14 |
 | w4-34 | restant | two-pass coarse 720 |
@@ -63,8 +63,8 @@ Pires : fur-02 71,7 · hair-09 72,0 · plant-01 74,3 · prod-07 74,4 · prod-02 
 
 | id | action | score |
 |---|---|---|
+| close | close intérieur 1 px, cadre intact, 84 coupes | 83,1→**83,3** · group 84,8→85,7 · stamp 84,0→84,5 |
+| w4-31 | stick rad 7 vs 5 | −0,08, keep 5 |
+| w4-19 | GT group-01 sujet au cadre droit | IoU 0,938 keep |
 | w4-17 | stamp-04 UNR 1918 dentelé, classif timbre, coupe géo 84,6 | 84 cas · stamp 83,9→84,0 · global **83,1** |
 | w4-08 | smooth_interior_fringe r6/8e-3 | 80,8→81,9 · food 80,9→81,5 · food-03 79,9→81,7 |
-| w4-15 | group-03/04 via API live | 83 cas, group-03 **69,8** |
-| w4-45 | aiworker VPS restart | health OK build 3 |
-| w4-18 | drop_floating 60 coupes | 80,2→80,9 (81 cas) |

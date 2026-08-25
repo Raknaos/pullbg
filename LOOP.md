@@ -179,6 +179,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: dropBgLeftover papier cadre (guide RGB original, seuil 0,3 %). stamp-03 76,3→83,9. Stamp 81,2→83,7. fur-02 poitrail = sujet, skip.
 - 2026-08-25: Frange intérieure : guided r=6 eps=8e-3 hors bande 10 %, revert si fg −10 %. food-03 79,9→81,7. Fur 76,3→78,2. Score 80,8→81,9.
 - 2026-08-25: Banc stamp-04 (UNR 1918 dentelé, md5 unique). Classif timbre, stampCut leftover 0, 84,6. Stamp 83,9→84,0. 84 cas · 83,1.
+- 2026-08-25: Close intérieur 1 px (Max+Min 3, cadre intact). Stick 7 vs 5 −0,08 keep 5. Guided extra skip. 83,1→83,3. Group 84,8→85,7.
 
 
 
