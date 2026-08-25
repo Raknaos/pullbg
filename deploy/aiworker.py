@@ -275,6 +275,64 @@ def drop_bg_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     return Image.fromarray(out, mode="L")
 
 
+def drop_floating_leftover(alpha: Image.Image) -> Image.Image:
+    """Drop frame leftover blobs that are not 4-connected to the main subject."""
+    arr = np.asarray(alpha)
+    h, w = arr.shape
+    fg = arr > 32
+    if not fg.any():
+        return alpha
+    lab = np.zeros((h, w), dtype=np.int32)
+    nlab = 0
+    for y in range(h):
+        row = fg[y]
+        for x in range(w):
+            if not row[x] or lab[y, x]:
+                continue
+            nlab += 1
+            stack = [(y, x)]
+            lab[y, x] = nlab
+            while stack:
+                cy, cx = stack.pop()
+                if cy > 0 and fg[cy - 1, cx] and not lab[cy - 1, cx]:
+                    lab[cy - 1, cx] = nlab
+                    stack.append((cy - 1, cx))
+                if cy + 1 < h and fg[cy + 1, cx] and not lab[cy + 1, cx]:
+                    lab[cy + 1, cx] = nlab
+                    stack.append((cy + 1, cx))
+                if cx > 0 and fg[cy, cx - 1] and not lab[cy, cx - 1]:
+                    lab[cy, cx - 1] = nlab
+                    stack.append((cy, cx - 1))
+                if cx + 1 < w and fg[cy, cx + 1] and not lab[cy, cx + 1]:
+                    lab[cy, cx + 1] = nlab
+                    stack.append((cy, cx + 1))
+    if nlab <= 1:
+        return alpha
+    counts = np.bincount(lab.ravel())
+    counts[0] = 0
+    bw, bh = max(2, w // 50), max(2, h // 50)
+    frame = np.zeros((h, w), dtype=bool)
+    frame[:bh] = True
+    frame[-bh:] = True
+    frame[:, :bw] = True
+    frame[:, -bw:] = True
+    on = np.bincount(lab[frame].ravel(), minlength=counts.size)
+    on[0] = 0
+    frac = np.zeros(counts.size, dtype=np.float32)
+    nz = counts > 0
+    frac[nz] = on[nz] / counts[nz]
+    # Majority of the blob sits on the 2% frame → leftover, not a subject nicking the edge.
+    drop = (frac >= 0.50) & (counts < max(80, int(counts.max() * 0.10)))
+    drop[0] = False
+    if not drop.any():
+        return alpha
+    out = arr.copy()
+    out[drop[lab]] = 0
+    if float((out > 32).mean()) < 0.05:
+        return alpha
+    return Image.fromarray(out, mode="L")
+
+
 def drop_uniform_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     """Drop a uniform frame leftover whose color is far from the subject (floor / cyclorama)."""
     rgb = np.asarray(guide_rgb.convert("RGB"), dtype=np.int16)
@@ -361,6 +419,7 @@ def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     a = drop_bg_leftover(guide_rgb, a)
     a = drop_fringe_bg(guide_rgb, a)
     a = drop_uniform_leftover(guide_rgb, a)
+    a = drop_floating_leftover(a)
     rgb = np.array(Image.merge("RGBA", (r, g, b, a)))
     cut = 1 if orders["hair"] or orders["tight"] else 4
     rgb[rgb[:, :, 3] < cut] = 0

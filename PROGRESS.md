@@ -1,20 +1,20 @@
 # CutBG — progression
 
-Vague **2 CLOSE** · Vague **3** **1/50** · score **77,5** / 71 cas · IoU 0,990 (20 GT)
+Vague **2 CLOSE** · Vague **3** **2/50** · score **78,1** / 75 cas · IoU 0,986 (20 GT)
 
-Pires : hair-11 64,3 · hair-09 64,8 · stamp-03 65,3 · fur-03 67,5 · group-01 67,5
+Pires : stamp-03 63,7 · hair-11 66,5 · hair-09 67,5 · fur-02 67,9 · fur-03 68,3
 
 ## Vague 3 — tâches
 
 | id | statut | tâche |
 |---|---|---|
 | w3-01 | fait | frange cadre ≥3,5 % couleur coins (bande 10 %) |
-| w3-02 | en cours | leftover flottant (non connecté au sujet) |
-| w3-03 | restant | drop_uniform dist 50→28 (studio-05 / hair-15 / prod-09) |
+| w3-02 | fait | leftover flottant (non connecté au sujet) |
+| w3-03 | en cours | drop_uniform dist 50→28 (studio-05 / hair-15 / prod-09) |
 | w3-04 | restant | leftover cheveux connecté (hair-11 / 09 / 10) |
-| w3-05 | restant | leftover fourrure (fur-02 67,9 · fur-03 67,5) |
+| w3-05 | restant | leftover fourrure (fur-02 67,9 · fur-03 68,3) |
 | w3-06 | restant | groupes multi-sujets (group-01 67,5) |
-| w3-07 | restant | stamp fringe/rough (stamp-03 65,3) |
+| w3-07 | restant | stamp fringe/rough (stamp-03 63,7) |
 | w3-08 | restant | leftover studio gris (studio-05 70,1) |
 | w3-09 | restant | trous produit (prod-07 / prod-01) |
 | w3-10 | restant | frange food intérieure |
@@ -63,8 +63,8 @@ Pires : hair-11 64,3 · hair-09 64,8 · stamp-03 65,3 · fur-03 67,5 · group-01
 
 | id | action | score |
 |---|---|---|
+| w3-02 | leftover flottant cadre (≥50 % sur frame) | 77,9→78,1 |
 | w3-01 | frange cadre ≥3,5 % | 77,2→77,5 |
 | w2-43 | leftover uniforme | 76,1→77,0 |
 | w2-49 | close vague 2 | 76,9 |
 | w2-14 | drop frange fond | 74,6→75,9 |
-| leftover pixel | coins vs sujet | 72,8→74,6 |

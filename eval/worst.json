@@ -1,33 +1,28 @@
 [
   {
+    "id": "stamp-03",
+    "tag": "stamp",
+    "score": 63.7
+  },
+  {
     "id": "hair-11",
     "tag": "hair",
-    "score": 64.3
+    "score": 66.5
   },
   {
     "id": "hair-09",
     "tag": "hair",
-    "score": 64.8
-  },
-  {
-    "id": "stamp-03",
-    "tag": "stamp",
-    "score": 65.3
-  },
-  {
-    "id": "fur-03",
-    "tag": "fur",
-    "score": 67.5
-  },
-  {
-    "id": "group-01",
-    "tag": "group",
     "score": 67.5
   },
   {
     "id": "fur-02",
     "tag": "fur",
     "score": 67.9
+  },
+  {
+    "id": "fur-03",
+    "tag": "fur",
+    "score": 68.3
   },
   {
     "id": "studio-05",
@@ -40,9 +35,14 @@
     "score": 71.2
   },
   {
+    "id": "group-01",
+    "tag": "group",
+    "score": 72.0
+  },
+  {
     "id": "plant-01",
     "tag": "plant",
-    "score": 72.1
+    "score": 72.3
   },
   {
     "id": "hair-15",
