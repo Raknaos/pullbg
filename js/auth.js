@@ -218,10 +218,10 @@ export function paintNav() {
 export function clientId() {
   const user = currentUser();
   if (user && user.email) return user.email;
-  let id = localStorage.getItem("studiocut_cid");
+  let id = localStorage.getItem("cutbg_cid");
   if (!id) {
     id = crypto.randomUUID();
-    localStorage.setItem("studiocut_cid", id);
+    localStorage.setItem("cutbg_cid", id);
   }
   return id;
 }

@@ -149,3 +149,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: File : 11ᵉ image = flou local (plus d’appel API → 429). Mur quota n’enchaîne plus le reste de la file. Cache v=113.
 - 2026-08-25: Punch / specks : plus de tableau JS par pixel (qx/qy + Int32Array). Moins de pic mémoire sur les grandes fenêtres.
 - 2026-08-25: Flood noir/blanc : pile typée. BFS 4-voisins sans tableaux JS par pixel (fenêtres, fond studio, specks).
+- 2026-08-25: Domaine cutbg.studio (OVH) → A 169.58.230.80. HTTPS Let's Encrypt jusqu'au 2026-11-23. HTTP 301. API /api/health OK. Cache v=114.

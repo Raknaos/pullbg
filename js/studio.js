@@ -9,18 +9,20 @@ import {
   formatCountdown,
   paidBatchSize,
   clientId,
-} from "./auth.js?v=113";
+} from "./auth.js?v=114";
 import {
   bitmapFromSource,
   imageDataFromBitmap,
   blobFromImageDataBlurred,
-} from "../lib/cutout.js?v=113";
+} from "../lib/cutout.js?v=114";
 
 if (location.hostname.endsWith("github.io")) {
-  location.replace("http://169.58.230.80/");
+  location.replace("https://cutbg.studio/");
 }
 
-const API = location.hostname === "169.58.230.80" ? "" : "http://169.58.230.80";
+const API = ["cutbg.studio", "www.cutbg.studio", "169.58.230.80"].includes(location.hostname)
+  ? ""
+  : "https://cutbg.studio";
 
 paintNav();
 
@@ -370,7 +372,7 @@ async function downloadZip() {
   const a = document.createElement("a");
   const url = URL.createObjectURL(blob);
   a.href = url;
-  a.download = "studiocut.zip";
+  a.download = "cutbg.zip";
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 20000);
 }

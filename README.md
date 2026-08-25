@@ -1,6 +1,6 @@
-# StudioCut
+# Cut BG Studio
 
-https://raknaos.github.io/pullbg/
+https://cutbg.studio/
 
 Détourage dans le navigateur. Roadmap : `ROADMAP.md`.
 
