@@ -7,12 +7,16 @@
   <meta name="description" content="Supprimez le fond d'une image, 100 % automatique." />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800&display=swap" />
-  <link rel="stylesheet" href="./css/site.css?v=56" />
+  <link rel="stylesheet" href="./css/site.css?v=60" />
 </head>
 <body>
   <nav class="nav">
-    <a class="brand" href="./index.html"><span class="mark">C</span>ut BG Studio</a>
+    <a class="brand" href="./index.html">
+      <img class="logo" src="./favicon.svg" width="28" height="28" alt="" />
+      Cut BG Studio
+    </a>
     <div class="nav-links">
+      <a href="./pricing.html">Prix</a>
       <span class="meter" id="quota"></span>
       <span data-auth></span>
     </div>
@@ -31,12 +35,29 @@
       </div>
       <input id="file" type="file" accept="image/*" multiple hidden />
     </div>
+    <p class="try-label">Pas d’image ? Essayez :</p>
+    <div class="samples" id="samples">
+      <button type="button" data-sample="./demo/person-src.jpg" data-name="portrait.jpg">
+        <img src="./demo/person-src.jpg" alt="Portrait" />
+      </button>
+      <button type="button" data-sample="./demo/product-src.jpg" data-name="produit.jpg">
+        <img src="./demo/product-src.jpg" alt="Produit" />
+      </button>
+    </div>
     <div class="rb-actions">
       <a class="btn btn-acc" id="dl" hidden download>Télécharger</a>
       <button class="btn btn-ghost" id="zip" hidden>Tout en ZIP</button>
       <button class="btn btn-ghost" id="clear" hidden>Vider</button>
     </div>
     <div class="rb-film" id="queue"></div>
+  </section>
+  <section class="wipe-block">
+    <h2>Le fond disparaît. Puis ça s’arrête.</h2>
+    <figure class="wipe" aria-label="Exemple : le fond est retiré">
+      <img class="wipe-before" src="./demo/person-src.jpg" alt="Photo d’origine" />
+      <img class="wipe-after" src="./demo/person.png" alt="Fond retiré" />
+    </figure>
+    <p class="wipe-cap">Original → transparent</p>
   </section>
   <div class="gate" id="gate" hidden>
     <div class="gate-card">
@@ -48,6 +69,6 @@
       </div>
     </div>
   </div>
-  <script type="module" src="./js/studio.js?v=114"></script>
+  <script type="module" src="./js/studio.js?v=120"></script>
 </body>
 </html>

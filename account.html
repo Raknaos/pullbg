@@ -6,14 +6,14 @@
   <title>Compte — Cut BG Studio</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&display=swap" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./css/site.css?v=14" />
+  <link rel="stylesheet" href="./css/site.css?v=60" />
 </head>
 <body>
   <div class="wrap">
     <nav class="nav">
-      <a class="brand" href="./index.html"><span class="mark">C</span>ut BG Studio</a>
+      <a class="brand" href="./index.html"><img class="logo" src="./favicon.svg" width="28" height="28" alt="" /> Cut BG Studio</a>
       <div class="nav-links">
-        <a href="./app.html">Studio</a>
+        <a href="./index.html">Studio</a>
         <a href="./pricing.html">Offres</a>
       </div>
     </nav>
@@ -31,7 +31,8 @@
     </section>
   </div>
   <script type="module">
-    import { currentUser, logout, quota, quotaLabel, paintNav } from "./js/auth.js";
+    import { currentUser, logout, quota, quotaLabel, paintNav, refreshSession } from "./js/auth.js?v=120";
+    await refreshSession();
     paintNav();
     const u = currentUser();
     if (!u) location.href = "./login.html?next=account";
@@ -42,7 +43,7 @@
     const paint = () => { document.getElementById("q").textContent = quotaLabel(quota()); };
     paint();
     setInterval(paint, 30000);
-    document.getElementById("out").onclick = () => { logout(); location.href = "./index.html"; };
+    document.getElementById("out").onclick = async () => { await logout(); location.href = "./index.html"; };
   </script>
 </body>
 </html>

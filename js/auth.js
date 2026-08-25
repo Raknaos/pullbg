@@ -1,10 +1,18 @@
-/** Comptes locaux + quota journalier. Guest d’abord, compte seulement au mur. */
+/** Comptes : serveur sur cutbg.studio, localStorage hors ligne / tests. */
 
 const USERS_KEY = "pullbg_users_v1";
 const SESSION_KEY = "pullbg_session_v1";
 const USAGE_KEY = "pullbg_usage_v1";
 const GUEST_KEY = "pullbg_guest_v1";
 const DAILY = 10;
+
+function useServer() {
+  try {
+    return ["cutbg.studio", "www.cutbg.studio", "169.58.230.80"].includes(location.hostname);
+  } catch {
+    return false;
+  }
+}
 
 async function sha256(text) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -56,7 +64,31 @@ export function currentUser() {
   try { return JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); } catch { return null; }
 }
 
-export function logout() { localStorage.removeItem(SESSION_KEY); }
+function saveSession(session) {
+  if (session) localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  else localStorage.removeItem(SESSION_KEY);
+  return session;
+}
+
+export async function refreshSession() {
+  if (!useServer()) return currentUser();
+  try {
+    const r = await fetch("/api/me", { credentials: "include" });
+    const u = await r.json();
+    if (u && u.email) return saveSession({ email: u.email, plan: u.plan, planUntil: u.planUntil });
+    localStorage.removeItem(SESSION_KEY);
+    return null;
+  } catch {
+    return currentUser();
+  }
+}
+
+export async function logout() {
+  localStorage.removeItem(SESSION_KEY);
+  if (useServer()) {
+    try { await fetch("/api/logout", { method: "POST", credentials: "include" }); } catch {}
+  }
+}
 
 export function isSubscribed(user) {
   if (!user) return false;
@@ -111,7 +143,6 @@ export function canCut() {
   return { ok: false, gate: "plan", q };
 }
 
-/** How many pending jobs can consume a quota slot in this parallel batch. */
 export function paidBatchSize(remaining, pending, max = 3) {
   if (!Number.isFinite(remaining)) return Math.min(max, pending);
   return Math.min(max, pending, Math.max(0, remaining));
@@ -164,6 +195,18 @@ function transferGuestInto(email) {
 
 export async function signup(email, password) {
   email = email.trim().toLowerCase();
+  if (useServer()) {
+    const r = await fetch("/api/signup", {
+      method: "POST",
+      credentials: "include",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "Inscription impossible.");
+    transferGuestInto(data.email);
+    return saveSession(data);
+  }
   if (!email.includes("@") || password.length < 6) throw new Error("Email valide et mot de passe ≥ 6 caractères.");
   const users = loadUsers();
   if (users.some((u) => u.email === email)) throw new Error("Ce compte existe déjà.");
@@ -171,18 +214,26 @@ export async function signup(email, password) {
   users.push(user);
   saveUsers(users);
   transferGuestInto(email);
-  const session = { email, plan: user.plan, planUntil: user.planUntil };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  return session;
+  return saveSession({ email, plan: user.plan, planUntil: user.planUntil });
 }
 
 export async function login(email, password) {
   email = email.trim().toLowerCase();
+  if (useServer()) {
+    const r = await fetch("/api/login", {
+      method: "POST",
+      credentials: "include",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "Connexion impossible.");
+    transferGuestInto(data.email);
+    return saveSession(data);
+  }
   const user = loadUsers().find((u) => u.email === email);
   if (!user || user.pass !== await sha256(password)) throw new Error("Identifiants incorrects.");
-  const session = { email, plan: user.plan, planUntil: user.planUntil };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  return session;
+  return saveSession({ email, plan: user.plan, planUntil: user.planUntil });
 }
 
 export function setPlan(plan) {
@@ -202,8 +253,27 @@ export function setPlan(plan) {
   saveUsers(users);
   session.plan = plan;
   session.planUntil = iso;
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  return session;
+  return saveSession(session);
+}
+
+export async function startCheckout(plan) {
+  const r = await fetch("/api/checkout", {
+    method: "POST",
+    credentials: "include",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ plan }),
+  });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || "Paiement indisponible.");
+  if (!data.url) throw new Error("Lien de paiement manquant.");
+  location.href = data.url;
+}
+
+export async function confirmCheckout(sessionId) {
+  const r = await fetch(`/api/pay/confirm?session_id=${encodeURIComponent(sessionId)}`, { credentials: "include" });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || "Paiement non confirmé.");
+  return saveSession(data);
 }
 
 export function paintNav() {
@@ -212,7 +282,7 @@ export function paintNav() {
   if (!slot) return;
   slot.innerHTML = user
     ? `<a href="./account.html">${user.email}</a>`
-    : `<a href="./login.html">Compte</a>`;
+    : `<a href="./login.html">Se connecter</a><a class="btn btn-acc nav-cta" href="./login.html?signup=1">S’inscrire</a>`;
 }
 
 export function clientId() {

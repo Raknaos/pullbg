@@ -15,6 +15,8 @@ import { existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { processImage } from "./worker.mjs";
+import { mountAccounts, userFromReq } from "./accounts.mjs";
+import { mountPay } from "./pay.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const JOBS_DIR = process.env.PULLBG_JOBS_DIR || "/var/lib/pullbg/jobs";
@@ -33,6 +35,8 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json({ limit: "1mb" }));
+mountAccounts(app);
+mountPay(app);
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -43,6 +47,14 @@ const ALLOWED = new Set(["image/png", "image/jpeg", "image/webp", "image/gif", "
 
 function clientKey(req) {
   return req.get("x-pullbg-client") || req.ip || "anon";
+}
+
+async function subscriber(req) {
+  const u = await userFromReq(req);
+  if (!u) return null;
+  if (u.plan !== "monthly" && u.plan !== "yearly") return u;
+  if (u.planUntil && u.planUntil < new Date().toISOString().slice(0, 10)) return u;
+  return { ...u, subscribed: true };
 }
 
 function utcDay() {
@@ -136,11 +148,14 @@ app.post("/api/cut", upload.single("image"), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: "Aucune image reçue." });
     if (!ALLOWED.has(req.file.mimetype)) return res.status(415).json({ error: "Format non supporté." });
 
-    const key = clientKey(req);
+    const sub = await subscriber(req);
+    const key = (sub && sub.email) || clientKey(req);
     const day = quotaDay(req);
-    const taken = await takeQuota(key, day);
-    if (!taken) {
-      return res.status(429).json({ error: "Limite quotidienne atteinte.", limit: DAILY_LIMIT });
+    if (!sub?.subscribed) {
+      const taken = await takeQuota(key, day);
+      if (!taken) {
+        return res.status(429).json({ error: "Limite quotidienne atteinte.", limit: DAILY_LIMIT });
+      }
     }
 
     const id = randomUUID();

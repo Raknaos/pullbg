@@ -37,6 +37,45 @@ button, input { font: inherit; color: inherit; }
   display: flex; align-items: center; gap: 10px;
   font-weight: 700; letter-spacing: -0.04em; font-size: 20px;
 }
+.logo { width: 28px; height: 28px; border-radius: 8px; display: block; }
+.nav-cta { min-height: 36px; padding: 0 14px; font-size: 14px; }
+.try-label { margin: 22px 0 10px; color: var(--faint); font-size: 14px; }
+.samples { display: flex; gap: 10px; justify-content: center; }
+.samples button {
+  width: 64px; height: 64px; padding: 0; border: 2px solid #fff;
+  border-radius: 10px; overflow: hidden; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(28,39,64,.18); background: #ddd;
+}
+.samples img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.samples button:hover { transform: translateY(-1px); }
+
+.wipe-block { text-align: center; padding: 8px 20px 80px; }
+.wipe-block h2 {
+  margin: 0 0 22px; font-size: clamp(22px, 3vw, 32px);
+  letter-spacing: -0.04em;
+}
+.wipe {
+  position: relative; width: min(420px, 100%); margin: 0 auto;
+  border-radius: 16px; overflow: hidden; box-shadow: var(--shadow);
+  aspect-ratio: 3 / 4; background: var(--check-b);
+  background-image:
+    linear-gradient(45deg, var(--check-a) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--check-a) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--check-a) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--check-a) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+.wipe img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.wipe-after {
+  clip-path: inset(0 100% 0 0);
+  animation: wipe-run 1.7s cubic-bezier(.22,.8,.28,1) .45s forwards;
+}
+@keyframes wipe-run { to { clip-path: inset(0 0 0 0); } }
+.wipe-cap { margin: 12px 0 0; color: var(--faint); font-size: 13px; }
+@media (prefers-reduced-motion: reduce) {
+  .wipe-after { animation: none; clip-path: inset(0 0 0 0); }
+}
 .mark {
   width: 28px; height: 28px; border-radius: 8px;
   background: var(--accent); color: #fff;

@@ -80,6 +80,9 @@ WorkingDirectory=$APP_DIR/server
 Environment=PORT=8080
 Environment=PULLBG_JOBS_DIR=$JOBS_DIR
 Environment=PULLBG_AI_URL=http://127.0.0.1:8155
+Environment=PULLBG_DATA_DIR=/var/lib/pullbg
+Environment=PULLBG_PUBLIC_URL=https://cutbg.studio
+EnvironmentFile=-/etc/pullbg/env
 ExecStart=/usr/bin/node app.mjs
 Restart=always
 RestartSec=3

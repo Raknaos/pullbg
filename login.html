@@ -6,24 +6,28 @@
   <title>Compte — Cut BG Studio</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&display=swap" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./css/site.css?v=14" />
+  <link rel="stylesheet" href="./css/site.css?v=60" />
 </head>
 <body class="auth-page">
   <div class="auth-card">
-    <a class="brand" href="./index.html"><span class="mark">C</span>ut BG Studio</a>
-    <h1 style="margin-top:28px">Compte</h1>
-    <p class="lead" style="color:var(--muted)">Email + mot de passe.</p>
+    <a class="brand" href="./index.html"><img class="logo" src="./favicon.svg" width="28" height="28" alt="" /> Cut BG Studio</a>
+    <h1 style="margin-top:28px" id="title">S’inscrire</h1>
+    <p class="lead" style="color:var(--muted)">Email + mot de passe. Ça crée un vrai compte sur le serveur.</p>
     <form class="form" id="form">
-      <input type="email" id="email" placeholder="email" required />
-      <input type="password" id="password" placeholder="mot de passe (≥ 6)" required minlength="6" />
+      <input type="email" id="email" placeholder="email" required autocomplete="email" />
+      <input type="password" id="password" placeholder="mot de passe (≥ 6)" required minlength="6" autocomplete="current-password" />
       <button class="btn btn-acc" type="button" id="signup">Créer un compte</button>
       <button class="btn btn-ghost" type="submit">J’ai déjà un compte</button>
       <p class="err" id="err"></p>
     </form>
   </div>
   <script type="module">
-    import { login, signup } from "./js/auth.js";
-    const next = new URLSearchParams(location.search).get("next") || "pricing";
+    import { login, signup, refreshSession } from "./js/auth.js?v=120";
+    const params = new URLSearchParams(location.search);
+    const next = params.get("next") || "pricing";
+    if (params.get("signup") === "1") document.getElementById("title").textContent = "S’inscrire";
+    const existing = await refreshSession();
+    if (existing) location.replace(next === "account" ? "./account.html" : "./pricing.html");
     const err = document.getElementById("err");
     async function go(fn, afterSignup) {
       err.textContent = "";

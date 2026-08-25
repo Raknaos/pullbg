@@ -6,14 +6,14 @@
   <title>Offres — Cut BG Studio</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&display=swap" />
-  <link rel="stylesheet" href="./css/site.css?v=14" />
+  <link rel="stylesheet" href="./css/site.css?v=60" />
 </head>
 <body>
   <div class="wrap">
     <nav class="nav">
-      <a class="brand" href="./index.html"><span class="mark">C</span>ut BG Studio</a>
+      <a class="brand" href="./index.html"><img class="logo" src="./favicon.svg" width="28" height="28" alt="" /> Cut BG Studio</a>
       <div class="nav-links">
-        <a href="./app.html">Studio</a>
+        <a href="./index.html">Studio</a>
         <span data-auth></span>
       </div>
     </nav>
@@ -21,6 +21,7 @@
       <h1>Continuer.</h1>
       <p class="lead" id="lead" style="color:var(--muted);max-width:36ch">10 images / jour, avec un compteur. Ou sans limite.</p>
       <p class="meter" id="meter"></p>
+      <p class="err" id="err"></p>
     </section>
     <section class="prices">
       <article class="card">
@@ -28,10 +29,10 @@
         <div class="price">2,99 € <small>/ mois</small></div>
         <ul>
           <li>Sans limite</li>
-          <li>Studio + ZIP</li>
+          <li>Carte · Apple Pay · Google Pay</li>
           <li>Annulable</li>
         </ul>
-        <button class="btn btn-ghost" data-plan="monthly">2,99 € / mois</button>
+        <button class="btn btn-ghost" data-plan="monthly">Payer 2,99 € / mois</button>
       </article>
       <article class="card hl">
         <h3>Annuel</h3>
@@ -41,22 +42,33 @@
           <li>1,67 € / mois</li>
           <li>Un paiement</li>
         </ul>
-        <button class="btn btn-acc" data-plan="yearly">19,99 € / an</button>
+        <button class="btn btn-acc" data-plan="yearly">Payer 19,99 € / an</button>
       </article>
     </section>
   </div>
   <script type="module">
-    import { currentUser, setPlan, paintNav, quota, quotaLabel } from "./js/auth.js";
-    if (!currentUser()) location.replace("./app.html");
+    import { currentUser, refreshSession, paintNav, quota, quotaLabel, startCheckout, confirmCheckout } from "./js/auth.js?v=120";
+    const err = document.getElementById("err");
+    await refreshSession();
+    if (!currentUser()) location.replace("./login.html?next=pricing&signup=1");
     paintNav();
     if (new URLSearchParams(location.search).get("from") === "signup") {
-      document.getElementById("lead").textContent = "Compte créé. 10 images / jour — le compteur indique le prochain lot. Ou sans limite.";
+      document.getElementById("lead").textContent = "Compte créé. 10 images / jour — ou sans limite.";
     }
     document.getElementById("meter").textContent = quotaLabel(quota());
+    const sid = new URLSearchParams(location.search).get("session_id");
+    if (sid) {
+      try {
+        await confirmCheckout(sid);
+        location.replace("./account.html?paid=1");
+      } catch (e) { err.textContent = e.message; }
+    }
     document.querySelectorAll("[data-plan]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        setPlan(btn.dataset.plan);
-        location.href = "./account.html";
+      btn.addEventListener("click", async () => {
+        err.textContent = "";
+        btn.disabled = true;
+        try { await startCheckout(btn.dataset.plan); }
+        catch (e) { err.textContent = e.message; btn.disabled = false; }
       });
     });
   </script>

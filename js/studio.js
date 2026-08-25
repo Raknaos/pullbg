@@ -9,12 +9,13 @@ import {
   formatCountdown,
   paidBatchSize,
   clientId,
-} from "./auth.js?v=114";
+  refreshSession,
+} from "./auth.js?v=120";
 import {
   bitmapFromSource,
   imageDataFromBitmap,
   blobFromImageDataBlurred,
-} from "../lib/cutout.js?v=114";
+} from "../lib/cutout.js?v=120";
 
 if (location.hostname.endsWith("github.io")) {
   location.replace("https://cutbg.studio/");
@@ -24,6 +25,7 @@ const API = ["cutbg.studio", "www.cutbg.studio", "169.58.230.80"].includes(locat
   ? ""
   : "https://cutbg.studio";
 
+await refreshSession();
 paintNav();
 
 const stage = document.getElementById("stage");
@@ -67,6 +69,20 @@ function openGate(kind) {
 }
 document.getElementById("gate-close").addEventListener("click", () => { gate.hidden = true; });
 window.addEventListener("keydown", (e) => { if (e.key === "Escape") gate.hidden = true; });
+
+document.querySelectorAll("[data-sample]").forEach((btn) => {
+  btn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = btn.dataset.sample;
+    const name = btn.dataset.name || "sample.jpg";
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      addFiles([new File([blob], name, { type: blob.type || "image/jpeg" })]);
+    } catch {}
+  });
+});
 
 stage.addEventListener("click", (e) => {
   if (e.target.closest("#preview")) return;
