@@ -178,6 +178,59 @@ def stick_fringe(a: Image.Image) -> Image.Image:
     return Image.fromarray(out, mode="L")
 
 
+def _corner_seeds(rgb: np.ndarray, patch: int = 8, agree: float = 40.0) -> list:
+    h, w = rgb.shape[:2]
+    p = min(patch, h, w)
+    corners = [
+        rgb[:p, :p].mean((0, 1)),
+        rgb[:p, -p:].mean((0, 1)),
+        rgb[-p:, :p].mean((0, 1)),
+        rgb[-p:, -p:].mean((0, 1)),
+    ]
+    seeds = []
+    for c in corners:
+        near = sum(float(np.max(np.abs(c - other))) <= agree for other in corners)
+        chroma = float(np.max(c) - np.min(c))
+        mean = float(c.mean())
+        if near >= 2 and chroma >= 20 and 50 <= mean <= 220:
+            seeds.append(c)
+    return seeds
+
+
+def drop_studio(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
+    """Drop colored cyclorama leftover on the frame. Skip gray/black/white and clean cuts."""
+    rgb = np.asarray(guide_rgb.convert("RGB"), dtype=np.int16)
+    arr = np.asarray(alpha)
+    h, w = arr.shape
+    bw, bh = max(2, w // 50), max(2, h // 50)
+    frame = np.zeros((h, w), dtype=bool)
+    frame[:bh] = True
+    frame[-bh:] = True
+    frame[:, :bw] = True
+    frame[:, -bw:] = True
+    fg = arr > 32
+    leftover = float((fg & frame).mean())
+    fg_n = int(fg.sum()) or 1
+    if (fg & frame).sum() / fg_n > 0.08:
+        leftover = 0.0
+    if leftover < 0.010:
+        return alpha
+    seeds = _corner_seeds(rgb)
+    if len(seeds) < 2:
+        return alpha
+    band_w = max(2, int(round(w * 0.04)))
+    band_h = max(2, int(round(h * 0.04)))
+    band = np.zeros((h, w), dtype=bool)
+    band[:band_h] = True
+    band[-band_h:] = True
+    band[:, :band_w] = True
+    band[:, -band_w:] = True
+    dist = np.min([np.max(np.abs(rgb - s.astype(np.int16)), axis=2) for s in seeds], axis=0)
+    out = arr.copy()
+    out[band & (dist <= 36)] = 0
+    return Image.fromarray(out, mode="L")
+
+
 def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     im = Image.open(io.BytesIO(raw)).convert("RGBA")
     if im.size != guide_rgb.size:
@@ -190,6 +243,7 @@ def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
         a = a.filter(ImageFilter.MinFilter(3))
     a = guided_alpha(guide_rgb, a, radius=3, eps=8e-4)
     a = stick_fringe(a)
+    a = drop_studio(guide_rgb, a)
     rgb = np.array(Image.merge("RGBA", (r, g, b, a)))
     cut = 1 if orders["hair"] or orders["tight"] else 4
     rgb[rgb[:, :, 3] < cut] = 0
