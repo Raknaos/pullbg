@@ -161,6 +161,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Flood noir/blanc + timbre : plus de copie bord/alpha. Pile = buffer luma. Un scratch pour pièces + plus grand blob. Timbres / fonds inchangés.
 - 2026-08-25: Classif : scratch BFS réutilisé (album + fond studio). Specks : plus de 2e copie ImageData. Timbres / fenêtres inchangés.
 - 2026-08-25: Façade bureau : grille de petits carreaux (dès 0,35 %, fill 0,78, 4+ alignés) percée. 4 produits espacés restent en IA. Cache v=115.
+- 2026-08-25: Punch : carreaux dès 0,35 % (plus bloqué à 0,4 %). Petite grille bureau percée, croisillons gardés. Cache v=116.
 
 
 
