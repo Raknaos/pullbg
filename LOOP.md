@@ -187,6 +187,7 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: GT hair-10 = sujet cadre bas (43 %), keep. Guided r5 rough 20–25, 26 coupes, 19 revert. glass-02 intact. 89,5→89,6. Glass 92,6→92,8. Product 86,3→86,6.
 - 2026-08-26: GT win-03 = sujet cadre (bot 16 %, frame 8 %), keep. Guided r5 rough 15–20, 29 coupes, 23 revert. glass-02 intact. 89,6. Glass 92,8→93,0. Product 86,6→86,8. Fur 87,9→88,0.
 - 2026-08-26: Median 5 alpha, revert si score baisse. 60 keep / 23 revert. glass-02 intact. 89,6→89,9. Fur 88,0→88,5. Glass 93,0→93,3. Group 86,8→87,1. Plant 91,2→91,6.
+- 2026-08-26: Close intérieur 3 px (Max7), revert si score/IoU baisse. 28 keep / 55 revert. glass-02 intact. 89,9→90,0. Food 85,9→86,1. Group 87,1→87,3. Object 90,8→91,0. Plant 91,6→91,8.
 
 
 

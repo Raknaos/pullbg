@@ -1,6 +1,6 @@
 # CutBG — progression
 
-Vague **4** **30/50** · score **89,9** / **83** cas · IoU 0,803 · group **87,1** · hair **92,6** · stamp **85,0**
+Vague **4** **30/50** · score **90,0** / **83** cas · IoU 0,803 · group **87,3** · hair **92,6** · stamp **85,0**
 
 Pires : prod-07 74,5 · plant-01 77,9 · prod-03 78,0 · prod-01 78,1 · prod-02 79,3
 
@@ -63,8 +63,8 @@ Pires : prod-07 74,5 · plant-01 77,9 · prod-03 78,0 · prod-01 78,1 · prod-02
 
 | id | action | score |
 |---|---|---|
+| close3 | close intérieur 3 px Max7, 28 keep / 55 revert, glass-02 intact | 89,9→**90,0** · food 85,9→86,1 · group 87,1→87,3 · object 90,8→91,0 · plant 91,6→91,8 |
 | med5 | MedianFilter 5, 60 keep / 23 revert, glass-02 intact | 89,6→**89,9** · fur 88,0→88,5 · glass 93,0→93,3 · group 86,8→87,1 · plant 91,2→91,6 |
 | jaggy15 | guided r5 rough 15–20, 29 coupes, 23 revert, glass-02 intact | **89,6** · glass 92,8→93,0 · product 86,6→86,8 · fur 87,9→88,0 |
 | w4-24 | GT win-03 : sujet cadre (bot 16 %, frame 8 %), keep | leftover 0 IoU 0,957 |
 | jaggy20 | guided r5 rough 20–25, 26 coupes, 19 revert, glass-02 intact | 89,5→**89,6** · glass 92,6→92,8 · product 86,3→86,6 · object 90,3→90,7 |
-| w4-23 | GT hair-10 : sujet cadre bas (43 % bande), keep | leftover 0,00498 IoU 0,956 |
