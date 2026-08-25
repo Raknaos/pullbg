@@ -1,33 +1,18 @@
 {
-  "cutbg_score": 75.9,
+  "cutbg_score": 77.0,
   "n": 68,
   "by_tag": {
     "food": 75.7,
-    "fur": 69.9,
+    "fur": 71.8,
     "glass": 80.2,
-    "hair": 75.3,
+    "hair": 76.9,
     "object": 78.0,
     "plant": 75.6,
     "product": 75.7,
-    "studio": 73.2,
-    "window": 74.8
+    "studio": 78.0,
+    "window": 78.3
   },
   "worst": [
-    {
-      "id": "win-03",
-      "tag": "window",
-      "score": 54.3
-    },
-    {
-      "id": "fur-02",
-      "tag": "fur",
-      "score": 60.3
-    },
-    {
-      "id": "hair-08",
-      "tag": "hair",
-      "score": 61.5
-    },
     {
       "id": "group-01",
       "tag": "hair",
@@ -44,9 +29,19 @@
       "score": 64.8
     },
     {
+      "id": "win-03",
+      "tag": "window",
+      "score": 65.0
+    },
+    {
       "id": "fur-03",
       "tag": "fur",
       "score": 66.2
+    },
+    {
+      "id": "fur-02",
+      "tag": "fur",
+      "score": 67.9
     },
     {
       "id": "studio-05",
@@ -54,14 +49,19 @@
       "score": 70.1
     },
     {
-      "id": "studio-01",
-      "tag": "studio",
-      "score": 70.4
+      "id": "hair-10",
+      "tag": "hair",
+      "score": 71.2
     },
     {
-      "id": "white-01",
-      "tag": "studio",
-      "score": 70.4
+      "id": "prod-06",
+      "tag": "product",
+      "score": 71.2
+    },
+    {
+      "id": "prod-04",
+      "tag": "product",
+      "score": 71.6
     }
   ],
   "rows": [
@@ -214,12 +214,12 @@
       "src": "hair-08.jpg",
       "hard": true,
       "ok": true,
-      "score": 61.5,
-      "fg": 0.6775,
-      "fringe": 0.0438,
-      "rough": 13.92,
-      "leftover": 0.0268,
-      "holes": 0.3083
+      "score": 83.8,
+      "fg": 0.6507,
+      "fringe": 0.0432,
+      "rough": 13.89,
+      "leftover": 0.0,
+      "holes": 0.2936
     },
     {
       "id": "hair-09",
@@ -474,12 +474,12 @@
       "src": "studio-01.jpg",
       "hard": false,
       "ok": true,
-      "score": 70.4,
-      "fg": 0.6208,
-      "fringe": 0.0139,
-      "rough": 47.47,
-      "leftover": 0.01743,
-      "holes": 0.1653
+      "score": 84.8,
+      "fg": 0.6033,
+      "fringe": 0.0138,
+      "rough": 47.29,
+      "leftover": 0.0,
+      "holes": 0.155
     },
     {
       "id": "studio-02",
@@ -526,12 +526,12 @@
       "src": "fur-02.jpg",
       "hard": true,
       "ok": true,
-      "score": 60.3,
-      "fg": 0.4137,
-      "fringe": 0.0331,
-      "rough": 36.61,
-      "leftover": 0.01217,
-      "holes": 0.498
+      "score": 67.9,
+      "fg": 0.3976,
+      "fringe": 0.0183,
+      "rough": 32.28,
+      "leftover": 0.0124,
+      "holes": 0.4993
     },
     {
       "id": "fur-03",
@@ -682,12 +682,12 @@
       "src": "hair-13.jpg",
       "hard": true,
       "ok": true,
-      "score": 73.9,
-      "fg": 0.4861,
-      "fringe": 0.0462,
-      "rough": 17.25,
-      "leftover": 0.00315,
-      "holes": 0.4656
+      "score": 77.5,
+      "fg": 0.483,
+      "fringe": 0.0432,
+      "rough": 17.42,
+      "leftover": 0.0,
+      "holes": 0.4471
     },
     {
       "id": "hair-14",
@@ -721,12 +721,12 @@
       "src": "hair-16.jpg",
       "hard": true,
       "ok": true,
-      "score": 75.1,
-      "fg": 0.3189,
-      "fringe": 0.0119,
-      "rough": 32.11,
-      "leftover": 0.00748,
-      "holes": 0.3224
+      "score": 81.2,
+      "fg": 0.3114,
+      "fringe": 0.0117,
+      "rough": 31.96,
+      "leftover": 0.0,
+      "holes": 0.3197
     },
     {
       "id": "glass-09",
@@ -890,12 +890,13 @@
       "src": "win-03.jpg",
       "hard": true,
       "ok": true,
-      "score": 54.3,
-      "fg": 0.3892,
-      "fringe": 0.0327,
-      "rough": 33.39,
-      "leftover": 0.0222,
-      "holes": 0.4104
+      "score": 65.0,
+      "fg": 0.9334,
+      "fringe": 0.0066,
+      "rough": 104.9,
+      "leftover": 0.0,
+      "holes": 0.0666,
+      "iou": 0.6557
     },
     {
       "id": "white-01",
@@ -903,12 +904,12 @@
       "src": "white-01.jpg",
       "hard": true,
       "ok": true,
-      "score": 70.4,
-      "fg": 0.6208,
-      "fringe": 0.0139,
-      "rough": 47.47,
-      "leftover": 0.01743,
-      "holes": 0.1653
+      "score": 84.8,
+      "fg": 0.6033,
+      "fringe": 0.0138,
+      "rough": 47.29,
+      "leftover": 0.0,
+      "holes": 0.155
     },
     {
       "id": "white-02",
@@ -977,6 +978,22 @@
       "id": "white-shirt-01",
       "tag": "studio",
       "src": "white-shirt-01.jpg",
+      "hard": true,
+      "ok": false,
+      "error": "no cut"
+    },
+    {
+      "id": "stamp-02",
+      "tag": "stamp",
+      "src": "stamp-02.jpg",
+      "hard": true,
+      "ok": false,
+      "error": "no cut"
+    },
+    {
+      "id": "stamp-03",
+      "tag": "stamp",
+      "src": "stamp-03.jpg",
       "hard": true,
       "ok": false,
       "error": "no cut"

@@ -275,6 +275,39 @@ def drop_bg_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     return Image.fromarray(out, mode="L")
 
 
+def drop_uniform_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
+    """Drop a uniform frame leftover whose color is far from the subject (floor / cyclorama)."""
+    rgb = np.asarray(guide_rgb.convert("RGB"), dtype=np.int16)
+    arr = np.asarray(alpha)
+    h, w = arr.shape
+    bw, bh = max(2, w // 50), max(2, h // 50)
+    frame = np.zeros((h, w), dtype=bool)
+    frame[:bh] = True
+    frame[-bh:] = True
+    frame[:, :bw] = True
+    frame[:, -bw:] = True
+    fg = arr > 32
+    leftover_m = fg & frame
+    leftover = float(leftover_m.mean())
+    fg_n = int(fg.sum()) or 1
+    if leftover_m.sum() / fg_n > 0.08 or leftover < 0.003:
+        return alpha
+    interior = fg & ~frame
+    if leftover_m.sum() < 20 or interior.sum() < 40:
+        return alpha
+    lo = rgb[leftover_m]
+    subj = rgb[interior].mean(0)
+    lo_std = float(lo.std(0).mean())
+    dist = float(np.max(np.abs(lo.mean(0) - subj)))
+    if lo_std > 25 or dist < 50:
+        return alpha
+    out = arr.copy()
+    out[leftover_m] = 0
+    if float((out > 32).mean()) < 0.05:
+        return alpha
+    return Image.fromarray(out, mode="L")
+
+
 def drop_fringe_bg(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     """Drop mid-alpha halo whose color matches the corners. Messy masks only."""
     arr = np.asarray(alpha)
@@ -320,6 +353,7 @@ def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     a = drop_studio(guide_rgb, a)
     a = drop_bg_leftover(guide_rgb, a)
     a = drop_fringe_bg(guide_rgb, a)
+    a = drop_uniform_leftover(guide_rgb, a)
     rgb = np.array(Image.merge("RGBA", (r, g, b, a)))
     cut = 1 if orders["hair"] or orders["tight"] else 4
     rgb[rgb[:, :, 3] < cut] = 0

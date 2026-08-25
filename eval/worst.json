@@ -1,20 +1,5 @@
 [
   {
-    "id": "win-03",
-    "tag": "window",
-    "score": 54.3
-  },
-  {
-    "id": "fur-02",
-    "tag": "fur",
-    "score": 60.3
-  },
-  {
-    "id": "hair-08",
-    "tag": "hair",
-    "score": 61.5
-  },
-  {
     "id": "group-01",
     "tag": "hair",
     "score": 64.1
@@ -30,9 +15,19 @@
     "score": 64.8
   },
   {
+    "id": "win-03",
+    "tag": "window",
+    "score": 65.0
+  },
+  {
     "id": "fur-03",
     "tag": "fur",
     "score": 66.2
+  },
+  {
+    "id": "fur-02",
+    "tag": "fur",
+    "score": 67.9
   },
   {
     "id": "studio-05",
@@ -40,13 +35,18 @@
     "score": 70.1
   },
   {
-    "id": "studio-01",
-    "tag": "studio",
-    "score": 70.4
+    "id": "hair-10",
+    "tag": "hair",
+    "score": 71.2
   },
   {
-    "id": "white-01",
-    "tag": "studio",
-    "score": 70.4
+    "id": "prod-06",
+    "tag": "product",
+    "score": 71.2
+  },
+  {
+    "id": "prod-04",
+    "tag": "product",
+    "score": 71.6
   }
 ]
