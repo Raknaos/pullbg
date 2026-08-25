@@ -63,7 +63,7 @@ Pires : fur-02 68,1 · hair-09 69,5 · glass-02 72,6 · plant-01 73,4 · plant-0
 
 | id | action | score |
 |---|---|---|
-| w4-18 | drop_floating îlots (60 coupes) | 80,2→**80,9** stamp-03 83,9 object 84,2 |
+| w4-18 | drop_floating îlots + dropBgLeftover papier timbre | 80,2→**80,9** stamp-03 83,9 |
 | w4-05 w4-10 | drop_fringe_bg 3,5→3,0 | group-01 74,1→79,5 |
 | w4-16 | fur-02 poitrail au cadre, skip | 68,1 |
 | w4-06 | plant-01 pot au cadre, skip | 80,2 |

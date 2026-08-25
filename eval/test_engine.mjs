@@ -1325,6 +1325,15 @@ function manyPaneWindow() {
   assert(a[4 * 220 + 4] < 16, "cream album paper still flooded");
 }
 
+{
+  const img = rgb(200, 200, 236, 214, 176);
+  fillRect(img, 36, 36, 164, 164, 40, 90, 160);
+  const cut = stampCut(img);
+  const a = alphaOf(cut);
+  assert(a[100 * 200 + 100] > 180, "stamp body kept after frame leftover drop");
+  assert(a[1 * 200 + 1] < 16, "cream leftover on the image frame dropped");
+}
+
 function perforate(img) {
   const punch = (x, y) => fillRect(img, x - 1, y - 1, x + 2, y + 2, 8, 8, 8);
   const { width: w, height: h } = img;

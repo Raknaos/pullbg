@@ -246,7 +246,7 @@ def drop_bg_leftover(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
     leftover_m = fg & frame
     leftover = float(leftover_m.mean())
     fg_n = int(fg.sum()) or 1
-    if leftover_m.sum() / fg_n > 0.08 or leftover < 0.005:
+    if leftover_m.sum() / fg_n > 0.08 or leftover < 0.003:
         return alpha
     interior = fg & ~frame
     if leftover_m.sum() < 20 or interior.sum() < 40:

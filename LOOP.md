@@ -174,6 +174,9 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-25: Drop leftover uniforme (std≤25, couleur loin du sujet). hair-08 61,5→83,8. studio-01/white-01 70,4→84,8. Score 76,1→77,0.
 - 2026-08-25: Leftover connecté : chaque coin loin du sujet est une graine (plus d’accord 2/4). dist 52/18. hair-10 72,3→84,6. Hair 80,2→81,6. Score 79,0→79,5.
 - 2026-08-25: Leftover à saut couleur (côté cadre jump≥16, ≠ sujet). fur-02 sujet au cadre conservé. hair-11 69,4→79,5. food-01 76,9→84,9. Score 79,5→79,8.
+- 2026-08-25: drop_uniform live dist 50→28 (sol studio gris/sombre). studio-05 leftover 0,00853→0, score 70,1→82,1. Studio 79,0→80,7. Score 79,8→79,9.
+- 2026-08-25: Timbre : restore rect même si lightMarginEaten rate (pièce entière). stamp-03 63,9→76,3. Stamp 74,6→81,2. Score 79,9→80,2.
+- 2026-08-25: dropBgLeftover papier cadre (guide RGB original, seuil 0,3 %). stamp-03 76,3→83,9. Stamp 81,2→83,7. fur-02 poitrail = sujet, skip.
 
 
 
