@@ -10253,6 +10253,51 @@ function officeSmallPaneFacade() {
 }
 
 {
+  const img = rgb(200, 120, 142, 142, 146);
+  for (let c = 0; c < 6; c++) {
+    const x = 18 + c * 16;
+    fillRect(img, x, 28, x + 12, 35, 18, 22, 28);
+  }
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `office ribbon classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[31 * 200 + 24] < 16, "office ribbon first pane punched");
+  assert(a[31 * 200 + 88] < 16, "office ribbon last panes punched");
+  assert(a[2 * 200 + 2] > 180, "office ribbon wall kept");
+  assert(a[31 * 200 + 31] > 180, "office ribbon mullion kept");
+  assert(cut.pipeline === "écran", "office ribbon uses screen pipeline");
+}
+
+{
+  const img = rgb(120, 200, 142, 142, 146);
+  for (let r = 0; r < 6; r++) {
+    const y = 18 + r * 16;
+    fillRect(img, 48, y, 60, y + 12, 18, 22, 28);
+  }
+  const guess = classifyImage(img);
+  assert(guess.interior && guess.mode === "noir", `office strip classified (${guess.kind})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[24 * 120 + 54] < 16, "office strip top pane punched");
+  assert(a[88 * 120 + 54] < 16, "office strip bottom pane punched");
+  assert(a[2 * 120 + 2] > 180, "office strip wall kept");
+  assert(a[31 * 120 + 54] > 180, "office strip mullion kept");
+  assert(cut.pipeline === "écran", "office strip uses screen pipeline");
+}
+
+{
+  const img = rgb(220, 90, 142, 142, 146);
+  for (let c = 0; c < 6; c++) {
+    const x = 8 + c * 36;
+    fillRect(img, x, 30, x + 12, 50, 18, 18, 18);
+  }
+  const guess = classifyImage(img);
+  assert(guess.mode === "ia" || guess.mode === "couleur", `six spaced products stay off ribbon (${guess.kind})`);
+  assert(!guess.interior, `six spaced products are not an office ribbon (${guess.kind})`);
+}
+
+{
   const img = rgb(24, 24, 40, 180, 80);
   for (let i = 0; i < img.data.length; i += 4) img.data[i + 3] = 0;
   for (let y = 8; y < 16; y++) {
@@ -10272,4 +10317,4 @@ function officeSmallPaneFacade() {
   assert(as[0] === 0, "IA keepSoft still drops empty pixels");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp+crescent-stamp+teardrop-stamp+shield-stamp+cross-stamp+arrow-stamp+cloud-stamp+clover-stamp+flower-stamp+butterfly-stamp+leaf-stamp+fish-stamp+bird-stamp+cat-stamp+dog-stamp+rabbit-stamp+squirrel-stamp+fox-stamp+bear-stamp+horse-stamp+pig-stamp+cow-stamp+sheep-stamp+goat-stamp+rooster-stamp+duck-stamp+goose-stamp+turkey-stamp+swan-stamp+peacock-stamp+owl-stamp+penguin-stamp+dolphin-stamp+whale-stamp+shark-stamp+turtle-stamp+octopus-stamp+crab-stamp+lobster-stamp+shrimp-stamp+seahorse-stamp+jellyfish-stamp+starfish-stamp+shell-stamp+snail-stamp+frog-stamp+lizard-stamp+snake-stamp+crocodile-stamp+elephant-stamp+giraffe-stamp+zebra-stamp+busy-portrait+ia-fringe+office-grid+tiny-office ok");
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp+crescent-stamp+teardrop-stamp+shield-stamp+cross-stamp+arrow-stamp+cloud-stamp+clover-stamp+flower-stamp+butterfly-stamp+leaf-stamp+fish-stamp+bird-stamp+cat-stamp+dog-stamp+rabbit-stamp+squirrel-stamp+fox-stamp+bear-stamp+horse-stamp+pig-stamp+cow-stamp+sheep-stamp+goat-stamp+rooster-stamp+duck-stamp+goose-stamp+turkey-stamp+swan-stamp+peacock-stamp+owl-stamp+penguin-stamp+dolphin-stamp+whale-stamp+shark-stamp+turtle-stamp+octopus-stamp+crab-stamp+lobster-stamp+shrimp-stamp+seahorse-stamp+jellyfish-stamp+starfish-stamp+shell-stamp+snail-stamp+frog-stamp+lizard-stamp+snake-stamp+crocodile-stamp+elephant-stamp+giraffe-stamp+zebra-stamp+busy-portrait+ia-fringe+office-grid+tiny-office+office-ribbon+office-strip ok");
