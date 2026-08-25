@@ -234,7 +234,10 @@ async function cutOnServer(file) {
   const started = await fetch(`${API}/api/cut`, {
     method: "POST",
     body,
-    headers: { "x-pullbg-client": clientId() },
+    headers: {
+      "x-pullbg-client": clientId(),
+      "x-pullbg-day": new Date().toLocaleDateString("en-CA"),
+    },
   });
   if (started.status === 429) throw Object.assign(new Error("quota"), { gate: "account" });
   if (!started.ok) throw new Error("serveur indisponible");

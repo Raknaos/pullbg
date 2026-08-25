@@ -5,7 +5,7 @@
  * - GET  /api/result/:id.png -> final PNG
  * - GET  /api/health
  * Queue: JSON file per job, one in-process worker (single flight).
- * Quota: 10 images/day per client (localStorage client id header), mirroring the site funnel.
+ * Quota: 10 images/day per client (localStorage client id + local calendar day), mirroring the site funnel.
  */
 import express from "express";
 import multer from "multer";
@@ -27,7 +27,7 @@ const app = express();
 app.disable("x-powered-by");
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "x-pullbg-client, content-type");
+  res.setHeader("Access-Control-Allow-Headers", "x-pullbg-client, x-pullbg-day, content-type");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   if (req.method === "OPTIONS") return res.status(204).end();
   next();
@@ -45,23 +45,49 @@ function clientKey(req) {
   return req.get("x-pullbg-client") || req.ip || "anon";
 }
 
-async function quotaUsed(key) {
-  const f = path.join(JOBS_DIR, `quota-${encodeURIComponent(key)}.json`);
+function utcDay() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/** Client local calendar day (minuit local). Reject dates more than ±1 day from UTC. */
+function quotaDay(req) {
+  const raw = String(req.get("x-pullbg-day") || "").trim();
+  const utc = utcDay();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return utc;
+  const t = Date.parse(`${raw}T00:00:00Z`);
+  const u = Date.parse(`${utc}T00:00:00Z`);
+  if (!Number.isFinite(t) || Math.abs(t - u) > 86400000) return utc;
+  return raw;
+}
+
+function quotaFile(key) {
+  return path.join(JOBS_DIR, `quota-${encodeURIComponent(key)}.json`);
+}
+
+async function quotaUsed(key, day) {
+  const f = quotaFile(key);
   if (!existsSync(f)) return 0;
   try {
     const q = JSON.parse(await readFile(f, "utf8"));
-    const today = new Date().toISOString().slice(0, 10);
-    return q.day === today ? q.count : 0;
+    return q.day === day ? (q.count | 0) : 0;
   } catch {
     return 0;
   }
 }
 
-async function bumpQuota(key) {
-  const f = path.join(JOBS_DIR, `quota-${encodeURIComponent(key)}.json`);
-  const q = await quotaUsed(key);
-  const day = new Date().toISOString().slice(0, 10);
-  await writeFile(f, JSON.stringify({ day, count: q + 1 }), "utf8");
+async function writeQuota(key, day, count) {
+  await writeFile(quotaFile(key), JSON.stringify({ day, count }), "utf8");
+}
+
+async function bumpQuota(key, day) {
+  await writeQuota(key, day, (await quotaUsed(key, day)) + 1);
+}
+
+async function refundQuota(key, day) {
+  if (!key || !day) return;
+  const used = await quotaUsed(key, day);
+  if (used <= 0) return;
+  await writeQuota(key, day, used - 1);
 }
 
 async function saveJob(job) {
@@ -95,7 +121,8 @@ app.post("/api/cut", upload.single("image"), async (req, res) => {
     if (!ALLOWED.has(req.file.mimetype)) return res.status(415).json({ error: "Format non supporté." });
 
     const key = clientKey(req);
-    const used = await quotaUsed(key);
+    const day = quotaDay(req);
+    const used = await quotaUsed(key, day);
     if (used >= DAILY_LIMIT) {
       return res.status(429).json({ error: "Limite quotidienne atteinte.", limit: DAILY_LIMIT });
     }
@@ -108,10 +135,12 @@ app.post("/api/cut", upload.single("image"), async (req, res) => {
       input: `blob:${id}`,
       result: null,
       error: null,
+      client: key,
+      day,
     };
     await writeFile(path.join(JOBS_DIR, `${id}.in`), req.file.buffer);
     await saveJob(job);
-    await bumpQuota(key);
+    await bumpQuota(key, day);
     res.json({ id, status: "pending" });
     kickWorker();
   } catch (e) {
@@ -187,6 +216,7 @@ async function runJob(job) {
     job.status = "error";
     job.error = String(e?.message || e);
     await saveJob(job);
+    await refundQuota(job.client, job.day);
   }
   await unlink(path.join(JOBS_DIR, `${job.id}.in`)).catch(() => {});
 }
@@ -232,6 +262,8 @@ setInterval(async () => {
     }
   } catch {}
 }, 60 * 60 * 1000).unref();
+
+export { app };
 
 const PORT = process.env.PORT || 8080;
 if (process.env.PULLBG_NO_LISTEN !== "1") {

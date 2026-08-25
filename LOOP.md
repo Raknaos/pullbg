@@ -145,3 +145,4 @@ Le cron « PullBG loop » tourne tout seul. L’utilisateur dit **stop** pour co
 - 2026-08-24: File VPS : rembg aborté à 90s (secours géo), jobs `processing` repris au reboot, `.in` effacé même en erreur. Studio poll 20 min + File/blob lâchés après découpe. Cache v=111.
 - 2026-08-24: VPS decode : JPEG EXIF (portrait téléphone) redressé avant classifieur/rembg, comme le navigateur `from-image`. Test `deploy/server/test_geo.mjs`.
 - 2026-08-24: File VPS : un job déposé pendant le scan vide n’est plus laissé en pending. Test `deploy/server/test_queue.mjs`.
+- 2026-08-25: Quota VPS : jour local du client (minuit local, plus UTC) + rendu si la découpe plante. Test `deploy/server/test_quota_api.mjs`. Cache v=112.
