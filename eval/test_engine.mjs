@@ -10413,6 +10413,24 @@ function officeSmallPaneFacade() {
 }
 
 {
+  const img = rgb(200, 240, 196, 178, 158);
+  fillRect(img, 28, 32, 172, 208, 28, 22, 18);
+  const guess = classifyImage(img);
+  assert(guess.mode === "timbre", `imperforate stamp classified (${guess.kind} ${guess.reason})`);
+  const cut = fastCut(img);
+  const a = alphaOf(cut.image);
+  assert(a[120 * 200 + 100] > 180, "imperforate stamp keeps the vignette");
+  assert(a[2 * 200 + 2] < 16, "imperforate stamp drops the album paper");
+}
+
+{
+  const img = rgb(220, 160, 250, 250, 250);
+  fillRect(img, 50, 40, 170, 160, 20, 20, 20);
+  const guess = classifyImage(img);
+  assert(guess.mode !== "timbre", `dark product on white is not an imperforate stamp (${guess.kind})`);
+}
+
+{
   const img = rgb(24, 24, 40, 180, 80);
   for (let i = 0; i < img.data.length; i += 4) img.data[i + 3] = 0;
   for (let y = 8; y < 16; y++) {
@@ -10432,4 +10450,4 @@ function officeSmallPaneFacade() {
   assert(as[0] === 0, "IA keepSoft still drops empty pixels");
 }
 
-console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp+crescent-stamp+teardrop-stamp+shield-stamp+cross-stamp+arrow-stamp+cloud-stamp+clover-stamp+flower-stamp+butterfly-stamp+leaf-stamp+fish-stamp+bird-stamp+cat-stamp+dog-stamp+rabbit-stamp+squirrel-stamp+fox-stamp+bear-stamp+horse-stamp+pig-stamp+cow-stamp+sheep-stamp+goat-stamp+rooster-stamp+duck-stamp+goose-stamp+turkey-stamp+swan-stamp+peacock-stamp+owl-stamp+penguin-stamp+dolphin-stamp+whale-stamp+shark-stamp+turtle-stamp+octopus-stamp+crab-stamp+lobster-stamp+shrimp-stamp+seahorse-stamp+jellyfish-stamp+starfish-stamp+shell-stamp+snail-stamp+frog-stamp+lizard-stamp+snake-stamp+crocodile-stamp+elephant-stamp+giraffe-stamp+zebra-stamp+busy-portrait+ia-fringe+office-grid+tiny-office+office-ribbon+office-strip+office-4ribbon+office-corner+office-bay+office-tee ok");
+console.log("engine window+stamp+eyes+logo+halo+pupils+corner+mixed+flat-color+opaque+foliage+white-frame+white-sky+products-on-white+white-casement+blown-sky+coil+studio-color+cyclorama+single-glass+round-glass+oval-glass+fanlight+night-wood+warm-wood+overcast-wood+lozenge+gable+quatrefoil+trapezoid+star+leaded-lattice+bullseye-boss+round-stamp+oval-stamp+diamond-stamp+hexagon-stamp+octagon-stamp+pentagon-stamp+triangle-stamp+star-stamp+heart-stamp+crescent-stamp+teardrop-stamp+shield-stamp+cross-stamp+arrow-stamp+cloud-stamp+clover-stamp+flower-stamp+butterfly-stamp+leaf-stamp+fish-stamp+bird-stamp+cat-stamp+dog-stamp+rabbit-stamp+squirrel-stamp+fox-stamp+bear-stamp+horse-stamp+pig-stamp+cow-stamp+sheep-stamp+goat-stamp+rooster-stamp+duck-stamp+goose-stamp+turkey-stamp+swan-stamp+peacock-stamp+owl-stamp+penguin-stamp+dolphin-stamp+whale-stamp+shark-stamp+turtle-stamp+octopus-stamp+crab-stamp+lobster-stamp+shrimp-stamp+seahorse-stamp+jellyfish-stamp+starfish-stamp+shell-stamp+snail-stamp+frog-stamp+lizard-stamp+snake-stamp+crocodile-stamp+elephant-stamp+giraffe-stamp+zebra-stamp+busy-portrait+ia-fringe+office-grid+tiny-office+office-ribbon+office-strip+office-4ribbon+office-corner+office-bay+office-tee+imperforate-stamp ok");

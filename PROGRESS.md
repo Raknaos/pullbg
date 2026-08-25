@@ -1,6 +1,6 @@
 # CutBG — progression
 
-Vague **4** **2/50** · score **79,8** / 81 cas · IoU 0,928 (20 GT)
+Vague **4** **3/50** · score **79,8** / 81 cas · IoU 0,928 (20 GT)
 
 Pires : stamp-03 63,9 · fur-02 68,1 · studio-05 70,1 · hair-09 70,3 · glass-02 72,6
 
@@ -10,8 +10,8 @@ Pires : stamp-03 63,9 · fur-02 68,1 · studio-05 70,1 · hair-09 70,3 · glass-
 |---|---|---|
 | w4-01 | fait | leftover cheveux connecté (coin ≠ sujet, dist 52/18) |
 | w4-02 | fait | leftover fourrure (fur-02 = sujet au cadre, drop saut) |
-| w4-03 | en cours | leftover studio gris (studio-05 70,1) |
-| w4-04 | restant | stamp fringe/rough (stamp-03 63,9) |
+| w4-03 | fait | leftover studio-05 = pantalon au cadre, pas gris — skip drop |
+| w4-04 | en cours | stamp-03 classif Penny Black OK ; stampCut mange encore la gravure |
 | w4-05 | restant | groupes multi-sujets (group-01 73,3) |
 | w4-06 | restant | leftover plant (plant-01 / 06 73,0) |
 | w4-07 | restant | trous produit (prod-07 74,4) |
@@ -63,8 +63,8 @@ Pires : stamp-03 63,9 · fur-02 68,1 · studio-05 70,1 · hair-09 70,3 · glass-
 
 | id | action | score |
 |---|---|---|
+| w4-04 | classif Penny Black sans dentelé (tests OK) | 79,8 inchangé — stampCut fuit |
+| w4-03 | studio-05 leftover = pantalon, skip drop | 79,8 |
 | w4-02 | leftover saut couleur (jump≥16) | 79,5→79,8 |
 | w4-01 | leftover coin ≠ sujet 52/18 | 79,0→79,5 |
 | w3-03 | drop_uniform dist 50→28 | 78,3→78,7 |
-| w3-02 | leftover flottant cadre | 77,9→78,1 |
-| w3-01 | frange cadre ≥3,5 % | 77,2→77,5 |
