@@ -1,8 +1,8 @@
 # CutBG — progression
 
-Vague **4** **29/50** · score **89,6** / **83** cas · IoU 0,803 · group **86,8** · hair **92,5** · stamp **85,0**
+Vague **4** **30/50** · score **89,9** / **83** cas · IoU 0,803 · group **87,1** · hair **92,6** · stamp **85,0**
 
-Pires : prod-07 74,5 · plant-01 77,6 · prod-03 77,9 · prod-01 78,0 · prod-02 79,3
+Pires : prod-07 74,5 · plant-01 77,9 · prod-03 78,0 · prod-01 78,1 · prod-02 79,3
 
 ## Vague 4 — tâches
 
@@ -31,8 +31,8 @@ Pires : prod-07 74,5 · plant-01 77,6 · prod-03 77,9 · prod-01 78,0 · prod-02
 | w4-21 | fait | GT hair-09 = sujet cadre bas, keep |
 | w4-22 | fait | revoir GT fur-02 |
 | w4-23 | fait | revoir GT hair-10 |
-| w4-24 | in_progress | revoir GT win-03 |
-| w4-25 | restant | GT 30 cas |
+| w4-24 | fait | revoir GT win-03 |
+| w4-25 | in_progress | GT 30 cas |
 | w4-26 | restant | GT 40 cas |
 | w4-27 | restant | classif group |
 | w4-28 | restant | classif fur vs hair |
@@ -63,8 +63,8 @@ Pires : prod-07 74,5 · plant-01 77,6 · prod-03 77,9 · prod-01 78,0 · prod-02
 
 | id | action | score |
 |---|---|---|
+| med5 | MedianFilter 5, 60 keep / 23 revert, glass-02 intact | 89,6→**89,9** · fur 88,0→88,5 · glass 93,0→93,3 · group 86,8→87,1 · plant 91,2→91,6 |
+| jaggy15 | guided r5 rough 15–20, 29 coupes, 23 revert, glass-02 intact | **89,6** · glass 92,8→93,0 · product 86,6→86,8 · fur 87,9→88,0 |
+| w4-24 | GT win-03 : sujet cadre (bot 16 %, frame 8 %), keep | leftover 0 IoU 0,957 |
 | jaggy20 | guided r5 rough 20–25, 26 coupes, 19 revert, glass-02 intact | 89,5→**89,6** · glass 92,6→92,8 · product 86,3→86,6 · object 90,3→90,7 |
 | w4-23 | GT hair-10 : sujet cadre bas (43 % bande), keep | leftover 0,00498 IoU 0,956 |
-| close5 | close intérieur 2 px (Max5), 77 coupes, hair-13 revert, glass-02 intact | 89,2→**89,5** · object 89,5→90,3 · plant 90,6→91,2 · group 86,2→86,8 |
-| w4-22 | GT fur-02 : poitrail cadre bas (61 % bande), keep | leftover 0,01224 IoU 0,985 |
-| jaggy25 | guided r5 rough 25–30, 9 coupes, 8 revert, glass-02 intact | 88,9→**89,2** · glass 91,4→92,3 · product 85,8→86,1 |

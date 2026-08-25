@@ -514,16 +514,25 @@ def _mask_score(arr: np.ndarray) -> float:
 
 
 def smooth_jaggy(guide_rgb: Image.Image, alpha: Image.Image) -> Image.Image:
-    """Extra guided pass on jaggy masks (rough ≥ 20). Revert if heuristic drops."""
+    """Extra guided pass on jaggy masks (rough ≥ 15). Revert if heuristic drops."""
     arr = np.asarray(alpha)
     rough = _fringe_rough(arr)
-    if rough < 20 or rough >= 80:
+    if rough < 15 or rough >= 80:
         return alpha
     refined = guided_alpha(guide_rgb, alpha, radius=5, eps=8e-4)
     out = np.asarray(refined)
     if _mask_score(out) + 0.05 < _mask_score(arr):
         return alpha
     return refined
+
+
+def median_alpha(alpha: Image.Image) -> Image.Image:
+    """Median 5 on alpha. Revert if heuristic drops."""
+    arr = np.asarray(alpha)
+    out = np.asarray(alpha.filter(ImageFilter.MedianFilter(5)))
+    if _mask_score(out) + 0.05 < _mask_score(arr):
+        return alpha
+    return Image.fromarray(out, mode="L")
 
 
 def erode_leftover(alpha: Image.Image) -> Image.Image:
@@ -607,6 +616,7 @@ def finish(raw: bytes, guide_rgb: Image.Image, orders: dict) -> bytes:
     a = close_interior_wide(a)
     a = erode_leftover(a)
     a = smooth_jaggy(guide_rgb, a)
+    a = median_alpha(a)
     rgb = np.array(Image.merge("RGBA", (r, g, b, a)))
     guide = np.asarray(guide_rgb.convert("RGB"))
     raised = (rgb[:, :, 3] > 32) & (rgb[:, :, :3].sum(2) < 12)
